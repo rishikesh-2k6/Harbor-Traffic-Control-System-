@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚓ Harbor Traffic Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg:         #080d14;
+      --panel:      #0d1520;
+      --panel2:     #0a1a10;
+      --border:     #1a2b40;
+      --accent:     #00e5ff;
+      --green:      #00ff99;
+      --amber:      #ffb300;
+      --red:        #ff3d3d;  
+      --orange:     #ff7043;
+      --blue:       #42a5f5;
+      --grey:       #5a7a8a;
+      --text:       #cce8f0;
+      --loc:        #ff6b35;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────────── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      background: linear-gradient(90deg, #020a10 0%, #071624 100%);
+      border-bottom: 2px solid var(--loc);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+    }
+    header h1 span { color: var(--text); font-weight: 300; }
+
+    #status-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.82rem;
+      color: var(--grey);
+      font-family: 'Share Tech Mono', monospace;
+    }
+    #live-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.7); }
+    }
+
+    /* ── Violation Alert Banner ─────────────────────────────────────────── */
+    #violation-banner {
+      display: none;
+      background: rgba(255,61,61,0.12);
+      border: 1px solid #c62828;
+      border-left: 4px solid var(--red);
+      margin: 14px 32px 0;
+      border-radius: 10px;
+      padding: 12px 20px;
+      animation: blink-border 1s step-start infinite;
+    }
+    @keyframes blink-border {
+      0%,100% { border-left-color: var(--red); }
+      50%      { border-left-color: transparent; }
+    }
+    #violation-banner .vb-title {
+      font-weight: 700;
+      color: var(--red);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+    .vio-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,61,61,0.10);
+      border: 1px solid #c6282855;
+      border-radius: 20px;
+      padding: 3px 12px;
+      margin: 3px 4px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: #ff8888;
+    }
+
+    /* ── Stats Bar ──────────────────────────────────────────────────────── */
+    #stats-bar {
+      display: flex;
+      gap: 12px;
+      padding: 14px 32px;
+      background: #0a1219;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .stat-chip {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 100px;
+    }
+    .stat-chip .val { font-size: 1.45rem; font-weight: 700; color: var(--accent); line-height: 1.1; }
+    .stat-chip .lbl { font-size: 0.68rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 3px; }
+    .zone-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      align-self: center;
+    }
+    .zone-outer { background: rgba(255,112,67,0.18); color: var(--orange); border: 1px solid #ff704355; }
+    .zone-inner { background: rgba(0,255,153,0.10); color: var(--green); border: 1px solid #00ff9955; }
+    .zone-divider {
+      color: var(--loc);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 4px;
+      align-self: center;
+    }
+    #ml-chip {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--grey);
+      align-self: center;
+      margin-left: auto;
+    }
+
+    /* ── Two-column layout ──────────────────────────────────────────────── */
+    #zones-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      min-height: calc(100vh - 220px);
+    }
+
+    /* ── Zone panel ────────────────────────────────────────────────────── */
+    .zone-panel {
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .zone-panel:last-child { border-right: none; }
+    .zone-panel-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .zone-panel-sub {
+      font-size: 0.72rem;
+      color: var(--grey);
+      margin-bottom: 16px;
+    }
+    .zone-panel.outer .zone-panel-title { color: var(--orange); }
+    .zone-panel.inner .zone-panel-title { color: var(--green); }
+    .zone-panel.outer { background: rgba(255,112,67,0.02); }
+    .zone-panel.inner { background: rgba(0,255,153,0.02); }
+
+    /* ── Table (Outer Yard) ─────────────────────────────────────────────── */
+    .ship-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    .ship-table th {
+      text-align: left;
+      color: var(--grey);
+      text-transform: uppercase;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ship-table td {
+      padding: 9px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-family: 'Share Tech Mono', monospace;
+      color: #e0f7fa;
+      vertical-align: middle;
+    }
+    .ship-table tr:last-child td { border-bottom: none; }
+    .ship-table tr:hover td { background: rgba(255,255,255,0.03); }
+
+    /* ── Inner Zone cards ───────────────────────────────────────────────── */
+    #inner-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: #0a1a12;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,255,153,0.07); }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 12px 12px 0 0;
+    }
+    .card.cargo-ship::before     { background: linear-gradient(90deg, #8B4513, #E07B39); }
+    .card.tanker::before         { background: linear-gradient(90deg, #7B241C, #C0392B); }
+    .card.cruiser::before        { background: linear-gradient(90deg, #1b5e20, #66bb6a); }
+    .card.ferry::before          { background: linear-gradient(90deg, #6C3483, #BB8FCE); }
+    .card.speedboat::before      { background: linear-gradient(90deg, #1565c0, #42a5f5); }
+    .card.fishing-vessel::before { background: linear-gradient(90deg, #0E6B5E, #48C9B0); }
+
+    .card-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+    .card-sub {
+      font-size: 0.68rem;
+      color: var(--grey);
+      margin-bottom: 10px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.76rem;
+    }
+    .card-row:last-child { border-bottom: none; }
+    .card-lbl { color: var(--grey); }
+    .card-val { font-family: 'Share Tech Mono', monospace; color: #e0f7fa; }
+    .dock-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      background: rgba(0,229,255,0.12);
+      border: 1px solid #00e5ff44;
+      border-radius: 20px;
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 600;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* ── Command badges ─────────────────────────────────────────────────── */
+    .cmd-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .cmd-halt    { background: rgba(255,61,61,0.14); color: var(--red);   border: 1px solid #c62828aa; }
+    .cmd-cont    { background: rgba(0,255,153,0.12); color: var(--green); border: 1px solid #00c97455; }
+    .cmd-slow    { background: rgba(255,179,0,0.12); color: var(--amber); border: 1px solid #e65100aa; }
+    .cmd-route   { background: rgba(0,229,255,0.10); color: var(--accent);border: 1px solid #00e5ff44; }
+    .cmd-dock    { background: rgba(66,165,245,0.12);color: var(--blue);  border: 1px solid #1565c0aa; }
+    .cmd-other   { background: rgba(100,100,120,.18); color: #999;        border: 1px solid #3a3a5040; }
+
+    /* ── Type badge ─────────────────────────────────────────────────────── */
+    .type-badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge-cargo       { background:rgba(224,123,57,.18); color:#E07B39; border:1px solid #8B451355; }
+    .badge-tanker       { background:rgba(192,57,43,.18);  color:#E74C3C; border:1px solid #92190F55; }
+    .badge-cruiser      { background:rgba(76,175,80,.18);  color:#a5d6a7; border:1px solid #2e7d3255; }
+    .badge-ferry        { background:rgba(155,89,182,.18); color:#C39BD3; border:1px solid #6C3A8355; }
+    .badge-speedboat    { background:rgba(33,150,243,.18); color:#64b5f6; border:1px solid #1565c055; }
+    .badge-fishingvessel{ background:rgba(22,160,133,.18); color:#76D7C4; border:1px solid #0E6B5E55; }
+
+    /* ── Direction arrow ────────────────────────────────────────────────── */
+    .dir-inbound  { color: var(--green); }
+    .dir-outbound { color: var(--amber); }
+
+    /* ── Overspeed warning ──────────────────────────────────────────────── */
+    .overspeed-flag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--red);
+      letter-spacing: 0.06em;
+      animation: blink-text 0.8s step-start infinite;
+    }
+    @keyframes blink-text { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Empty ──────────────────────────────────────────────────────────── */
+    .empty-msg {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--grey);
+      font-size: 0.85rem;
+      grid-column: 1/-1;
+    }
+
+    /* ── Scrollbar ──────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── HEADER ──────────────────────────────────────────────────────────── -->
+  <header>
+    <h1>⚓ Harbor <span>Traffic Control Center</span></h1>
+    <div id="status-row">
+      <div id="live-dot"></div>
+      <span id="frame-lbl">Frame —</span>
+      <span id="last-update">—</span>
+    </div>
+  </header>
+
+  <!-- ── VIOLATION BANNER ─────────────────────────────────────────────────── -->
+  <div id="violation-banner">
+    <div class="vb-title">⚠ OVERSPEED VIOLATIONS DETECTED</div>
+    <div id="violation-list"></div>
+  </div>
+
+  <!-- ── STATS BAR ─────────────────────────────────────────────────────────── -->
+  <div id="stats-bar">
+    <span class="zone-label zone-outer">Outer Yard</span>
+    <div class="stat-chip">
+      <div class="val" id="stat-outer">—</div>
+      <div class="lbl">Ships in zone</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-halted" style="color:var(--red)">—</div>
+      <div class="lbl">Halted</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-slowing" style="color:var(--amber)">—</div>
+      <div class="lbl">Slowing</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-crossing" style="color:var(--green)">—</div>
+      <div class="lbl">Crossing</div>
+    </div>
+
+    <span class="zone-divider">|  LOC  |</span>
+
+    <span class="zone-label zone-inner">Inner Zone</span>
+    <div class="stat-chip">
+      <div class="val" id="stat-inner">—</div>
+      <div class="lbl">Ships in zone</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-routing" style="color:var(--accent)">—</div>
+      <div class="lbl">Routing</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-docking" style="color:var(--blue)">—</div>
+      <div class="lbl">Docking</div>
+    </div>
+    <div class="stat-chip">
+      <div class="val" id="stat-violations" style="color:var(--red)">—</div>
+      <div class="lbl">Violations</div>
+    </div>
+
+    <div id="ml-chip">ML: <span id="ml-status">—</span></div>
+  </div>
+
+  <!-- ── TWO-ZONE LAYOUT ──────────────────────────────────────────────────── -->
+  <div id="zones-layout">
+
+    <!-- OUTER YARD -->
+    <div class="zone-panel outer">
+      <div class="zone-panel-title">
+        🟠 Outer Yard Zone
+        <span style="font-size:.68rem;font-weight:400;color:var(--grey);text-transform:none;letter-spacing:0">
+          X &gt; 5000 m
+        </span>
+      </div>
+      <div class="zone-panel-sub">
+        Sensing incoming ships · Predicting type · Issuing entry commands
+      </div>
+      <table class="ship-table" id="outer-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pred Type</th>
+            <th>Speed (kn)</th>
+            <th>Weight (t)</th>
+            <th>Direction</th>
+            <th>Command</th>
+            <th>Halt</th>
+          </tr>
+        </thead>
+        <tbody id="outer-tbody">
+          <tr><td colspan="7" class="empty-msg" style="padding:30px">Waiting for ships…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- INNER ZONE -->
+    <div class="zone-panel inner">
+      <div class="zone-panel-title">
+        🟢 Inner Zone — Patrol &amp; Parking
+        <span style="font-size:.68rem;font-weight:400;color:var(--grey);text-transform:none;letter-spacing:0">
+          X &lt; 5000 m
+        </span>
+      </div>
+      <div class="zone-panel-sub">
+        Smart parking · Route assignment · Dock management
+      </div>
+      <div id="inner-grid">
+        <div class="empty-msg">Waiting for ships…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const DATA_FILE = 'dashboard_data.json';
+    const POLL_MS   = 1000;
+
+    /* ── Command badge ─────────────────────────────────────────────────── */
+    function cmdHtml(cmd) {
+      if (!cmd) cmd = '—';
+      let cls = 'cmd-other', icon = '⚪';
+      if (cmd === 'HALT')       { cls='cmd-halt';  icon='🔴'; }
+      else if (cmd === 'CONTINUE')    { cls='cmd-cont';  icon='🟢'; }
+      else if (cmd === 'SLOW DOWN')   { cls='cmd-slow';  icon='🟡'; }
+      else if (cmd === 'DOCKING')     { cls='cmd-dock';  icon='🔵'; }
+      else if (cmd === 'DOCKED')      { cls='cmd-dock';  icon='⚓'; }
+      else if (cmd.startsWith('ROUTE'))     { cls='cmd-route'; icon='➡'; }
+      else if (cmd.includes('HALT'))   { cls='cmd-halt';  icon='🔴'; }
+      return `<span class="cmd-badge ${cls}">${icon} ${cmd}</span>`;
+    }
+
+    /* ── Type badge ────────────────────────────────────────────────────── */
+    function typeHtml(t) {
+      const m = {
+        'Cargo Ship':     'badge-cargo',
+        'Tanker':         'badge-tanker',
+        'Cruiser':        'badge-cruiser',
+        'Ferry':          'badge-ferry',
+        'Speedboat':      'badge-speedboat',
+        'Fishing Vessel': 'badge-fishingvessel'
+      };
+      return `<span class="type-badge ${m[t]||'cmd-other'}">${t}</span>`;
+    }
+
+    /* ── Direction ─────────────────────────────────────────────────────── */
+    function dirHtml(d) {
+      if (d === 'INBOUND')  return `<span class="dir-inbound">▶ IN</span>`;
+      if (d === 'OUTBOUND') return `<span class="dir-outbound">◀ OUT</span>`;
+      return d;
+    }
+
+    /* ── Overspeed ─────────────────────────────────────────────────────── */
+    function speedHtml(v) {
+      const s = v.speed_knots !== undefined ? v.speed_knots.toFixed(1) : '—';
+      if (v.overspeed) {
+        return `<span class="overspeed-flag">⚠ ${s}</span>`;
+      }
+      return s;
+    }
+
+    /* ── Card CSS class key ─────────────────────────────────────────────── */
+    function cardKey(t) {
+      return t.toLowerCase().replace(/ /g, '-');
+    }
+
+    /* ── Inner Zone card ────────────────────────────────────────────────── */
+    function innerCardHtml(v) {
+      const ck  = cardKey(v.type);
+      const ovr = v.overspeed ? `<span class="overspeed-flag">⚠ OVERSPEED</span>` : '';
+      const dock = v.dock_slot ? `<span class="dock-badge">${v.dock_slot}</span>` : '—';
+      return `
+        <div class="card ${ck}">
+          <div class="card-title">${v.type} — #${v.id} ${ovr}</div>
+          <div class="card-sub">Pred: ${v.pred_type} · ${(v.pred_weight/1000).toFixed(0)} t</div>
+
+          <div class="card-row">
+            <span class="card-lbl">Dock Slot</span>
+            <span class="card-val">${dock}</span>
+          </div>
+          <div class="card-row">
+            <span class="card-lbl">Command</span>
+            <span class="card-val">${cmdHtml(v.cmd)}</span>
+          </div>
+          <div class="card-row">
+            <span class="card-lbl">Direction</span>
+            <span class="card-val">${dirHtml(v.direction)}</span>
+          </div>
+          <div class="card-row">
+            <span class="card-lbl">Speed</span>
+            <span class="card-val">${speedHtml(v)} kn</span>
+          </div>
+          <div class="card-row">
+            <span class="card-lbl">Halt Time</span>
+            <span class="card-val">${v.halt_time} frames</span>
+          </div>
+          <div class="card-row">
+            <span class="card-lbl">Position</span>
+            <span class="card-val" style="font-size:.68rem">X:${v.x} Y:${v.y}</span>
+          </div>
+        </div>`;
+    }
+
+    /* ── Outer yard table row ───────────────────────────────────────────── */
+    function outerRowHtml(v) {
+      const w = v.pred_weight ? (v.pred_weight / 1000).toFixed(0) + ' t' : '—';
+      return `
+        <tr>
+          <td><strong>#${v.id}</strong></td>
+          <td>${typeHtml(v.pred_type || v.type)}</td>
+          <td>${speedHtml(v)}</td>
+          <td>${w}</td>
+          <td>${dirHtml(v.direction)}</td>
+          <td>${cmdHtml(v.cmd)}</td>
+          <td style="color:${v.halt_time > 0 ? 'var(--amber)' : 'var(--grey)'}">${v.halt_time}</td>
+        </tr>`;
+    }
+
+    /* ── Main render ────────────────────────────────────────────────────── */
+    async function fetchAndRender() {
+      try {
+        const res = await fetch(DATA_FILE + '?t=' + Date.now());
+        if (!res.ok) throw new Error('not ok');
+        const data = await res.json();
+
+        const vessels    = data.vessels    || [];
+        const violations = data.violations || [];
+
+        document.getElementById('frame-lbl').textContent  = `Frame ${data.frame}`;
+        document.getElementById('last-update').textContent = 'Updated ' + new Date().toLocaleTimeString();
+        document.getElementById('ml-status').textContent   = data.ml_status || '—';
+
+        /* ── Violations banner ───────────────────────────────────────── */
+        const banner = document.getElementById('violation-banner');
+        const vList  = document.getElementById('violation-list');
+        if (violations.length > 0) {
+          banner.style.display = 'block';
+          vList.innerHTML = violations.map(v =>
+            `<span class="vio-row">⚠ #${v.id} ${v.type} · ${v.zone.replace('_',' ')} · ${v.speed} kn (limit ${v.limit} kn)</span>`
+          ).join('');
+        } else {
+          banner.style.display = 'none';
+        }
+
+        /* ── Partition vessels ───────────────────────────────────────── */
+        const outerVessels = vessels.filter(v => v.zone === 'outer_yard');
+        const innerVessels = vessels.filter(v => v.zone === 'inner_zone' || v.zone === 'harbor');
+
+        /* ── Stats ───────────────────────────────────────────────────── */
+        document.getElementById('stat-outer').textContent      = outerVessels.length;
+        document.getElementById('stat-halted').textContent     = outerVessels.filter(v=>v.cmd==='HALT').length;
+        document.getElementById('stat-slowing').textContent    = outerVessels.filter(v=>v.cmd==='SLOW DOWN').length;
+        document.getElementById('stat-crossing').textContent   = outerVessels.filter(v=>v.cmd==='CONTINUE').length;
+        document.getElementById('stat-inner').textContent      = innerVessels.length;
+        document.getElementById('stat-routing').textContent    = innerVessels.filter(v=>v.state==='ROUTING').length;
+        document.getElementById('stat-docking').textContent    = innerVessels.filter(v=>v.state==='DOCKING'||v.state==='DOCKED').length;
+        document.getElementById('stat-violations').textContent = violations.length;
+
+        /* ── Outer Yard table ────────────────────────────────────────── */
+        const tbody = document.getElementById('outer-tbody');
+        if (outerVessels.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey)">No ships in Outer Yard</td></tr>';
+        } else {
+          tbody.innerHTML = outerVessels.map(outerRowHtml).join('');
+        }
+
+        /* ── Inner Zone cards ────────────────────────────────────────── */
+        const ig = document.getElementById('inner-grid');
+        if (innerVessels.length === 0) {
+          ig.innerHTML = '<div class="empty-msg">No ships in Inner Zone yet…</div>';
+        } else {
+          ig.innerHTML = innerVessels.map(innerCardHtml).join('');
+        }
+
+      } catch (err) {
+        document.getElementById('last-update').textContent = '⚠️ Waiting for simulation data…';
+      }
+    }
+
+    fetchAndRender();
+    setInterval(fetchAndRender, POLL_MS);
+  </script>
+
+</body>
+</html>
