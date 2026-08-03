@@ -14,6 +14,16 @@ SAFE_DISTANCE   = 450
 SENSING_RANGE   = 950           # metres — hydrophone detection radius
 MAP_SIZE        = 10000         # 10 km x 10 km
 
+# ── AUV network layer (Stage 1) ──────────────────────────────────────────────
+NUM_AUVS               = 8
+AUV_RADIUS_M            = 8.0     # collision-shape radius (visualization scale)
+AUV_MASS_KG             = 500.0
+AUV_COMM_RANGE_M        = 1800    # hard cutoff — beyond this, modems can't hear each other
+AUV_COMM_FREQ_HZ        = 12000   # typical underwater acoustic modem carrier (~12 kHz)
+AUV_COMM_SOURCE_LEVEL   = 178.0   # dB re 1 uPa @ 1 m — modem transmit power
+LINK_SNR_THRESHOLD_DB   = 10.0    # minimum SNR for a "reliable" comm link
+BUOY_POS                = (150.0, 5000.0, 0.0)   # fixed surface relay buoy near harbor mouth
+
 # ── Zone Boundaries ──────────────────────────────────────────────────────────
 LOC_X                   = 5000   # Line of Control — splits Outer Yard / Inner Zone
 HARBOR_X                = 700    # ships docked inside this X are "in harbor"
@@ -91,6 +101,27 @@ def get_seabed_depth(x, y):
     slope = -60 * (x / float(MAP_SIZE))
     wave  = 7*np.sin(x/1600.0) + 5*np.cos(y/1200.0)
     return np.minimum(slope + wave - 5, -2)
+
+
+def get_current_vector(x, y, z, t):
+    """
+    Depth-dependent, time-varying water current field — m/s.
+
+    Real harbor currents are strongest near the surface (wind + tidal driven)
+    and weaken toward the seabed. Modeled as a slowly-oscillating tidal term
+    plus large spatial gyres, scaled down with depth. Not a fluid solver —
+    just enough structure that AUV drift is spatially and temporally coherent
+    rather than pure noise.
+    """
+    depth_frac     = np.clip(-z / 60.0, 0.0, 1.0)     # 0 at surface, 1 near seabed
+    surface_factor = 1.0 - 0.75 * depth_frac          # currents weaken with depth
+
+    tphase = t / 400.0
+    vx = surface_factor * (0.35*np.sin(y/2200.0 + tphase) + 0.15*np.cos(x/3000.0 - tphase*0.6))
+    vy = surface_factor * (0.30*np.cos(x/2500.0 - tphase*0.8) + 0.12*np.sin(y/1800.0 + tphase*0.4))
+    vz = 0.03*np.sin((x + y)/4000.0 + tphase*0.3)     # weak vertical heave
+
+    return vx, vy, vz
 
 
 # ─────────────────────────────────────────────────────────────────────────────
