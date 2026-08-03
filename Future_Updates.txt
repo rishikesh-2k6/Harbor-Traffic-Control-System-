@@ -1,0 +1,98 @@
+================================================================================
+⚓ HARBOR TRAFFIC CONTROL SYSTEM - FUTURE UPDATES & UPGRADATION ROADMAP
+================================================================================
+
+PROJECT EXTENSION OBJECTIVE:
+Extend the existing Harbor Traffic Control System into a collaborative network 
+of fixed sensors and mobile robot nodes. When moving surface vessels (cargo ships, 
+speedboats, cruisers, tankers, ferries, etc.) interact with sensors or robot nodes 
+in the harbor, active communication is established across the network to process 
+acoustic telemetry, classify vessel types, detect speed violations, and route 
+traffic control alerts.
+
+================================================================================
+PHASE 0: PRE-REQUISITES & ENVIRONMENT SETUP
+================================================================================
+• Goal:
+  Ensure environment compatibility, verify baseline simulation performance, and 
+  prepare modular code structures before introducing the robot network.
+
+• Prerequisites from USER Side:
+  1. Python Dependencies: Ensure Python 3.9+ is active and required libraries 
+     are installed (`pip install numpy pandas matplotlib scikit-learn joblib torch`).
+  2. Baseline Verification: Run `python main.py` once to confirm the 3D simulation 
+     window opens smoothly and ML training initializes without errors.
+  3. Dashboard Test: Open `dashboard.html` in a web browser to verify real-time 
+     polling of `dashboard_data.json`.
+  4. Data Reset (Optional): Delete or back up `collected_data.csv` if starting 
+     with a fresh dataset for the new network experiments.
+
+• Prerequisites from AGENT Side:
+  1. Codebase Audit: Inspect interfaces in `simulator.py`, `main.py`, `traffic_algo.py`, 
+     and `dashboard.html` for clean extensibility.
+  2. Schema Extension Plan: Design non-breaking JSON schema fields in `dashboard_data.json` 
+     to carry robot statuses and active network links alongside vessel metrics.
+  3. Modular Class Architecture: Draft clean object models (`RobotNode`, `CommLink`, 
+     `NetworkManager`) ready for seamless integration into `simulator.py`.
+
+================================================================================
+PHASE 1: DYNAMIC ROBOT NODE DEPLOYMENT & REGIONAL SETUP
+================================================================================
+• Goal:
+  Introduce mobile robot nodes into the 10 km × 10 km harbor grid alongside 
+  the existing 35 stationary UWSN sensors.
+
+• Key Upgradations:
+  1. Define a `RobotNode` class in `simulator.py` featuring 3D positioning, 
+     patrol movement, battery consumption, and regional assignment.
+  2. Deploy robot nodes across critical harbor zones (Outer Yard, LOC Boundary wall, 
+     and Inner Harbor channels).
+  3. Render 3D visual representations of robot nodes with distinct color-coded 
+     markers in `main.py`.
+
+================================================================================
+PHASE 2: VESSEL INTERACTION & EVENT-DRIVEN COMMUNICATION
+================================================================================
+• Goal:
+  Trigger active network communication whenever a surface vessel enters the 
+  interaction range of any sensor or robot node.
+
+• Key Upgradations:
+  1. Implement proximity-based vessel interaction detection between moving ships 
+     and network nodes (sensors/robots).
+  2. Generate event-driven data payloads containing acoustic features, ML vessel 
+     classification, speed, direction, and predicted weight.
+  3. Establish peer-to-peer (P2P) communication links (Sensor ↔ Robot ↔ Sensor) 
+     within local harbor sectors.
+
+================================================================================
+PHASE 3: ADAPTIVE NETWORK TELEMETRY & MULTI-REGION ROUTING
+================================================================================
+• Goal:
+  Route vessel telemetry across the sensor/robot network to Harbor Traffic 
+  Control while handling underwater channel constraints.
+
+• Key Upgradations:
+  1. Implement multi-hop data propagation algorithms across neighboring nodes to 
+     ensure unbroken coverage across all harbor zones.
+  2. Model acoustic channel conditions including signal attenuation, limited 
+     communication ranges, and link quality.
+  3. Enable dynamic repositioning of robot nodes to cover high-traffic corridors 
+     or temporary signal-blind spots.
+
+================================================================================
+PHASE 4: NETWORK ANALYTICS & CONTINUOUS LIVE DASHBOARD INTEGRATION
+================================================================================
+• Goal:
+  Integrate live network communication status, active links, and robot telemetry 
+  into the real-time web dashboard (`dashboard.html`).
+
+• Key Upgradations:
+  1. Extend `dashboard_data.json` to stream live robot node states, active 
+     communication link pairs, packet delivery rates, and battery levels.
+  2. Upgrade `dashboard.html` UI with dedicated telemetry cards for active 
+     network interactions, node connectivity status, and violation alerts.
+  3. Ensure the live web dashboard runs continuously and seamlessly alongside 
+     the 3D simulation without interruption.
+
+================================================================================
