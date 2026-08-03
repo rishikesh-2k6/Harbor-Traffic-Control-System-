@@ -11,6 +11,7 @@ import torch.nn as nn
 import torch.optim as optim
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import joblib
+from sklearn.model_selection import train_test_split
 
 SCRIPT_DIR        = os.path.dirname(os.path.abspath(__file__))
 _TMP              = tempfile.gettempdir()
@@ -27,6 +28,7 @@ LABEL_ENC_FILE    = os.path.join(SCRIPT_DIR, "label_encoder.pkl")
 # ── Tuning knobs ──────────────────────────────────────────────────────────────
 MIN_ROWS_TO_TRAIN = 100     # Don't attempt training until this many detections exist
 RETRAIN_EVERY     = 50      # Retrain whenever this many NEW rows have been added
+ENABLE_ONLINE_RETRAINING = False  # Toggle online training in live simulation
 # ─────────────────────────────────────────────────────────────────────────────
 
 _MAX_RETRIES      = 5
@@ -40,6 +42,7 @@ _last_trained_rows  = 0     # how many rows were in the file when we last traine
 _model_is_live      = False # flips True once first training succeeds
 
 _device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+_best_val_loss = float('inf')
 
 class VesselMLP(nn.Module):
     def __init__(self, input_dim, num_classes):
@@ -150,7 +153,8 @@ def update_model_from_collected_data():
     n_rows = len(df_all)
 
     # ── Should we (re)train? ─────────────────────────────────────────────────
-    if (n_rows >= MIN_ROWS_TO_TRAIN and
+    if (ENABLE_ONLINE_RETRAINING and
+            n_rows >= MIN_ROWS_TO_TRAIN and
             n_rows - _last_trained_rows >= RETRAIN_EVERY):
         _retrain(df_all)
 
@@ -194,7 +198,7 @@ def update_model_from_collected_data():
 
 def _retrain(df_all):
     """Train PyTorch MLP (type classification + weight regression) on all collected data using GPU if available."""
-    global _cached_model, _cached_scaler, _cached_le, _last_trained_rows, _model_is_live, _device
+    global _cached_model, _cached_scaler, _cached_le, _last_trained_rows, _model_is_live, _device, _best_val_loss
 
     try:
         feat = prepare_data(df_all)
@@ -207,59 +211,164 @@ def _retrain(df_all):
         y_type_raw  = feat['Actual_Type'].values
         y_weight_raw= feat['Actual_Weight_kg'].values
 
-        # Scale X
+        # Split into Train (80%) and Validation (20%) using random_state=42 for validation consistency
+        X_train_r, X_val_r, y_t_train_r, y_t_val_r, y_w_train_r, y_w_val_r = train_test_split(
+            X_raw, y_type_raw, y_weight_raw, test_size=0.2, random_state=42
+        )
+
+        # Scale features
         scaler = StandardScaler()
-        X_scaled = scaler.fit_transform(X_raw)
+        X_train_scaled = scaler.fit_transform(X_train_r)
+        X_val_scaled = scaler.transform(X_val_r)
         
-        # Encode Y (categorical)
+        # Encode labels (handle potential new categories gracefully)
         le = LabelEncoder()
-        y_type_encoded = le.fit_transform(y_type_raw)
+        y_t_train_enc = le.fit_transform(y_t_train_r)
+        
+        # Safe transform for validation in case of unseen classes
+        y_t_val_enc = []
+        classes_list = list(le.classes_)
+        for type_str in y_t_val_r:
+            if type_str in classes_list:
+                y_t_val_enc.append(classes_list.index(type_str))
+            else:
+                y_t_val_enc.append(0)
+        y_t_val_enc = np.array(y_t_val_enc)
         
         # Convert to PyTorch tensors and move to device
-        X_tensor = torch.tensor(X_scaled, dtype=torch.float32).to(_device)
-        y_type_tensor = torch.tensor(y_type_encoded, dtype=torch.long).to(_device)
-        y_weight_tensor = torch.tensor(y_weight_raw, dtype=torch.float32).to(_device)
+        X_train_t = torch.tensor(X_train_scaled, dtype=torch.float32).to(_device)
+        X_val_t = torch.tensor(X_val_scaled, dtype=torch.float32).to(_device)
         
-        input_dim = X_tensor.shape[1]
+        y_t_train_t = torch.tensor(y_t_train_enc, dtype=torch.long).to(_device)
+        y_t_val_t = torch.tensor(y_t_val_enc, dtype=torch.long).to(_device)
+        
+        y_w_train_t = torch.tensor(y_w_train_r, dtype=torch.float32).to(_device)
+        y_w_val_t = torch.tensor(y_w_val_r, dtype=torch.float32).to(_device)
+        
+        input_dim = X_train_t.shape[1]
         num_classes = len(le.classes_)
         
-        # Initialize or re-initialize model
+        # Initialize model
         model = VesselMLP(input_dim, num_classes).to(_device)
         
         optimizer = optim.Adam(model.parameters(), lr=0.005)
-        # Type Loss: CrossEntropy, Weight Loss: MSE
         criterion_type = nn.CrossEntropyLoss()
         criterion_weight = nn.MSELoss()
         
+        # Train Loop
         model.train()
         epochs = 100
         for epoch in range(epochs):
             optimizer.zero_grad()
-            type_logits, weight_pred = model(X_tensor)
+            type_logits, weight_pred = model(X_train_t)
             
-            loss_type = criterion_type(type_logits, y_type_tensor)
-            loss_weight = criterion_weight(weight_pred, y_weight_tensor)
+            loss_type = criterion_type(type_logits, y_t_train_t)
+            loss_weight = criterion_weight(weight_pred, y_w_train_t)
             
-            # Combine losses (scale down MSE loss since weights are large, e.g. 50000 kg)
-            # A scale factor of 1e-6 or standardizing weights would be ideal, but scaling loss works too
             loss = loss_type + (loss_weight * 1e-8)
-            
             loss.backward()
             optimizer.step()
 
-        # Persist models
-        torch.save(model.state_dict(), MODEL_STATE_FILE)
-        joblib.dump(scaler, SCALER_FILE)
-        joblib.dump(le, LABEL_ENC_FILE)
+        # Evaluate validation loss
+        model.eval()
+        with torch.no_grad():
+            val_type_logits, val_weight_pred = model(X_val_t)
+            val_loss_type = criterion_type(val_type_logits, y_t_val_t)
+            val_loss_weight = criterion_weight(val_weight_pred, y_w_val_t)
+            val_loss = (val_loss_type + val_loss_weight * 1e-8).item()
 
-        _cached_model      = model
-        _cached_scaler     = scaler
-        _cached_le         = le
-        _last_trained_rows = len(df_all)
-        _model_is_live     = True
+        # Validation Gate: Accept and save only if validation loss improves!
+        if val_loss < _best_val_loss:
+            # Persist model state
+            torch.save(model.state_dict(), MODEL_STATE_FILE)
+            joblib.dump(scaler, SCALER_FILE)
+            joblib.dump(le, LABEL_ENC_FILE)
 
-        print(f"[ML Model Retrained] Device: {_device}, Rows: {_last_trained_rows}, Final Loss: {loss.item():.4f}")
+            _cached_model      = model
+            _cached_scaler     = scaler
+            _cached_le         = le
+            _last_trained_rows = len(df_all)
+            _model_is_live     = True
+            
+            old_best = _best_val_loss
+            _best_val_loss     = val_loss
+
+            print(f"[ML Model Retrained] ACCEPTED: Val Loss improved from {old_best:.4f} to {val_loss:.4f} (Train Loss: {loss.item():.4f})")
+        else:
+            # Rejected, keep old model active
+            _last_trained_rows = len(df_all) # update rows so we don't spin-retrain constantly
+            print(f"[ML Model Retrained] REJECTED: Val Loss ({val_loss:.4f}) did not beat best ({_best_val_loss:.4f}) (Train Loss: {loss.item():.4f})")
 
     except Exception as e:
         print(f"[ML Training Error] {e}")
         pass
+
+
+def load_cached_model():
+    global _cached_model, _cached_scaler, _cached_le, _model_is_live, _last_trained_rows, _device, _best_val_loss
+    if (os.path.exists(MODEL_STATE_FILE) and 
+        os.path.exists(SCALER_FILE) and 
+        os.path.exists(LABEL_ENC_FILE)):
+        try:
+            scaler = joblib.load(SCALER_FILE)
+            le = joblib.load(LABEL_ENC_FILE)
+            
+            input_dim = len(ALL_FEATURES)
+            num_classes = len(le.classes_)
+            
+            model = VesselMLP(input_dim, num_classes).to(_device)
+            model.load_state_dict(torch.load(MODEL_STATE_FILE, map_location=_device))
+            
+            _cached_model = model
+            _cached_scaler = scaler
+            _cached_le = le
+            _model_is_live = True
+            
+            # Seed last trained rows if data file exists
+            if os.path.exists(COLLECTED_FILE):
+                try:
+                    df = pd.read_csv(COLLECTED_FILE)
+                    _last_trained_rows = len(df)
+                    
+                    # Establish baseline validation loss from existing collected data
+                    feat = prepare_data(df)
+                    if len(feat) >= MIN_ROWS_TO_TRAIN and all(c in feat.columns for c in ALL_FEATURES):
+                        X_raw = feat[ALL_FEATURES].values
+                        y_type_raw = feat['Actual_Type'].values
+                        y_weight_raw = feat['Actual_Weight_kg'].values
+                        
+                        _, X_val_r, _, y_t_val_r, _, y_w_val_r = train_test_split(
+                            X_raw, y_type_raw, y_weight_raw, test_size=0.2, random_state=42
+                        )
+                        
+                        X_val_scaled = scaler.transform(X_val_r)
+                        
+                        y_t_val_enc = []
+                        classes_list = list(le.classes_)
+                        for type_str in y_t_val_r:
+                            if type_str in classes_list:
+                                y_t_val_enc.append(classes_list.index(type_str))
+                            else:
+                                y_t_val_enc.append(0)
+                        y_t_val_enc = np.array(y_t_val_enc)
+                        
+                        X_val_t = torch.tensor(X_val_scaled, dtype=torch.float32).to(_device)
+                        y_t_val_t = torch.tensor(y_t_val_enc, dtype=torch.long).to(_device)
+                        y_w_val_t = torch.tensor(y_w_val_r, dtype=torch.float32).to(_device)
+                        
+                        model.eval()
+                        with torch.no_grad():
+                            type_logits, weight_pred = model(X_val_t)
+                            loss_type = nn.CrossEntropyLoss()(type_logits, y_t_val_t)
+                            loss_weight = nn.MSELoss()(weight_pred, y_w_val_t)
+                            val_loss = (loss_type + loss_weight * 1e-8).item()
+                            _best_val_loss = val_loss
+                            print(f"[ML Boot] Established baseline validation loss: {val_loss:.4f}")
+                except Exception as e:
+                    print(f"[ML Boot Warning] Could not establish baseline validation loss: {e}")
+            print(f"[ML Boot] Successfully loaded pre-trained model on device: {_device}")
+        except Exception as e:
+            print(f"[ML Boot Warning] Could not load pre-trained model: {e}")
+
+# Load model instantly if pre-trained artifacts exist
+load_cached_model()

@@ -10,17 +10,23 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
 import numpy as np
-import json, os
+import json, os, time
+
+LAST_DASHBOARD_WRITE_TIME = 0.0
 
 import simulator as sim
 import mlmodel as ml
 import traffic_algo as tms
+import auv
+import network
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 0. Dashboard JSON path
 # ─────────────────────────────────────────────────────────────────────────────
 DASHBOARD_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               "dashboard_data.json")
+DASHBOARD_JS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "dashboard_data.js")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. Boot
@@ -28,8 +34,10 @@ DASHBOARD_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 sensors = sim.generate_sensors()
 fleet   = sim.generate_fleet()
 print(f"[Boot] {len(sensors)} sensors deployed | {len(fleet)} vessels spawned")
-print("[Boot] All ships spawn on the right — passing Outer Yard → LOC → Inner Zone.")
+print("[Boot] All ships spawn on the right - passing Outer Yard -> LOC -> Inner Zone.")
 print("[Boot] ML model will auto-train once 100 detections accumulate.")
+auv.init_physics()
+auv.spawn_auvs()
 
 MAP   = sim.MAP_SIZE        # 10 000 m
 SPEED_MULT = 8              # visual speed multiplier — ships traverse the map at a comfortable pace
@@ -68,7 +76,10 @@ TYPE_COLORS = {
 root = tk.Tk()
 root.title("⚓ Harbor Traffic Control — Outer Yard | LOC | Inner Zone")
 root.configure(bg=C_WIN)
-root.state('zoomed')
+try:
+    root.state('zoomed')
+except Exception:
+    root.geometry("1200x800")
 
 # ── Top status bar ──────────────────────────────────────────────────────────
 top_bar = tk.Frame(root, bg='#1A2B4C', height=40)
@@ -296,6 +307,52 @@ for sx, sy, sz in sensors:
     sensor_core.append(sc)
 
 # ─────────────────────────────────────────────────────────────────────────────
+# 9a. Buoy Gateways Visuals
+# ─────────────────────────────────────────────────────────────────────────────
+import network
+buoy_plots = []
+for name, (bx, by, bz) in network.BUOYS.items():
+    bp = ax.scatter([bx], [by], [bz], color='#FFD700', marker='^', s=180,
+                    edgecolors='#D4AF37', linewidths=2.0, zorder=7)
+    ax.text(bx, by, bz + 4.0, name.replace("buoy_", "Buoy ").upper(),
+            fontsize=7, fontweight='bold', color='#B8860B', ha='center')
+    buoy_plots.append(bp)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 9b. Mobile Robot Nodes (AUVs) Visuals
+# ─────────────────────────────────────────────────────────────────────────────
+auv_states = auv.get_auv_states()
+auv_cores = []
+auv_rings = []
+auv_labels = []
+
+theta_pts = np.linspace(0, 2 * np.pi, 25)
+for a in auv_states:
+    ax_pos = a["pos"]
+    # Core diamond (orange)
+    ac = ax.scatter([ax_pos[0]], [ax_pos[1]], [ax_pos[2]], color='#FF7043', marker='D', s=130,
+                    edgecolors='#FFD700', linewidths=1.2, zorder=6)
+    auv_cores.append(ac)
+    
+    # Ring in XY plane at depth z representing sensing coverage
+    rx = ax_pos[0] + SENSING_RANGE * np.cos(theta_pts)
+    ry = ax_pos[1] + SENSING_RANGE * np.sin(theta_pts)
+    rz = np.full_like(theta_pts, ax_pos[2])
+    ring_line, = ax.plot(rx, ry, rz, color='#FF7043', linestyle='--', linewidth=0.9, alpha=0.45)
+    auv_rings.append(ring_line)
+    
+    # Label text
+    lbl = ax.text(ax_pos[0], ax_pos[1], ax_pos[2] + 4.0, f"AUV-{a['id']}", 
+                  fontsize=6.5, fontweight='bold', color='#E65100', ha='center')
+    auv_labels.append(lbl)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 9c. P2P Communication Link Visual Pool
+# ─────────────────────────────────────────────────────────────────────────────
+comm_lines = [ax.plot([], [], [], linestyle=':', color='#5A7A8A', linewidth=0.8, alpha=0.0)[0]
+              for _ in range(250)]
+
+# ─────────────────────────────────────────────────────────────────────────────
 # 10. Vessel artists
 # ─────────────────────────────────────────────────────────────────────────────
 v_plots = [ax.plot([], [], [], 'o',
@@ -326,6 +383,10 @@ legend_proxies = [
            markersize=9,  label='Sensor — idle',         linestyle='None', markeredgecolor='#023E8A'),
     Line2D([0],[0], marker='o', color='none', markerfacecolor=C_SENSOR_ACTIVE,
            markersize=9,  label='Sensor — active',       linestyle='None', markeredgecolor='#7D0000'),
+    Line2D([0],[0], marker='D', color='none', markerfacecolor='#FF7043',
+           markersize=9,  label='Mobile AUV Node',       linestyle='None', markeredgecolor='#FFD700'),
+    Line2D([0],[0], color='#00E5FF', linewidth=1.5, linestyle='--', label='Active Multi-Hop Link'),
+    Line2D([0],[0], color='#5A7A8A', linewidth=0.8, linestyle=':', label='Topology Link'),
     Line2D([0],[0], color=C_LOC, linewidth=2, linestyle='--', label='LOC — Line of Control'),
 ]
 leg = ax.legend(handles=legend_proxies,
@@ -358,6 +419,13 @@ def master_loop(frame):
     # Traffic manager now returns (fleet, violations)
     result = tms.manage_traffic_from_csv(fleet)
     fleet, violations = result if isinstance(result, tuple) else (result, [])
+
+    # Step AUVs physics & state machine
+    auv_states = auv.step_auvs(frame, dt=1.0/60.0, active_violations=violations, fleet=fleet)
+
+    # Build communication graph and route telemetry packets
+    graph = network.build_network_graph(sensors, auv_states)
+    delivered_paths, active_packets, network_stats = network.route_detections(fleet, sensors, auv_states, graph, frame)
     # ──────────────────────────────────────────────────────────────────────
 
     # Sensor blink visuals + per-vessel hit counting
@@ -452,23 +520,190 @@ def master_loop(frame):
             "sensor_count":    n_sensors,
         })
 
-    try:
-        with open(DASHBOARD_JSON, 'w') as _f:
-            json.dump({
-                "frame":          frame,
-                "active_sensors": active_count,
-                "total_sensors":  len(sensors),
-                "ml_status":      ml_status,
-                "violations":     violations,
-                "vessels":        dashboard_vessels,
-            }, _f)
-    except Exception:
-        pass
+    # Update AUV visuals
+    for idx, a in enumerate(auv_states):
+        ax_pos = a["pos"]
+        auv_cores[idx]._offsets3d = ([ax_pos[0]], [ax_pos[1]], [ax_pos[2]])
+        
+        if a["status"] == "DISPATCHED":
+            auv_cores[idx].set_facecolor('#FF3D3D')  # Bright red when responding
+            auv_cores[idx].set_edgecolor('#FFD700')
+        elif a["status"] == "CHARGING":
+            auv_cores[idx].set_facecolor('#00E5FF')  # Cyan/blue when charging
+            auv_cores[idx].set_edgecolor('#FFFFFF')
+        else:
+            auv_cores[idx].set_facecolor('#FF7043')  # Orange when patrolling
+            auv_cores[idx].set_edgecolor('#FFD700')
+            
+        rx = ax_pos[0] + SENSING_RANGE * np.cos(theta_pts)
+        ry = ax_pos[1] + SENSING_RANGE * np.sin(theta_pts)
+        rz = np.full_like(theta_pts, ax_pos[2])
+        auv_rings[idx].set_data(rx, ry)
+        auv_rings[idx].set_3d_properties(rz)
+        
+        auv_labels[idx].set_position((ax_pos[0], ax_pos[1]))
+        auv_labels[idx].set_3d_properties(ax_pos[2] + 4.0)
+        status_abbrev = {"PATROLLING": "PATR", "DISPATCHED": "DISP", "CHARGING": "CHRG"}.get(a["status"], "AUV")
+        auv_labels[idx].set_text(f"AUV-{a['id']} [{status_abbrev}] ({int(a['battery_pct'])}%)")
 
-    return v_plots + v_texts + sensor_glow + sensor_core
+    # Update active and topology communication lines
+    pos_map = {}
+    for name, pos in network.BUOYS.items():
+        pos_map[name] = np.array(pos)
+    for i, spos in enumerate(sensors):
+        pos_map[f"sensor_{i}"] = np.array(spos)
+    for a in auv_states:
+        pos_map[f"auv_{a['id']}"] = np.array(a["pos"])
+        
+    line_idx = 0
+    drawn_active_edges = set()
+    
+    # 1. Draw active routing paths
+    for paths in delivered_paths.values():
+        for path in paths:
+            for hop_idx in range(len(path) - 1):
+                u, w = path[hop_idx], path[hop_idx + 1]
+                edge_key = tuple(sorted([u, w]))
+                if edge_key not in drawn_active_edges:
+                    drawn_active_edges.add(edge_key)
+                    if line_idx < len(comm_lines):
+                        p_u = pos_map[u]
+                        p_v = pos_map[w]
+                        comm_lines[line_idx].set_data([p_u[0], p_v[0]], [p_u[1], p_v[1]])
+                        comm_lines[line_idx].set_3d_properties([p_u[2], p_v[2]])
+                        
+                        snr = network._link_snr(np.linalg.norm(p_u - p_v))
+                        color = '#00FF99' if snr >= 20.0 else ('#00E5FF' if snr >= 12.0 else '#FF3D3D')
+                        
+                        comm_lines[line_idx].set_color(color)
+                        comm_lines[line_idx].set_linewidth(2.0)
+                        comm_lines[line_idx].set_alpha(0.85)
+                        comm_lines[line_idx].set_linestyle('--')
+                        line_idx += 1
+                        
+    # 2. Draw normal topology edges
+    for u, w in graph.edges:
+        edge_key = tuple(sorted([u, w]))
+        if edge_key not in drawn_active_edges:
+            if line_idx < len(comm_lines):
+                p_u = pos_map[u]
+                p_v = pos_map[w]
+                comm_lines[line_idx].set_data([p_u[0], p_v[0]], [p_u[1], p_v[1]])
+                comm_lines[line_idx].set_3d_properties([p_u[2], p_v[2]])
+                
+                comm_lines[line_idx].set_color('#5A7A8A')
+                comm_lines[line_idx].set_linewidth(0.8)
+                comm_lines[line_idx].set_alpha(0.20)
+                comm_lines[line_idx].set_linestyle(':')
+                line_idx += 1
+                
+    # 3. Disable remaining visual pool lines
+    for k in range(line_idx, len(comm_lines)):
+        comm_lines[k].set_data([], [])
+        comm_lines[k].set_3d_properties([])
+        comm_lines[k].set_alpha(0.0)
+
+    global LAST_DASHBOARD_WRITE_TIME
+    current_time = time.time()
+    
+    if current_time - LAST_DASHBOARD_WRITE_TIME >= 0.5:
+        # Build telemetry data for dashboard
+        dashboard_robots = []
+        for a in auv_states:
+            dashboard_robots.append({
+                "id":          a["id"],
+                "x":           round(float(a["pos"][0]), 1),
+                "y":           round(float(a["pos"][1]), 1),
+                "z":           round(float(a["pos"][2]), 1),
+                "vx":          round(float(a["vel"][0]), 2),
+                "vy":          round(float(a["vel"][1]), 2),
+                "vz":          round(float(a["vel"][2]), 2),
+                "battery_pct": round(float(a["battery_pct"]), 1),
+                "status":      a["status"],
+                "waypoint":    [round(float(w), 1) for w in a["waypoint"]],
+                "current_zone": a.get("patrol_zone", "Outer Yard")
+            })
+
+        dashboard_links = []
+        for u, w, data in graph.edges(data=True):
+            p_u = pos_map[u]
+            p_w = pos_map[w]
+            d_edge = np.linalg.norm(p_u - p_w)
+            delay = d_edge / 1500.0
+            
+            is_active_hop = False
+            for paths in delivered_paths.values():
+                for path in paths:
+                    for hop_idx in range(len(path) - 1):
+                        if (path[hop_idx] == u and path[hop_idx+1] == w) or (path[hop_idx] == w and path[hop_idx+1] == u):
+                            is_active_hop = True
+                            break
+                    if is_active_hop:
+                        break
+                if is_active_hop:
+                    break
+            
+            payload_type = "TELEMETRY" if is_active_hop else "BEACON"
+            dashboard_links.append({
+                "source_id": u,
+                "target_id": w,
+                "snr":       round(float(data.get("snr", 0.0)), 1),
+                "delay":     round(delay, 4),
+                "payload_type": payload_type
+            })
+
+        dashboard_routed = {
+            "delivered": list(delivered_paths.keys()),
+            "paths": {str(k): v for k, v in delivered_paths.items()}
+        }
+
+        try:
+            data_dict = {
+                "frame":             frame,
+                "active_sensors":    active_count,
+                "total_sensors":     len(sensors),
+                "ml_status":         ml_status,
+                "violations":        violations,
+                "vessels":           dashboard_vessels,
+                "robots":            dashboard_robots,
+                "robot_nodes":       dashboard_robots,
+                "network_links":     dashboard_links,
+                "active_comm_links": dashboard_links,
+                "routed_detections": dashboard_routed,
+                "network_stats": {
+                    "pdr":           network_stats["pdr"],
+                    "avg_hop_count": network_stats["avg_hop_count"],
+                    "active_alerts": network_stats["active_alerts"],
+                    "total_energy_saved_j": network_stats["total_energy_saved_j"],
+                    "avg_latency_default_s": network_stats["avg_latency_default_s"],
+                    "avg_latency_compressed_s": network_stats["avg_latency_compressed_s"],
+                    "node_states":   network_stats["node_states"]
+                }
+            }
+            with open(DASHBOARD_JSON, 'w') as _f:
+                json.dump(data_dict, _f)
+            with open(DASHBOARD_JS, 'w') as _f:
+                _f.write(f"window.DASHBOARD_DATA = {json.dumps(data_dict)};")
+            LAST_DASHBOARD_WRITE_TIME = current_time
+        except Exception:
+            pass
+
+    return v_plots + v_texts + sensor_glow + sensor_core + auv_cores + auv_rings + auv_labels + comm_lines
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 13. Run
 # ─────────────────────────────────────────────────────────────────────────────
 ani = FuncAnimation(fig, master_loop, frames=6000, interval=1, blit=True)
+
+def on_closing():
+    try:
+        ani.event_source.stop()
+    except Exception:
+        pass
+    try:
+        root.destroy()
+    except Exception:
+        pass
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
 root.mainloop()

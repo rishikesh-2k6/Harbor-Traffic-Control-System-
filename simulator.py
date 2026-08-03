@@ -4,6 +4,7 @@ import random
 import os
 import tempfile
 import torch
+import auv
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Constants
@@ -11,7 +12,7 @@ import torch
 RHO             = 1025
 G               = 9.81
 SAFE_DISTANCE   = 450
-SENSING_RANGE   = 950           # metres — hydrophone detection radius
+SENSING_RANGE   = 2000.0        # metres — hydrophone detection radius (R_detect)
 MAP_SIZE        = 10000         # 10 km x 10 km
 
 # ── AUV network layer (Stage 1) ──────────────────────────────────────────────
@@ -399,6 +400,7 @@ def collect_sensor_detections(fleet, sensors, frame):
     """
     For every sensor × vessel pair within SENSING_RANGE, build one physics row
     and APPEND it to the growing collected_data.csv.
+    Now also includes AUVs as dynamic sensor nodes.
 
     Returns
     -------
@@ -408,32 +410,62 @@ def collect_sensor_detections(fleet, sensors, frame):
     new_rows     = []
     sensor_active = [False] * len(sensors)
     
-    if not fleet or not sensors:
+    if not fleet:
         return sensor_active, 0
 
+    # Extract vessel coordinates (N, 3)
     ship_xyz = np.array([[v['pos'][0], v['pos'][1], v.get('depth', -5)]
                          for v in fleet])   # (N, 3)
-    sensor_xyz = np.array(sensors)
     
-    # Calculate all NxM distances at once on GPU
-    ship_t = torch.tensor(ship_xyz, dtype=torch.float32, device=_device)
-    sensor_t = torch.tensor(sensor_xyz, dtype=torch.float32, device=_device)
-    
-    dists_3d = torch.cdist(sensor_t, ship_t).cpu().numpy()
-    dists_2d = torch.cdist(sensor_t[:, :2], ship_t[:, :2]).cpu().numpy()
+    # 1. Process stationary sensors
+    if sensors:
+        sensor_xyz = np.array(sensors)
+        # Vectorized distance using NumPy broadcasting
+        # Shape: (M_sens, 1, 3) - (1, N, 3) -> (M_sens, N, 3)
+        diff_3d = sensor_xyz[:, np.newaxis, :] - ship_xyz[np.newaxis, :, :]
+        dists_3d = np.linalg.norm(diff_3d, axis=2)
+        
+        diff_2d = sensor_xyz[:, np.newaxis, :2] - ship_xyz[np.newaxis, :, :2]
+        dists_2d = np.linalg.norm(diff_2d, axis=2)
+        
+        for i, (sx, sy, sz) in enumerate(sensors):
+            for j, v in enumerate(fleet):
+                if dists_2d[i, j] < SENSING_RANGE:        # Real detection!
+                    sensor_active[i] = True
+                    row = _build_sensor_row(
+                        v, sx, sy, sz,
+                        range_3d=float(dists_3d[i, j]),
+                        range_2d=float(dists_2d[i, j]),
+                        sensor_id=i + 1,
+                        frame=frame
+                    )
+                    new_rows.append(row)
 
-    for i, (sx, sy, sz) in enumerate(sensors):
-        for j, v in enumerate(fleet):
-            if dists_2d[i, j] < SENSING_RANGE:        # Real detection!
-                sensor_active[i] = True
-                row = _build_sensor_row(
-                    v, sx, sy, sz,
-                    range_3d=float(dists_3d[i, j]),
-                    range_2d=float(dists_2d[i, j]),
-                    sensor_id=i + 1,
-                    frame=frame
-                )
-                new_rows.append(row)
+    # 2. Process mobile robot nodes (AUVs)
+    rob_states = auv.get_auv_states()
+    if rob_states:
+        rob_xyz = np.array([r['pos'] for r in rob_states])
+        # Vectorized distance using NumPy broadcasting
+        diff_3d_rob = rob_xyz[:, np.newaxis, :] - ship_xyz[np.newaxis, :, :]
+        dists_3d_rob = np.linalg.norm(diff_3d_rob, axis=2)
+        
+        diff_2d_rob = rob_xyz[:, np.newaxis, :2] - ship_xyz[np.newaxis, :, :2]
+        dists_2d_rob = np.linalg.norm(diff_2d_rob, axis=2)
+        
+        for i, r in enumerate(rob_states):
+            rx, ry, rz = r['pos']
+            for j, v in enumerate(fleet):
+                if dists_2d_rob[i, j] < SENSING_RANGE:
+                    # Mobile sensors have sensor IDs starting after the stationary sensors
+                    sensor_id = len(sensors) + r['id']
+                    row = _build_sensor_row(
+                        v, rx, ry, rz,
+                        range_3d=float(dists_3d_rob[i, j]),
+                        range_2d=float(dists_2d_rob[i, j]),
+                        sensor_id=sensor_id,
+                        frame=frame
+                    )
+                    new_rows.append(row)
 
     # Atomic append: write to a temp file, then merge
     if new_rows:

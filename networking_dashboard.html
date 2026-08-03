@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📡 Underwater Acoustic Network &amp; Relaying Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030914;
+      --panel: #071224;
+      --border: rgba(0, 229, 255, 0.18);
+      --accent: #00e5ff;
+      --text: #e2eaf4;
+      --grey: #8a9ba8;
+      --green: #00ff99;
+      --red: #ff3d3d;
+      --orange: #ff7043;
+      --yellow: #ffd700;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      padding: 24px;
+      line-height: 1.4;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+    }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+    header h1 span { color: var(--text); font-weight: 300; }
+
+    #status-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.95rem;
+      color: var(--grey);
+      font-family: 'Share Tech Mono', monospace;
+    }
+    #live-dot {
+      width: 10px; height: 10px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 1.6s infinite alternate;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.3; transform: scale(0.9); }
+      100% { opacity: 1.0; transform: scale(1.1); }
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+
+    .panel {
+      background-color: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+    }
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-left: 3px solid var(--accent);
+      padding-left: 10px;
+      margin-bottom: 15px;
+    }
+
+    /* Metric Cards */
+    .col-3 { grid-column: span 3; }
+    .col-4 { grid-column: span 4; }
+    .col-6 { grid-column: span 6; }
+    .col-8 { grid-column: span 8; }
+    .col-12 { grid-column: span 12; }
+
+    .metric-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 120px;
+      border-radius: 8px;
+      background: rgba(0, 229, 255, 0.03);
+      border: 1px solid rgba(0, 229, 255, 0.08);
+      position: relative;
+    }
+    .metric-val {
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+    }
+    .metric-lbl {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Comparison block */
+    .comp-block {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .comp-item {
+      text-align: center;
+      flex: 1;
+    }
+    .comp-val {
+      font-size: 1.6rem;
+      font-weight: 700;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .comp-lbl {
+      font-size: 0.8rem;
+      color: var(--grey);
+      text-transform: uppercase;
+    }
+
+    /* Buoy cards */
+    .buoy-container {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .buoy-card {
+      flex: 1;
+      background: rgba(255, 215, 0, 0.03);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .buoy-name {
+      font-weight: 700;
+      color: var(--yellow);
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+    .buoy-pos {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--grey);
+    }
+
+    /* Topology Grid */
+    .topo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+      gap: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    .node-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+      border-radius: 6px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .node-sensor {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .node-auv {
+      border: 1px solid rgba(255, 112, 67, 0.3);
+      background: rgba(255, 112, 67, 0.04);
+    }
+    .state-active {
+      background: rgba(0, 255, 153, 0.08);
+      border-color: rgba(0, 255, 153, 0.3);
+      color: var(--green);
+    }
+    .state-sleeping {
+      background: rgba(138, 155, 168, 0.05);
+      border-color: rgba(138, 155, 168, 0.15);
+      color: var(--grey);
+    }
+    .pulse-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      margin-top: 4px;
+    }
+    .pulse-active {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 1s infinite alternate;
+    }
+    .pulse-sleep {
+      background: #444;
+    }
+
+    /* Paths Feed */
+    .path-log {
+      max-height: 240px;
+      overflow-y: auto;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(0,0,0,0.25);
+      line-height: 1.6;
+    }
+    .path-row {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding: 6px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+    .path-arrow {
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    .warning-banner {
+      background: rgba(255, 61, 61, 0.08);
+      border: 1px solid rgba(255, 61, 61, 0.3);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--red);
+      font-weight: 600;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📡 Underwater Acoustic Network <span>· Multi-Gateway &amp; Relaying</span></h1>
+    <div id="status-row">
+      <div id="live-dot"></div>
+      <span id="frame-lbl">Frame —</span>
+      <span id="last-update">Waiting...</span>
+    </div>
+  </header>
+
+  <div class="warning-banner" id="err-banner">
+    ⚠️ Simulation offline. Please run the backend simulation.
+  </div>
+
+  <div class="dashboard-grid">
+
+    <!-- METRICS -->
+    <div class="panel col-8">
+      <div class="panel-title">Network Metrics &amp; Efficiencies</div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px;">
+        <div class="metric-card">
+          <div class="metric-val" id="val-pdr">—</div>
+          <div class="metric-lbl">Packet Delivery Rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val" id="val-hops">—</div>
+          <div class="metric-lbl">Avg Hop Count</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val" id="val-alerts" style="color: var(--red);">—</div>
+          <div class="metric-lbl">Active Alerts</div>
+        </div>
+        <div class="metric-card" style="background: rgba(0, 255, 153, 0.03); border-color: rgba(0, 255, 153, 0.12);">
+          <div class="metric-val" id="val-energy" style="color: var(--green);">—</div>
+          <div class="metric-lbl">Total Energy Saved</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div class="panel" style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.04);">
+          <div class="panel-title" style="font-size: 0.95rem; margin-bottom: 8px;">Acoustic Transmission Latency</div>
+          <div class="comp-block">
+            <div class="comp-item">
+              <div class="comp-val" id="lat-default" style="color: var(--red);">—</div>
+              <div class="comp-lbl">Raw Text (256B)</div>
+            </div>
+            <div style="font-size: 1.5rem; color: var(--grey);">➔</div>
+            <div class="comp-item">
+              <div class="comp-val" id="lat-comp" style="color: var(--green);">—</div>
+              <div class="comp-lbl">Compressed (16B)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.04);">
+          <div class="panel-title" style="font-size: 0.95rem; margin-bottom: 8px;">Multi-Gateway Buoy Statuses</div>
+          <div class="buoy-container">
+            <div class="buoy-card">
+              <div class="buoy-name">BUOY ALPHA</div>
+              <div class="buoy-pos">150, 2000, 0</div>
+            </div>
+            <div class="buoy-card">
+              <div class="buoy-name">BUOY BETA</div>
+              <div class="buoy-pos">150, 5000, 0</div>
+            </div>
+            <div class="buoy-card">
+              <div class="buoy-name">BUOY GAMMA</div>
+              <div class="buoy-pos">150, 8000, 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOPO GRID -->
+    <div class="panel col-4" style="grid-row: span 2;">
+      <div class="panel-title">UWSN Topology States &amp; Sleep Cycles</div>
+      <div style="margin-bottom: 12px; font-size: 0.85rem; color: var(--grey);">
+        Sensors cycle active/sleep mode (70% duty cycle) to preserve battery.
+      </div>
+      <div class="topo-grid" id="node-grid">
+        <!-- Dyn contents -->
+      </div>
+    </div>
+
+    <!-- RELAY LOG -->
+    <div class="panel col-8">
+      <div class="panel-title">Depth-Based Routing (DBR) Paths Feed</div>
+      <div class="path-log" id="path-feed">
+        <!-- Dyn logs -->
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const DATA_FILE = 'dashboard_data.json';
+    const POLL_MS = 1000;
+    let fallbackScript = null;
+
+    function reloadDataFromScript() {
+      return new Promise((resolve) => {
+        if (fallbackScript) {
+          fallbackScript.remove();
+        }
+        fallbackScript = document.createElement('script');
+        fallbackScript.src = 'dashboard_data.js?t=' + Date.now();
+        fallbackScript.onload = () => {
+          resolve(window.DASHBOARD_DATA);
+        };
+        fallbackScript.onerror = () => {
+          resolve(null);
+        };
+        document.body.appendChild(fallbackScript);
+      });
+    }
+
+    async function fetchAndRender() {
+      try {
+        let data = null;
+        try {
+          const res = await fetch(DATA_FILE + '?t=' + Date.now());
+          if (res.ok) {
+            data = await res.json();
+          } else {
+            throw new Error('CORS/Fetch error');
+          }
+        } catch (err) {
+          data = await reloadDataFromScript();
+        }
+
+        if (!data) {
+          document.getElementById('err-banner').style.display = 'block';
+          return;
+        }
+        document.getElementById('err-banner').style.display = 'none';
+
+        // Header
+        document.getElementById('frame-lbl').textContent = `Frame ${data.frame}`;
+        document.getElementById('last-update').textContent = 'Updated ' + new Date().toLocaleTimeString();
+
+        // Metrics
+        const stats = data.network_stats || {};
+        document.getElementById('val-pdr').textContent = (stats.pdr !== undefined) ? stats.pdr + '%' : '—';
+        document.getElementById('val-hops').textContent = (stats.avg_hop_count !== undefined) ? stats.avg_hop_count : '—';
+        document.getElementById('val-alerts').textContent = (stats.active_alerts !== undefined) ? stats.active_alerts : '—';
+        document.getElementById('val-energy').textContent = (stats.total_energy_saved_j !== undefined) ? stats.total_energy_saved_j + ' J' : '—';
+
+        // Latency
+        document.getElementById('lat-default').textContent = (stats.avg_latency_default_s !== undefined) ? stats.avg_latency_default_s.toFixed(3) + 's' : '—';
+        document.getElementById('lat-comp').textContent = (stats.avg_latency_compressed_s !== undefined) ? stats.avg_latency_compressed_s.toFixed(3) + 's' : '—';
+
+        // Node grid states
+        const nodeStates = stats.node_states || {};
+        const nodeGrid = document.getElementById('node-grid');
+        let html = '';
+
+        // Generate grid elements ordered logically (sensors first, then AUVs)
+        const keys = Object.keys(nodeStates).sort((a,b) => {
+          const isAuvA = a.startsWith('auv_');
+          const isAuvB = b.startsWith('auv_');
+          if (isAuvA && !isAuvB) return 1;
+          if (!isAuvA && isAuvB) return -1;
+          return a.localeCompare(b, undefined, {numeric: true});
+        });
+
+        keys.forEach(node => {
+          if (node.startsWith('buoy')) return; // skip buoys in state grid
+          const isAuv = node.startsWith('auv_');
+          const state = nodeStates[node];
+          const classState = state === 'ACTIVE' ? 'state-active' : 'state-sleeping';
+          const classPulse = state === 'ACTIVE' ? 'pulse-active' : 'pulse-sleep';
+          const classNode = isAuv ? 'node-auv' : 'node-sensor';
+          const label = isAuv ? node.replace('auv_', 'AUV-') : node.replace('sensor_', 'S-');
+
+          html += `
+            <div class="node-badge ${classNode} ${classState}">
+              <div style="font-weight: 700;">${label}</div>
+              <div style="font-size:0.6rem; opacity:0.8;">${state}</div>
+              <div class="pulse-dot ${classPulse}"></div>
+            </div>
+          `;
+        });
+        nodeGrid.innerHTML = html;
+
+        // Path logs
+        const routed = data.routed_detections || {};
+        const feed = document.getElementById('path-feed');
+        if (routed.paths && Object.keys(routed.paths).length > 0) {
+          let feedHtml = '';
+          Object.entries(routed.paths).forEach(([vesselId, pathList]) => {
+            pathList.forEach(path => {
+              const arrowPath = path.map(node => {
+                if (node.startsWith('sensor_')) return `S-${node.split('_')[1]}`;
+                if (node.startsWith('auv_')) return `AUV-${node.split('_')[1]}`;
+                return node.replace('buoy_', 'BUOY ').toUpperCase();
+              }).join(' <span class="path-arrow">➔</span> ');
+
+              feedHtml += `
+                <div class="path-row">
+                  <div>🛳️ Vessel #${vesselId} Detections: ${arrowPath}</div>
+                  <div style="color: var(--accent);">${stats.avg_latency_compressed_s ? stats.avg_latency_compressed_s.toFixed(3) : '—'}s</div>
+                </div>
+              `;
+            });
+          });
+          feed.innerHTML = feedHtml;
+        } else {
+          feed.innerHTML = '<div style="color: var(--grey); text-align:center; padding: 20px;">Waiting for active multi-hop routing events...</div>';
+        }
+
+      } catch (err) {
+        console.error("Rendering error:", err);
+      }
+    }
+
+    // Poll
+    setInterval(fetchAndRender, POLL_MS);
+    fetchAndRender();
+  </script>
+</body>
+</html>

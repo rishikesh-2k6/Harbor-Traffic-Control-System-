@@ -347,6 +347,88 @@
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── Web UI Dashboard Phase 3 Styling ── */
+    .robot-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      text-align: left;
+    }
+    .robot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 6px;
+    }
+    .robot-id {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .robot-status {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .status-patrol { background: rgba(0,255,153,0.1); color: var(--green); border: 1px solid rgba(0,255,153,0.3); }
+    .status-disp { background: rgba(255,61,61,0.1); color: var(--red); border: 1px solid rgba(255,61,61,0.3); }
+    .status-chrg { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+
+    .battery-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .battery-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .battery-bar-fill {
+      height: 100%;
+      background: var(--green);
+      transition: width 0.3s ease;
+    }
+    .robot-info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--grey);
+    }
+    .robot-info-val {
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      font-size: 0.78rem;
+    }
+    .link-row:last-child { border-bottom: none; }
+    .link-source { color: var(--accent); }
+    .link-target { color: var(--blue); }
+    .link-payload {
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+    }
+    .payload-telemetry { background: rgba(0,255,153,0.1); color: var(--green); }
+    .payload-beacon { background: rgba(90,122,138,0.1); color: var(--grey); }
   </style>
 </head>
 
@@ -461,6 +543,55 @@
 
   </div>
 
+  <!-- ── PHASE 3: NETWORK & FLEET PANEL ────────────────────────────────────── -->
+  <div id="network-fleet-layout" style="display: flex; gap: 20px; padding: 0 32px 32px; flex-wrap: wrap;">
+    
+    <!-- ROBOT FLEET STATUS -->
+    <div class="zone-panel" style="flex: 1.5; min-width: 300px;">
+      <div class="zone-panel-title">🤖 Robot Fleet Status</div>
+      <div class="zone-panel-sub">Mobile nodes (AUVs/USVs) patrolling zones, intercepting violations, and tracking battery health</div>
+      <div id="robot-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 14px;">
+        <div class="empty-msg">No robots registered</div>
+      </div>
+    </div>
+    
+    <!-- NETWORK TELEMETRY & P2P RELAYS -->
+    <div class="zone-panel" style="flex: 1; min-width: 300px;">
+      <div class="zone-panel-title">🌐 Live Network Telemetry & P2P Relays</div>
+      <div class="zone-panel-sub">Real-time P2P links between Sensors, Robots, and Buoy Gateway</div>
+      
+      <!-- Network Metrics Chips -->
+      <div style="display: flex; gap: 8px; margin-top: 10px; margin-bottom: 12px;">
+        <div class="stat-chip" style="flex: 1; min-width: auto; padding: 6px;">
+          <div class="val" id="net-pdr" style="font-size: 1.1rem;">—</div>
+          <div class="lbl" style="font-size: 0.55rem;">PDR %</div>
+        </div>
+        <div class="stat-chip" style="flex: 1; min-width: auto; padding: 6px;">
+          <div class="val" id="net-hops" style="font-size: 1.1rem;">—</div>
+          <div class="lbl" style="font-size: 0.55rem;">Avg Hop Count</div>
+        </div>
+        <div class="stat-chip" style="flex: 1; min-width: auto; padding: 6px;">
+          <div class="val" id="net-alerts" style="font-size: 1.1rem; color: var(--red);">—</div>
+          <div class="lbl" style="font-size: 0.55rem;">Active Alerts</div>
+        </div>
+      </div>
+      
+      <div id="active-links-list" style="max-height: 200px; overflow-y: auto; font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: rgba(0,0,0,0.2);">
+        <div style="color: var(--grey);">No active links...</div>
+      </div>
+    </div>
+    
+    <!-- PACKET LOG FEED -->
+    <div class="zone-panel" style="width: 100%;">
+      <div class="zone-panel-title">📡 Live Packet Log & Relay Feed</div>
+      <div class="zone-panel-sub">Real-time acoustic transmission packets routed through the harbor network</div>
+      <div id="packet-log" style="max-height: 180px; overflow-y: auto; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #04080c; line-height: 1.5; color: var(--green); margin-top: 12px; text-align: left;">
+        <div style="color: var(--grey);">Listening for packets...</div>
+      </div>
+    </div>
+
+  </div>
+
   <script>
     const DATA_FILE = 'dashboard_data.json';
     const POLL_MS   = 1000;
@@ -565,12 +696,41 @@
         </tr>`;
     }
 
+    let fallbackScript = null;
+
+    function reloadDataFromScript() {
+      return new Promise((resolve) => {
+        if (fallbackScript) {
+          fallbackScript.remove();
+        }
+        fallbackScript = document.createElement('script');
+        fallbackScript.src = 'dashboard_data.js?t=' + Date.now();
+        fallbackScript.onload = () => {
+          resolve(window.DASHBOARD_DATA);
+        };
+        fallbackScript.onerror = () => {
+          resolve(null);
+        };
+        document.body.appendChild(fallbackScript);
+      });
+    }
+
     /* ── Main render ────────────────────────────────────────────────────── */
     async function fetchAndRender() {
       try {
-        const res = await fetch(DATA_FILE + '?t=' + Date.now());
-        if (!res.ok) throw new Error('not ok');
-        const data = await res.json();
+        let data = null;
+        try {
+          const res = await fetch(DATA_FILE + '?t=' + Date.now());
+          if (res.ok) {
+            data = await res.json();
+          } else {
+            throw new Error('not ok');
+          }
+        } catch (fetchErr) {
+          data = await reloadDataFromScript();
+        }
+
+        if (!data) throw new Error('no data');
 
         const vessels    = data.vessels    || [];
         const violations = data.violations || [];
@@ -619,6 +779,120 @@
           ig.innerHTML = '<div class="empty-msg">No ships in Inner Zone yet…</div>';
         } else {
           ig.innerHTML = innerVessels.map(innerCardHtml).join('');
+        }
+
+        /* ── Network stats ────────────────────────────────────────────── */
+        const stats = data.network_stats || { pdr: 100.0, avg_hop_count: 0, active_alerts: 0 };
+        document.getElementById('net-pdr').textContent = stats.pdr + '%';
+        document.getElementById('net-hops').textContent = stats.avg_hop_count;
+        document.getElementById('net-alerts').textContent = stats.active_alerts;
+
+        /* ── Robot Fleet grid ────────────────────────────────────────── */
+        const robots = data.robot_nodes || data.robots || [];
+        const robotGrid = document.getElementById('robot-grid');
+        if (robots.length === 0) {
+          robotGrid.innerHTML = '<div class="empty-msg">No robot nodes active</div>';
+        } else {
+          robotGrid.innerHTML = robots.map(r => {
+            const batColor = r.battery_pct > 50 ? 'var(--green)' : (r.battery_pct > 20 ? 'var(--amber)' : 'var(--red)');
+            const statusClass = r.status === 'DISPATCHED' ? 'status-disp' : (r.status === 'CHARGING' ? 'status-chrg' : 'status-patrol');
+            return `
+              <div class="robot-card">
+                <div class="robot-header">
+                  <span class="robot-id">🤖 AUV-${r.id}</span>
+                  <span class="robot-status ${statusClass}">${r.status}</span>
+                </div>
+                <div class="battery-container">
+                  <span style="font-size:0.68rem;color:var(--grey)">BAT:</span>
+                  <div class="battery-bar-bg">
+                    <div class="battery-bar-fill" style="width:${r.battery_pct}%; background:${batColor}"></div>
+                  </div>
+                  <span style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:${batColor}">${Math.round(r.battery_pct)}%</span>
+                </div>
+                <div class="robot-info-row">
+                  <span>ZONE</span>
+                  <span class="robot-info-val">${r.current_zone || 'Outer Yard'}</span>
+                </div>
+                <div class="robot-info-row">
+                  <span>POS</span>
+                  <span class="robot-info-val">[${r.x}, ${r.y}, ${r.z}]</span>
+                </div>
+                <div class="robot-info-row">
+                  <span>TARGET</span>
+                  <span class="robot-info-val">[${r.waypoint[0]}, ${r.waypoint[1]}]</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        /* ── Active comm links ────────────────────────────────────────── */
+        const links = data.active_comm_links || data.network_links || [];
+        const linksList = document.getElementById('active-links-list');
+        if (links.length === 0) {
+          linksList.innerHTML = '<div style="color:var(--grey);text-align:center;padding:10px">No P2P connections...</div>';
+        } else {
+          linksList.innerHTML = links.map(l => {
+            const payClass = l.payload_type === 'TELEMETRY' ? 'payload-telemetry' : 'payload-beacon';
+            return `
+              <div class="link-row">
+                <div>
+                  <span class="link-source">${l.source_id || l.source}</span>
+                  <span style="color:var(--grey)">⇆</span>
+                  <span class="link-target">${l.target_id || l.target}</span>
+                </div>
+                <div>
+                  <span style="color:var(--grey);margin-right:8px">SNR: ${l.snr} dB</span>
+                  <span style="color:var(--grey);margin-right:8px">Delay: ${l.delay || '—'}s</span>
+                  <span class="link-payload ${payClass}">${l.payload_type || 'BEACON'}</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        /* ── Live scrolling packet log ────────────────────────────────── */
+        const routed = data.routed_detections || { paths: {} };
+        const packetLog = document.getElementById('packet-log');
+        
+        const currentLogs = [];
+        const vesselsList = data.vessels || [];
+        
+        for (const [vesselIdStr, paths] of Object.entries(routed.paths || {})) {
+          const v_match = vesselsList.find(v => String(v.id) === String(vesselIdStr));
+          const v_class = v_match ? v_match.type : 'Vessel';
+          const v_speed = v_match ? v_match.speed_knots : 0.0;
+          const is_violating = v_match ? v_match.overspeed : false;
+          
+          paths.forEach(path => {
+            const src = path[0];
+            const pdrText = is_violating ? '<span style="color:var(--red);font-weight:bold">[VIOLATION ALERT]</span>' : '<span style="color:var(--green)">[P2P ROUTING]</span>';
+            const logEntry = `[${new Date().toLocaleTimeString()}] ${pdrText} Vessel #${vesselIdStr} (${v_class}, ${v_speed} kn) -> Detected by ${src} -> Routed to Buoy via ${JSON.stringify(path)}`;
+            currentLogs.push(logEntry);
+          });
+        }
+        
+        robots.forEach(r => {
+          if (r.status === 'DISPATCHED') {
+            currentLogs.push(`[${new Date().toLocaleTimeString()}] <span style="color:var(--amber)">[ROBOT DISPATCH]</span> AUV-${r.id} heading to intercept vessel at [${r.waypoint[0]}, ${r.waypoint[1]}]`);
+          }
+        });
+        
+        if (currentLogs.length > 0) {
+          if (packetLog.innerHTML.includes('Listening for packets...')) {
+            packetLog.innerHTML = '';
+          }
+          currentLogs.forEach(log => {
+            const line = document.createElement('div');
+            line.style.marginBottom = '4px';
+            line.innerHTML = log;
+            packetLog.appendChild(line);
+            
+            while (packetLog.childNodes.length > 100) {
+              packetLog.removeChild(packetLog.firstChild);
+            }
+          });
+          packetLog.scrollTop = packetLog.scrollHeight;
         }
 
       } catch (err) {
