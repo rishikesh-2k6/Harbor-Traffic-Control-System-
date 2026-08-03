@@ -45,12 +45,15 @@ Output highlights:
 Harbor-Traffic-Control-System/
 ├── main.py                 # Main 3D simulation window (Tkinter + Matplotlib 3D engine)
 ├── simulator.py            # Underwater acoustic physics engine & sensor telemetry generator
-├── network_manager.py      # Multi-robot swarm manager (RobotNode, CommLink, NetworkManager)
+├── network.py              # Depth-Based Routing (DBR) & acoustic multi-hop communication engine
+├── network_manager.py      # Swarm topology class definitions (RobotNode, CommLink, NetworkManager)
 ├── traffic_algo.py         # Harbor Traffic System (TMS) — zone speed limits & docking logic
 ├── mlmodel.py              # PyTorch Deep Learning model — vessel classification & weight regression
-├── dashboard.html          # Real-time web browser control dashboard
+├── dashboard.html          # Real-time harbor vessel and traffic management dashboard
+├── networking_dashboard.html # Real-time acoustic network topology & DBR routing dashboard
 ├── verify_environment.py   # Team dependency & system verification suite
 ├── dashboard_data.json     # Live telemetry snapshot exported every simulation frame
+├── dashboard_data.js       # Automatically compiled JavaScript bindings for live dashboards
 ├── collected_data.csv      # Accumulated acoustic sensor dataset (auto-generated)
 ├── model_state.pt          # PyTorch model checkpoint weights (auto-generated)
 ├── scaler.pkl              # Sklearn feature scaler (auto-generated)
@@ -74,23 +77,20 @@ X = 0 m              X = 700 m        X = 5000 m            X = 10000 m
 
 ---
 
-## 🛰️ Modular Network Architecture (`network_manager.py`)
+## 🛰️ Modular Network & Routing Architecture (`network.py` & `network_manager.py`)
 
-The network layer provides an extensible object-oriented framework for underwater multi-robot cooperation:
+The network layer provides an extensible framework for underwater multi-robot cooperation and multi-hop telemetry routing:
 
-1. **`RobotNode`**:
-   - Represents an Autonomous Underwater Vehicle (AUV).
-   - Attributes: 3D coordinates `(x, y, z)`, assigned zone, battery discharge model, patrol waypoints, and hydrophone communication radius (1200m).
-   - Behaviors: Cyclic waypoint navigation, battery management, proximity-based link discovery.
+### 1. Swarm Entities (`network_manager.py`)
+- **`RobotNode`**: Represents an Autonomous Underwater Vehicle (AUV) patrolling assigned harbor zones (Outer Yard, Channel, Inner Harbor) with waypoint navigation and battery management.
+- **`CommLink`**: Models physical communication channels (Sensor ↔ Robot, Robot ↔ Robot, Robot ↔ Gateway Buoy) with spherical spreading loss, Thorp absorption, and Signal-to-Noise Ratio (SNR in dB).
+- **`NetworkManager`**: Manages swarm deployment, calculates active link statuses, and compiles serialized telemetry payloads.
 
-2. **`CommLink`**:
-   - Models peer-to-peer acoustic communication channels between network entities (Robot ↔ Sensor, Robot ↔ Robot, Robot ↔ Vessel).
-   - Physics metrics: Distance, spherical spreading loss, Thorp absorption, Signal-to-Noise Ratio (SNR in dB), link status (`ACTIVE`, `DEGRADED`, `DISCONNECTED`), and data throughput (kbps).
-
-3. **`NetworkManager`**:
-   - Orchestrates multi-robot deployment across harbor sectors.
-   - Evaluates dynamic network links each animation frame.
-   - Serializes comprehensive telemetry for real-time dashboard visualization.
+### 2. Multi-Hop Acoustic Routing & Optimization (`network.py`)
+- **Depth-Based Routing (DBR)**: Dynamically routes acoustic telemetry from sensors detecting vessels, through intermediate patrolling AUVs, to three surface gateway buoys (`buoy_alpha`, `buoy_beta`, `buoy_gamma`).
+- **Duty Cycling Sleep/Wake States**: Conserves node battery by cycling sensor states (70% active, 30% sleeping) through frame-based schedules.
+- **Acoustic Bandwidth Compression**: Features dual-mode telemetry (Default vs Compressed frames) to reduce path latency and optimize energy conservation metrics.
+- **Dynamic Topology Graph**: Constructed frame-by-frame via `networkx` to evaluate real-time path connectivity and acoustic link quality.
 
 ---
 
@@ -101,14 +101,13 @@ Execute the main application:
 ```bash
 python main.py
 ```
-This opens an interactive 3D visualization displaying the 10 km × 10 km harbor seabed, 35 UWSN sensor hydrophones, surface vessels, and LOC boundary wall.
+This opens an interactive 3D visualization displaying the 10 km × 10 km harbor seabed, 35 UWSN sensor hydrophones, surface vessels, and LOC boundary wall. Patrolling AUVs will display with dynamic range circles and relay links.
 
-### 2. Launch Real-Time Dashboard
-Open `dashboard.html` in any modern web browser or run with VS Code Live Server:
-```
-dashboard.html
-```
-The browser interface polls `dashboard_data.json` every **800 ms** to display live speed violation banners, vessel classification predictions, sensor activation metrics, and network state updates.
+### 2. Launch Real-Time Dashboards
+The system exports telemetry snapshots every **500 ms** to `dashboard_data.json` and `dashboard_data.js`. Open either of the dashboards in any modern browser:
+
+* **Harbor Traffic Dashboard (`dashboard.html`)**: Focuses on vessel speed violations, classification predictions, and dock slot allocations.
+* **Acoustic Network Dashboard (`networking_dashboard.html`)**: Visualizes the active network topology graph, node battery levels, active routing paths, SNR quality, and bandwidth compression efficiency.
 
 ---
 
