@@ -436,7 +436,10 @@
 
   <!-- ── HEADER ──────────────────────────────────────────────────────────── -->
   <header>
-    <h1>⚓ Harbor <span>Traffic Control Center</span></h1>
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <h1>⚓ Harbor <span>Traffic Control Center</span></h1>
+      <a href="networking_dashboard.html" style="color: var(--accent); font-size: 0.8rem; text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 6px; background: rgba(0,229,255,0.08); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">📡 Acoustic Network Dashboard</a>
+    </div>
     <div id="status-row">
       <div id="live-dot"></div>
       <span id="frame-lbl">Frame —</span>
@@ -594,7 +597,7 @@
 
   <script>
     const DATA_FILE = 'dashboard_data.json';
-    const POLL_MS   = 1000;
+    const POLL_MS   = 500;
 
     /* ── Command badge ─────────────────────────────────────────────────── */
     function cmdHtml(cmd) {

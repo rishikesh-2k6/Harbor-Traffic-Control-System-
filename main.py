@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
 import numpy as np
-import json, os, time
+import json, os, time, webbrowser, http.server, socketserver, threading
 
 LAST_DASHBOARD_WRITE_TIME = 0.0
 
@@ -21,12 +21,45 @@ import auv
 import network
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 0. Dashboard JSON path
+# 0. Dashboard JSON path & HTTP Server
 # ─────────────────────────────────────────────────────────────────────────────
 DASHBOARD_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                               "dashboard_data.json")
 DASHBOARD_JS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "dashboard_data.js")
+
+DASHBOARD_PORT = 8000
+
+def _run_dashboard_server():
+    global DASHBOARD_PORT
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    class QuietHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, directory=base_dir, **kwargs)
+        def log_message(self, format, *args):
+            pass
+
+    for p in range(8000, 8025):
+        try:
+            httpd = socketserver.TCPServer(("127.0.0.1", p), QuietHTTPRequestHandler)
+            DASHBOARD_PORT = p
+            print(f"[Dashboard Server] Serving live harbor telemetry at http://127.0.0.1:{p}/dashboard.html")
+            httpd.serve_forever()
+            break
+        except OSError:
+            continue
+
+_server_thread = threading.Thread(target=_run_dashboard_server, daemon=True)
+_server_thread.start()
+
+def open_dashboard():
+    """Opens live web dashboard in default web browser."""
+    url = f"http://127.0.0.1:{DASHBOARD_PORT}/dashboard.html"
+    print(f"[Dashboard] Opening live web dashboard: {url}")
+    try:
+        webbrowser.open(url)
+    except Exception as e:
+        print(f"[Dashboard] Error opening browser: {e}")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. Boot
@@ -98,9 +131,14 @@ def reset_view():
     ax.view_init(elev=28, azim=-55)
     canvas.draw_idle()
 
+tk.Button(top_bar, text="📊 Live Web Dashboard", bg='#0077B6', fg='white',
+          activebackground='#0096C7', activeforeground='white',
+          font=('Segoe UI', 9, 'bold'), bd=0, padx=10, pady=2, cursor='hand2',
+          command=open_dashboard).pack(side=tk.RIGHT, padx=10)
+
 tk.Button(top_bar, text="⟲ Reset View", bg='#3A4C6C', fg='white',
           font=('Segoe UI', 9, 'bold'), bd=0, padx=8, cursor='hand2',
-          command=reset_view).pack(side=tk.RIGHT, padx=14)
+          command=reset_view).pack(side=tk.RIGHT, padx=10)
 
 tk.Label(top_bar, textvariable=violation_var,
          font=('Segoe UI', 9, 'bold'), bg='#1A2B4C', fg='#FF6B6B').pack(side=tk.RIGHT, padx=14)
@@ -706,4 +744,5 @@ def on_closing():
         pass
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
+root.after(1000, open_dashboard)
 root.mainloop()
