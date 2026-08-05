@@ -735,13 +735,19 @@ ani = FuncAnimation(fig, master_loop, frames=6000, interval=1, blit=True)
 
 def on_closing():
     try:
-        ani.event_source.stop()
+        if ani and ani.event_source:
+            ani.event_source.stop()
+    except Exception:
+        pass
+    try:
+        root.quit()
     except Exception:
         pass
     try:
         root.destroy()
     except Exception:
         pass
+    os._exit(0)
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
 root.after(1000, open_dashboard)
