@@ -438,21 +438,26 @@ Upon entering the inner approach ($X \le 700\text{m}$), vessels are routed to de
 Harbor-Traffic-Control-System/
 ├── README.md                      # Comprehensive System Documentation
 ├── PROJECT CONTEXT.md             # Research context & multi-robot extension goals
+├── Future_Updates.txt             # Planned feature roadmap
 ├── main.py                        # Central orchestrator, startup scenario selection & 3D Tkinter GUI
 ├── simulator.py                   # Acoustic physics engine, environmental scenarios & 10km harbor
 ├── mlmodel.py                     # Multi-task PyTorch neural network (VesselMLP) & inference pipeline
 ├── network.py                     # Depth-Based Routing (DBR), modem link budgets & packet compression
+├── network_manager.py             # RobotNode, CommLink & NetworkManager classes (standalone)
 ├── auv.py                         # Standalone NumPy AUV kinematics, battery state machine & dispatch
 ├── traffic_algo.py                # Speed governance, LOC tripwire screening & dock berth routing
 ├── verify_environment.py          # Automated system diagnostics & test runner
 ├── dashboard.html                 # Real-time harbor traffic & vessel telemetry web dashboard
 ├── networking_dashboard.html      # Acoustic network topology & DBR routing web dashboard
-├── dashboard_data.json            # Live exported JSON telemetry stream
-├── dashboard_data.js              # JavaScript telemetry wrapper
-├── model_state.pt                 # Pre-trained PyTorch multi-task model weights
-├── scaler.pkl                     # Scikit-learn StandardScaler for 23 features
-├── label_encoder.pkl              # Scikit-learn LabelEncoder for 6 ship classes
-└── collected_data.csv             # Continuous dataset of physical sensor detections
+├── dashboard_data.json            # Live exported JSON telemetry stream (runtime-generated)
+├── dashboard_data.js              # JavaScript telemetry wrapper (runtime-generated)
+├── collected_data.csv             # Continuous dataset of physical sensor detections (runtime-generated)
+└── models/                        # Pre-trained ML model artifacts
+    ├── model_state.pt             # PyTorch VesselMLP weights (multi-task: type + weight)
+    ├── scaler.pkl                 # Scikit-learn StandardScaler for 23 acoustic features
+    ├── label_encoder.pkl          # Scikit-learn LabelEncoder for 6 ship classes
+    ├── model_type.pkl             # Legacy classifier artifact
+    └── model_weight.pkl           # Legacy regressor artifact
 ```
 
 ---

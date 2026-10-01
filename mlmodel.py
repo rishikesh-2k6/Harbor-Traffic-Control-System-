@@ -21,9 +21,9 @@ COLLECTED_FILE    = os.path.join(SCRIPT_DIR, "collected_data.csv")
 # Snapshot of latest-per-ship predictions (read by traffic_algo.py)
 PREDS_FILE        = os.path.join(_TMP, "stage3_live_predictions.csv")
 
-MODEL_STATE_FILE  = os.path.join(SCRIPT_DIR, "model_state.pt")
-SCALER_FILE       = os.path.join(SCRIPT_DIR, "scaler.pkl")
-LABEL_ENC_FILE    = os.path.join(SCRIPT_DIR, "label_encoder.pkl")
+MODEL_STATE_FILE  = os.path.join(SCRIPT_DIR, "models", "model_state.pt")
+SCALER_FILE       = os.path.join(SCRIPT_DIR, "models", "scaler.pkl")
+LABEL_ENC_FILE    = os.path.join(SCRIPT_DIR, "models", "label_encoder.pkl")
 
 # ── Tuning knobs ──────────────────────────────────────────────────────────────
 MIN_ROWS_TO_TRAIN = 100     # Don't attempt training until this many detections exist

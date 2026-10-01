@@ -3,3 +3,8 @@ __pycache__/
 *.pyo
 *.pyd
 .DS_Store
+
+# Runtime-generated telemetry & data files
+dashboard_data.json
+dashboard_data.js
+collected_data.csv
