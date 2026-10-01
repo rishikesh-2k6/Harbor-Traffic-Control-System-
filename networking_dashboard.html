@@ -273,6 +273,7 @@
   <header>
     <div style="display: flex; align-items: center; gap: 20px;">
       <h1>📡 Underwater Acoustic Network <span>· Multi-Gateway &amp; Relaying</span></h1>
+      <span id="env-badge" style="background: rgba(255,209,102,0.12); color: #FFD166; border: 1px solid rgba(255,209,102,0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">☀️ Normal Season</span>
       <a href="dashboard.html" style="color: var(--accent); font-size: 0.85rem; text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 6px; background: rgba(0,229,255,0.08); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">⚓ Harbor Traffic Dashboard</a>
     </div>
     <div id="status-row">
@@ -412,6 +413,22 @@
         // Header
         document.getElementById('frame-lbl').textContent = `Frame ${data.frame}`;
         document.getElementById('last-update').textContent = 'Updated ' + new Date().toLocaleTimeString();
+
+        if (data.environment && data.environment.badge) {
+          const eb = document.getElementById('env-badge');
+          if (eb) {
+            eb.textContent = data.environment.badge;
+            if (data.environment.scenario_key === 'MONSOON') {
+              eb.style.color = '#FF6B6B';
+              eb.style.borderColor = 'rgba(255,107,107,0.4)';
+              eb.style.background = 'rgba(255,107,107,0.14)';
+            } else {
+              eb.style.color = '#FFD166';
+              eb.style.borderColor = 'rgba(255,209,102,0.4)';
+              eb.style.background = 'rgba(255,209,102,0.12)';
+            }
+          }
+        }
 
         // Metrics
         const stats = data.network_stats || {};

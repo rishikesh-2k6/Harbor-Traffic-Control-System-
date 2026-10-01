@@ -123,6 +123,25 @@ tk.Label(top_bar,
          font=('Segoe UI', 11, 'bold'),
          bg='#1A2B4C', fg='#FFFFFF').pack(side=tk.LEFT, padx=10, pady=7)
 
+season_var = tk.StringVar(value=f"{sim.get_active_scenario()['badge']}")
+
+def toggle_scenario():
+    curr = sim.ACTIVE_SCENARIO_KEY
+    new_key = 'MONSOON' if curr == 'NORMAL' else 'NORMAL'
+    sim.set_active_scenario(new_key)
+    sc = sim.get_active_scenario()
+    season_var.set(f"{sc['badge']}")
+    status_var.set(f"Switched scenario to: {sc['name']} ({sc['badge']})")
+
+tk.Label(top_bar, textvariable=season_var,
+         font=('Segoe UI', 9, 'bold'), bg='#0F2847', fg='#FFD166',
+         padx=8, pady=2, relief='groove', bd=1).pack(side=tk.LEFT, padx=10)
+
+tk.Button(top_bar, text="⇄ Switch Season", bg='#2B4C6F', fg='white',
+          activebackground='#3A608F', activeforeground='white',
+          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=2, cursor='hand2',
+          command=toggle_scenario).pack(side=tk.LEFT, padx=4)
+
 frame_var      = tk.StringVar(value="Frame: 0000")
 sensor_var     = tk.StringVar(value="Active Sensors: 0")
 violation_var  = tk.StringVar(value="Violations: 0")
@@ -695,6 +714,7 @@ def master_loop(frame):
             "paths": {str(k): v for k, v in delivered_paths.items()}
         }
 
+        active_scen = sim.get_active_scenario()
         try:
             data_dict = {
                 "frame":             frame,
@@ -708,14 +728,27 @@ def master_loop(frame):
                 "network_links":     dashboard_links,
                 "active_comm_links": dashboard_links,
                 "routed_detections": dashboard_routed,
+                "environment": {
+                    "scenario":          active_scen["name"],
+                    "scenario_key":      sim.ACTIVE_SCENARIO_KEY,
+                    "badge":             active_scen["badge"],
+                    "description":       active_scen["description"],
+                    "sea_state":         f"Douglas {active_scen['sea_state'][0]}–{active_scen['sea_state'][1]}",
+                    "wind_speed_knots":  f"{active_scen['wind_speed_knots'][0]}–{active_scen['wind_speed_knots'][1]} kn",
+                    "ambient_noise_db":  round(network.get_current_ambient_noise_db(), 1),
+                    "current_mult":      active_scen.get("current_mult", 1.0)
+                },
                 "network_stats": {
-                    "pdr":           network_stats["pdr"],
-                    "avg_hop_count": network_stats["avg_hop_count"],
-                    "active_alerts": network_stats["active_alerts"],
+                    "scenario":          active_scen["name"],
+                    "scenario_key":      sim.ACTIVE_SCENARIO_KEY,
+                    "ambient_noise_db":  round(network.get_current_ambient_noise_db(), 1),
+                    "pdr":               network_stats["pdr"],
+                    "avg_hop_count":     network_stats["avg_hop_count"],
+                    "active_alerts":     network_stats["active_alerts"],
                     "total_energy_saved_j": network_stats["total_energy_saved_j"],
                     "avg_latency_default_s": network_stats["avg_latency_default_s"],
                     "avg_latency_compressed_s": network_stats["avg_latency_compressed_s"],
-                    "node_states":   network_stats["node_states"]
+                    "node_states":       network_stats["node_states"]
                 }
             }
             with open(DASHBOARD_JSON, 'w') as _f:
@@ -729,11 +762,12 @@ def master_loop(frame):
     return v_plots + v_texts + sensor_glow + sensor_core + auv_cores + auv_rings + auv_labels + comm_lines
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 13. Run
+# 13. Run & Season Selection
 # ─────────────────────────────────────────────────────────────────────────────
-ani = FuncAnimation(fig, master_loop, frames=6000, interval=1, blit=True)
+ani = None
 
 def on_closing():
+    global ani
     try:
         if ani and ani.event_source:
             ani.event_source.stop()
@@ -750,5 +784,86 @@ def on_closing():
     os._exit(0)
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
-root.after(1000, open_dashboard)
+
+def start_simulation(scenario_key):
+    global ani
+    sim.set_active_scenario(scenario_key)
+    sc = sim.get_active_scenario()
+    season_var.set(f"{sc['badge']}")
+    status_var.set(f"Simulation active — {sc['name']} ({sc['badge']})")
+
+    # Dismiss selection overlay
+    if startup_overlay.winfo_exists():
+        startup_overlay.destroy()
+
+    # Launch FuncAnimation on the single existing engine
+    ani = FuncAnimation(fig, master_loop, frames=6000, interval=1, blit=True)
+    canvas.draw_idle()
+    root.after(1000, open_dashboard)
+
+
+# ── Clean Startup Selection Overlay ───────────────────────────────────────────
+startup_overlay = tk.Frame(root, bg='#0A192F')
+startup_overlay.place(relx=0, rely=0, relwidth=1.0, relheight=1.0)
+
+center_card = tk.Frame(startup_overlay, bg='#112240', bd=2, relief='ridge', padx=28, pady=24)
+center_card.place(relx=0.5, rely=0.5, anchor='center')
+
+tk.Label(center_card, text="⚓  HARBOR TRAFFIC CONTROL SYSTEM",
+         font=('Segoe UI', 15, 'bold'), bg='#112240', fg='#64FFDA').pack(pady=(0, 4))
+tk.Label(center_card, text="Select Simulation Environmental Scenario",
+         font=('Segoe UI', 12, 'bold'), bg='#112240', fg='#FFFFFF').pack(pady=(0, 6))
+tk.Label(center_card, text="Choose atmospheric and oceanographic conditions for the acoustic & network simulation:\n(Both scenarios run on the exact same underlying simulation engine)",
+         font=('Segoe UI', 9), bg='#112240', fg='#8892B0', justify='center').pack(pady=(0, 18))
+
+btn_container = tk.Frame(center_card, bg='#112240')
+btn_container.pack(fill='x', pady=5)
+
+# Normal Season Card
+card_normal = tk.Frame(btn_container, bg='#172A45', bd=1, relief='solid', padx=18, pady=16)
+card_normal.pack(side=tk.LEFT, padx=12, fill='both', expand=True)
+
+tk.Label(card_normal, text="☀️  Normal Season", font=('Segoe UI', 12, 'bold'),
+         bg='#172A45', fg='#FFD166').pack(anchor='w', pady=(0, 8))
+normal_details = (
+    "• Sea State: Douglas 2–3 (calm waters)\n"
+    "• Wind Speed: 8–16 knots (moderate breeze)\n"
+    "• Ambient Noise: ~65 dB (baseline ocean)\n"
+    "• Acoustic Links: Long reach (~1.5 km), >95% PDR\n"
+    "• Water Currents: Tidal nominal (~0.35 m/s)\n"
+    "• AUV Status: High battery endurance"
+)
+tk.Label(card_normal, text=normal_details, font=('Segoe UI', 8),
+         bg='#172A45', fg='#CCD6F6', justify='left', anchor='w').pack(anchor='w', pady=(0, 14))
+
+tk.Button(card_normal, text="▶  Select Normal Season", bg='#0077B6', fg='white',
+          activebackground='#0096C7', activeforeground='white',
+          font=('Segoe UI', 10, 'bold'), bd=0, padx=14, pady=8, cursor='hand2',
+          command=lambda: start_simulation('NORMAL')).pack(fill='x')
+
+# Monsoon Season Card
+card_monsoon = tk.Frame(btn_container, bg='#1F2438', bd=1, relief='solid', padx=18, pady=16)
+card_monsoon.pack(side=tk.RIGHT, padx=12, fill='both', expand=True)
+
+tk.Label(card_monsoon, text="⛈️  Monsoon Season", font=('Segoe UI', 12, 'bold'),
+         bg='#1F2438', fg='#FF6B6B').pack(anchor='w', pady=(0, 8))
+monsoon_details = (
+    "• Sea State: Douglas 6–8 (rough, high waves)\n"
+    "• Wind Speed: 36–52 knots (near gale force)\n"
+    "• Ambient Noise: ~90 dB (+15 dB rain impact)\n"
+    "• Acoustic Links: SNR drops, ~700m range, multi-hop stress\n"
+    "• Water Currents: Storm currents (~1.1 m/s)\n"
+    "• AUV Status: Heavy drift, mobile relay demand"
+)
+tk.Label(card_monsoon, text=monsoon_details, font=('Segoe UI', 8),
+         bg='#1F2438', fg='#CCD6F6', justify='left', anchor='w').pack(anchor='w', pady=(0, 14))
+
+tk.Button(card_monsoon, text="▶  Select Monsoon Season", bg='#D62828', fg='white',
+          activebackground='#E63946', activeforeground='white',
+          font=('Segoe UI', 10, 'bold'), bd=0, padx=14, pady=8, cursor='hand2',
+          command=lambda: start_simulation('MONSOON')).pack(fill='x')
+
+tk.Label(center_card, text="* You can also dynamically switch seasons at any time during simulation using the top control bar.",
+         font=('Segoe UI', 8, 'italic'), bg='#112240', fg='#64FFDA').pack(pady=(16, 0))
+
 root.mainloop()

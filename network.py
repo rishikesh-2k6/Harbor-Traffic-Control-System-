@@ -22,13 +22,29 @@ BUOYS = {
 }
 
 def _link_snr(dist_m):
-    """SNR of a modem-to-modem link at this range (dB)."""
+    """SNR of a modem-to-modem link at this range (dB), adapting to active scenario."""
     dist_m = max(dist_m, 1.0)
     tl = sim.calculate_transmission_loss(dist_m, COMM_FREQ)
     received = COMM_SL - tl
-    noise = sim.calculate_ambient_noise(sea_state=3, wind_speed_knots=10,
-                                        shipping_density=0.4)
+    scenario = sim.get_active_scenario()
+    mid_sea = sum(scenario['sea_state']) / 2.0
+    mid_wind = sum(scenario['wind_speed_knots']) / 2.0
+    mid_ship = sum(scenario['shipping_density']) / 2.0
+    rain_noise = scenario.get('rain_noise_db', 0.0)
+    noise = sim.calculate_ambient_noise(sea_state=mid_sea, wind_speed_knots=mid_wind,
+                                        shipping_density=mid_ship, rain_noise=rain_noise)
     return sim.calculate_snr(received, noise)
+
+
+def get_current_ambient_noise_db():
+    """Returns baseline ambient noise for the active scenario (dB)."""
+    scenario = sim.get_active_scenario()
+    mid_sea = sum(scenario['sea_state']) / 2.0
+    mid_wind = sum(scenario['wind_speed_knots']) / 2.0
+    mid_ship = sum(scenario['shipping_density']) / 2.0
+    rain_noise = scenario.get('rain_noise_db', 0.0)
+    return sim.calculate_ambient_noise(sea_state=mid_sea, wind_speed_knots=mid_wind,
+                                       shipping_density=mid_ship, rain_noise=rain_noise)
 
 
 def is_node_active(node_name, frame):
@@ -263,6 +279,9 @@ def route_detections(fleet, sensors, auv_states, graph, frame):
     avg_latency_comp = (total_lat_comp / delivered_count) if delivered_count > 0 else 0.0
 
     network_stats = {
+        "scenario": sim.get_active_scenario()["name"],
+        "scenario_key": sim.ACTIVE_SCENARIO_KEY,
+        "ambient_noise_db": round(get_current_ambient_noise_db(), 1),
         "pdr": round(pdr, 1),
         "avg_hop_count": round(avg_hop, 2),
         "active_alerts": active_alerts,

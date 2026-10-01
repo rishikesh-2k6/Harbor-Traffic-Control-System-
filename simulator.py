@@ -41,6 +41,54 @@ LIVE_FILE       = os.path.join(_TMP, "stage3_live_sensor_data.csv")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Environmental Scenarios Configuration
+# ─────────────────────────────────────────────────────────────────────────────
+SCENARIOS = {
+    'NORMAL': {
+        'name': 'Normal Season',
+        'key': 'NORMAL',
+        'badge': '☀️ Normal Season',
+        'description': 'Calm waters, moderate winds, low acoustic background noise, nominal modem range.',
+        'sea_state': (2, 3),              # Douglas scale 2-3 (slight to moderate waves)
+        'wind_speed_knots': (8.0, 16.0),  # 8-16 knots
+        'temp_c': (18.0, 22.0),           # 18-22 °C
+        'salinity_ppt': (34.5, 35.5),     # 34.5 - 35.5 ppt (open sea salinity)
+        'rain_noise_db': 0.0,             # No rain impact noise
+        'shipping_density': (0.3, 0.5),   # Baseline harbor traffic noise index
+        'current_mult': 1.0,              # Baseline tidal current (~0.35 m/s peak)
+        'ocean_color': '#AED9E0',         # Azure calm water
+    },
+    'MONSOON': {
+        'name': 'Monsoon Season',
+        'key': 'MONSOON',
+        'badge': '⛈️ Monsoon Season',
+        'description': 'Severe sea state, gale-force winds, torrential rain noise, turbulent currents, acoustic SNR degradation.',
+        'sea_state': (6, 8),              # Douglas scale 6-8 (very rough to high seas)
+        'wind_speed_knots': (36.0, 52.0), # 36-52 knots (near gale to storm force)
+        'temp_c': (12.0, 15.0),           # 12-15 °C (cooler freshwater runoff)
+        'salinity_ppt': (30.0, 32.5),     # 30-32.5 ppt (freshwater dilution)
+        'rain_noise_db': 15.0,            # +15 dB torrential sea surface droplet noise (Wenz/Nystuen)
+        'shipping_density': (0.2, 0.4),   # Storm shipping density
+        'current_mult': 2.6,              # Storm surge & wind-driven currents (~0.9-1.2 m/s peak)
+        'ocean_color': '#4A6572',         # Dark turbulent stormy water
+    }
+}
+
+ACTIVE_SCENARIO_KEY = 'NORMAL'
+
+def set_active_scenario(key):
+    global ACTIVE_SCENARIO_KEY
+    if key in SCENARIOS:
+        ACTIVE_SCENARIO_KEY = key
+        print(f"[Environment] Switched scenario to: {SCENARIOS[key]['name']}")
+        return True
+    return False
+
+def get_active_scenario():
+    return SCENARIOS.get(ACTIVE_SCENARIO_KEY, SCENARIOS['NORMAL'])
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # SECTION 1 – Physics Engine
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -81,10 +129,10 @@ def calculate_doppler_shift(f_source, v_radial, sound_speed):
     return f_source * (sound_speed / denom)
 
 
-def calculate_ambient_noise(sea_state, wind_speed_knots, shipping_density):
-    """Wenz (1962) incoherent combination — dB re 1 uPa."""
+def calculate_ambient_noise(sea_state, wind_speed_knots, shipping_density, rain_noise=0.0):
+    """Wenz (1962) incoherent combination — dB re 1 uPa, with rain noise enhancement."""
     wind_speed_knots = max(wind_speed_knots, 1.0)
-    w  = 44 + 20*np.log10(wind_speed_knots)
+    w  = 44 + 20*np.log10(wind_speed_knots) + rain_noise
     sh = 50 + 10*shipping_density + random.uniform(-3, 3)
     bio= random.uniform(35, 45)
     return 10*np.log10(10**(w/10) + 10**(sh/10) + 10**(bio/10))
@@ -110,17 +158,18 @@ def get_current_vector(x, y, z, t):
 
     Real harbor currents are strongest near the surface (wind + tidal driven)
     and weaken toward the seabed. Modeled as a slowly-oscillating tidal term
-    plus large spatial gyres, scaled down with depth. Not a fluid solver —
-    just enough structure that AUV drift is spatially and temporally coherent
-    rather than pure noise.
+    plus large spatial gyres, scaled down with depth. Multiplied by scenario current multiplier.
     """
     depth_frac     = np.clip(-z / 60.0, 0.0, 1.0)     # 0 at surface, 1 near seabed
     surface_factor = 1.0 - 0.75 * depth_frac          # currents weaken with depth
 
+    scenario = get_active_scenario()
+    current_mult = scenario.get('current_mult', 1.0)
+
     tphase = t / 400.0
-    vx = surface_factor * (0.35*np.sin(y/2200.0 + tphase) + 0.15*np.cos(x/3000.0 - tphase*0.6))
-    vy = surface_factor * (0.30*np.cos(x/2500.0 - tphase*0.8) + 0.12*np.sin(y/1800.0 + tphase*0.4))
-    vz = 0.03*np.sin((x + y)/4000.0 + tphase*0.3)     # weak vertical heave
+    vx = surface_factor * (0.35*np.sin(y/2200.0 + tphase) + 0.15*np.cos(x/3000.0 - tphase*0.6)) * current_mult
+    vy = surface_factor * (0.30*np.cos(x/2500.0 - tphase*0.8) + 0.12*np.sin(y/1800.0 + tphase*0.4)) * current_mult
+    vz = 0.03*np.sin((x + y)/4000.0 + tphase*0.3) * current_mult     # vertical heave
 
     return vx, vy, vz
 
@@ -318,19 +367,21 @@ def _build_sensor_row(v, sx, sy, sz, range_3d, range_2d, sensor_id, frame):
     Returns a dict containing the 17 noisy feature columns PLUS
     the 4 ground-truth target columns (for supervised training).
     """
-    local_temp       = 15.0 + random.uniform(-3, 3)
-    local_salinity   = 35.0 + random.uniform(-0.5, 0.5)
+    scenario = get_active_scenario()
+    local_temp       = random.uniform(*scenario['temp_c']) + random.uniform(-0.4, 0.4)
+    local_salinity   = random.uniform(*scenario['salinity_ppt']) + random.uniform(-0.15, 0.15)
     local_depth_abs  = abs(sz) + random.uniform(-5, 5)
-    sea_state        = random.randint(2, 5)
-    wind_speed       = random.uniform(5, 20)
-    shipping_density = random.uniform(0.2, 0.6)
+    sea_state        = random.randint(*scenario['sea_state'])
+    wind_speed       = random.uniform(*scenario['wind_speed_knots'])
+    shipping_density = random.uniform(*scenario['shipping_density'])
+    rain_noise       = scenario.get('rain_noise_db', 0.0)
 
     sound_speed  = calculate_sound_speed(local_temp, local_salinity, local_depth_abs)
     source_level = calculate_source_level(v['speed_knots'], v['true_weight'],
                                           v['base_sl'], v['prop_diameter'])
     tl           = calculate_transmission_loss(range_3d, v['base_freq'])
     received_lvl = source_level - tl
-    ambient_nl   = calculate_ambient_noise(sea_state, wind_speed, shipping_density)
+    ambient_nl   = calculate_ambient_noise(sea_state, wind_speed, shipping_density, rain_noise=rain_noise)
     snr          = calculate_snr(received_lvl, ambient_nl)
 
     # Doppler — radial velocity component towards the sensor
