@@ -19,6 +19,7 @@
    - [4.2 Comparative Atmospheric & Oceanographic Parameters](#42-comparative-atmospheric--oceanographic-parameters)
    - [4.3 Impact on Acoustic Modem SNR & DBR Routing](#43-impact-on-acoustic-modem-snr--dbr-routing)
    - [4.4 Hydrodynamic Impact on AUV Swarm & Battery](#44-hydrodynamic-impact-on-auv-swarm--battery)
+   - [4.5 Monsoon Simulation: Non-Deterministic Physics Engine](#45-monsoon-simulation-non-deterministic-physics-engine)
 5. [Network Arrangement: Fixed vs. Dynamic](#-5-network-arrangement-fixed-vs-dynamic)
    - [5.1 Fixed Infrastructure (Seabed Hydrophones & Surface Buoys)](#51-fixed-infrastructure)
    - [5.2 Dynamic Infrastructure (AUV Swarm Kinematics)](#52-dynamic-infrastructure-auv-swarm)
@@ -226,6 +227,61 @@ Underwater modem communication links operate at $f = 12\text{ kHz}$ with source 
 * **Drift & Waypoint Keeping**: AUVs experience lateral drift during patrol legs, requiring active propulsion compensation to reach target coordinates.
 * **Accelerated Battery Discharge**: Higher motor output against storm currents causes increased battery drain, triggering earlier return-to-buoy recharge maneuvers.
 
+### 4.5 Monsoon Simulation: Non-Deterministic Physics Engine
+
+The monsoon is not a static parameter change — it drives a live stochastic physics engine that evolves every simulation frame, producing genuinely unpredictable conditions.
+
+#### Non-Deterministic Ocean Current Model (`OCEAN_STATE`)
+
+A global `OCEAN_STATE` dictionary is stepped every frame by `step_ocean_environment()`, evolving via three coupled stochastic processes:
+
+| Component | Mechanism | Intensity Range |
+|---|---|---|
+| **Base current intensity** | Ornstein-Uhlenbeck drift-diffusion: target resampled every 30 frames, Gaussian turbulence $\mathcal{N}(0, 0.16)$ per frame | $1.8 - 6.8\text{ m/s}$ |
+| **Sudden gale squall bursts** | Poisson-rate random trigger (~2.5%/frame); duration 45–120 frames; surge layered on top of base | $+1.8 - 3.4\text{ m/s}$ extra |
+| **Storm surge water level** | Multi-harmonic oscillation ($3.2 + 1.8\sin(t) + 0.9\cos(2t)$) with squall bonus | $+0.5 - 5.5\text{ m}$ |
+| **Wandering vortex gyres** | 3 turbulent eddies with random-walk positions and spin-rate perturbation each frame | Radius $\approx 800\text{ m}$ |
+
+The **wave surface field** is a 4-harmonic chaotic superposition evaluated at every grid point:
+$$Z_{\text{surf}}(x,y,t) = \text{surge} + 2.4\sin\!\left(\tfrac{x+y}{620} - 3.5t\right) + 1.9\cos\!\left(\tfrac{x-y}{440} + 4.2t\right) + 1.2\sin\!\left(\tfrac{x}{280}+5.1t\right)\cos\!\left(\tfrac{y}{310}-4.6t\right) + 0.7\sin\!\left(\tfrac{x-y}{160}+6.8t\right)$$
+
+The **current vector field** combines a directional storm-surge flow, multi-scale spatial turbulence, and the contribution of all 3 wandering vortex gyres scaled by the instantaneous current intensity $I_{\text{current}}$.
+
+#### Moored Sensor Hydrodynamic Model (`MooredSensor`)
+
+Each of the 35 hydrophones is modelled as a `MooredSensor` object with a physical anchor on the seabed, an elastic tether, and a fatigue accumulator:
+
+```text
+  MOORED ──── current > 1.3 m/s ────► STRAINED ──── speed ≥ break_threshold ────► SNAPPED
+    ▲                                     │            OR strain_accum > 12.0         │
+    └───────── current < 0.8 m/s ─────────┘                                          │
+                                                                         Freely drifts with
+                                                                         current field × 14×
+                                                                         visual multiplier
+```
+
+| State | Visual | Tether | Effect |
+|---|---|---|---|
+| **MOORED** | Blue (idle) | Cyan dotted | Gentle sway around anchor ($\le 220\text{ m}$) |
+| **STRAINED** | Orange | Orange solid, thick | Fatigue accumulating; tether at risk |
+| **SNAPPED / DRIFTING** | Red blinking | Broken stub shown | Sensor driven away by currents; network link severed |
+
+* **Break threshold**: Each sensor has a unique random snap threshold $\in [2.2, 3.4]\text{ m/s}$, producing staggered failure during escalating storm surges.
+* **Drift trails**: Snapped sensors leave ghost breadcrumb trails (11 segments, fading orange → red) tracing their journey across the harbor.
+* **Re-anchor**: The **⚓ Re-Anchor Sensors** button in the top bar restores all 35 sensors to their original moorings.
+
+#### Monsoon Visual Effects (3D Viewport)
+
+| Effect | Implementation | Trigger |
+|---|---|---|
+| **Dynamic wave surface** | 18×18 mesh redrawn every 2 frames with 4-harmonic elevation | Always in Monsoon |
+| **Water current quivers** | 9-point arrow grid; red during squalls, orange during normal Monsoon | Always in Monsoon |
+| **Turbulent vortex eyes** | 3 `✕` markers + pulsing dashed rings (orange/purple by spin) | Always in Monsoon |
+| **Rain particles** | 180 `|` scatter points falling and drifting with storm current | Always in Monsoon |
+| **⚡ Lightning flash** | Tkinter overlay label flickers on/off every 4 frames; figure background darkens | During squall bursts |
+| **🚨 Network collapse banner** | Centred Tkinter overlay pulsates when ≥ 50% of sensors are snapped | When network broken |
+| **Drift trails** | 11 fading line segments per drifting sensor | When sensor SNAPPED |
+
 ---
 
 ## 🌐 5. Network Arrangement: Fixed vs. Dynamic
@@ -242,9 +298,10 @@ Z = -50 m (Seabed)       [Sensor-1]       [Sensor-14]      [Sensor-28]       (Fi
 
 ### 5.1 Fixed Infrastructure
 
-* **35 Stationary Seabed & Mid-Water Hydrophones**:
+* **35 Stationary Seabed & Mid-Water Hydrophones (`MooredSensor`)**:
   * Stratified into surface ($Z = -2\text{m}$), mid-water ($Z = \text{seabed}/2$), and seabed ($Z = \text{seabed} + 2\text{m}$, down to $-65\text{m}$).
   * Omnidirectional acoustic modems ($R_{\text{comm}} = 1500\text{m}$, sensing radius $R_{\text{detect}} = 2000\text{m}$).
+  * Each sensor has physical anchor, elastic tether, and fatigue accumulator — progressing through **MOORED → STRAINED → SNAPPED** states under monsoon currents (see §4.5).
 * **3 Surface Gateway Buoys**:
   * Positioned near the harbor entrance along $X = 150\text{m}$: `buoy_alpha` $(150, 2000, 0)$, `buoy_beta` $(150, 5000, 0)$, `buoy_gamma` $(150, 8000, 0)$.
   * Act as high-speed RF/Satellite gateway sinks connected to harbor traffic control and provide inductive recharge stations for AUVs.
@@ -494,6 +551,10 @@ python main.py
 2. **Interactive 3D Simulation**:
    * Click and drag to orbit 360°, scroll wheel to zoom, click **⟲ Reset View** to restore default perspective.
    * Click **⇄ Switch Season** in the top bar to toggle between Normal and Monsoon on the fly.
+   * Click **🌪️ Gale Squall Surge** to inject a violent non-deterministic current burst immediately (auto-switches to Monsoon).
+   * Click **⚓ Re-Anchor Sensors** to restore all 35 sensors to their seabed moorings after a monsoon event.
+3. **HUD Telemetry Bar** (below the top bar) shows live:
+   * 🌊 Water level / peak wave height | 💨 Current speed (m/s) | ⚓ Sensor mooring status | 📡 Network PDR
 3. **Auto-Started Telemetry Server**:
    * Serves live telemetry at `http://127.0.0.1:8000`.
 
@@ -602,8 +663,12 @@ The simulation continuously streams JSON telemetry snapshots to [dashboard_data.
 ## 🏆 13. Summary of Innovations
 
 1. **Unified Environmental Scenarios on a Single Engine**: Compares Normal vs. Monsoon conditions on the exact same simulation core without duplicating code or triggering Tkinter window crashes.
-2. **Acoustic Physics Accuracy**: Full implementation of Mackenzie, Thorp, Ross, Wenz, and Doppler equations without external heavy physics engines.
-3. **Multi-Task Deep Learning**: Simultaneous ship classification and weight estimation via shared PyTorch latent representations with sub-millisecond inference.
-4. **Adaptive Swarm Relay**: Autonomous AUVs dynamically bridging communication partitions caused by sensor sleep duty cycles and monsoon link severances.
-5. **Depth-Based Acoustic Routing (DBR)**: Multi-hop greedy depth routing achieving high Packet Delivery Ratios under realistic oceanographic constraints.
-6. **Decoupled Real-Time Visualization**: High-performance dual dashboard architecture serving live telemetry without degrading 3D simulation frame rates.
+2. **Non-Deterministic Monsoon Physics Engine**: Ornstein-Uhlenbeck stochastic current intensity, random gale squall burst injection, 4-harmonic chaotic wave surface, and 3 wandering turbulent vortex gyres — producing genuinely unpredictable storm conditions every run.
+3. **Moored Sensor Hydrodynamic Failure Model**: Each hydrophone progresses through MOORED → STRAINED → SNAPPED states under current load, with per-sensor random break thresholds and cumulative fatigue tracking. Snapped sensors drift freely and leave fading ghost trails.
+4. **Rich Monsoon Visualization Suite**: Rain particles, ⚡ lightning flash on squall events, vortex eye markers, sensor drift breadcrumb trails, and a 🚨 network-collapse banner — all updating live in the 3D Tkinter viewport.
+5. **Acoustic Physics Accuracy**: Full implementation of Mackenzie, Thorp, Ross, Wenz, and Doppler equations without external heavy physics engines.
+6. **Multi-Task Deep Learning**: Simultaneous ship classification and weight estimation via shared PyTorch latent representations with sub-millisecond inference.
+7. **Adaptive Swarm Relay**: Autonomous AUVs dynamically bridging communication partitions caused by sensor sleep duty cycles and monsoon link severances.
+8. **Depth-Based Acoustic Routing (DBR)**: Multi-hop greedy depth routing achieving high Packet Delivery Ratios under realistic oceanographic constraints.
+9. **Decoupled Real-Time Visualization**: High-performance dual dashboard architecture serving live telemetry without degrading 3D simulation frame rates.
+10. **Organised Project Structure**: ML model artifacts (`model_state.pt`, `scaler.pkl`, `label_encoder.pkl`) isolated in `models/` — separated from runtime-generated data and source code.
