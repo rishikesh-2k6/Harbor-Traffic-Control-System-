@@ -25,8 +25,13 @@ def _link_snr(dist_m):
     """SNR of a modem-to-modem link at this range (dB), adapting to active scenario."""
     dist_m = max(dist_m, 1.0)
     tl = sim.calculate_transmission_loss(dist_m, COMM_FREQ)
-    received = COMM_SL - tl
     scenario = sim.get_active_scenario()
+    is_monsoon = (scenario.get('key') == 'MONSOON')
+
+    # In monsoon, torrential rain agitation and wave bubble plumes cause acoustic scattering
+    monsoon_bubble_loss = 9.0 if is_monsoon else 0.0
+    received = COMM_SL - tl - monsoon_bubble_loss
+
     mid_sea = sum(scenario['sea_state']) / 2.0
     mid_wind = sum(scenario['wind_speed_knots']) / 2.0
     mid_ship = sum(scenario['shipping_density']) / 2.0
@@ -85,10 +90,20 @@ def build_network_graph(sensors, auv_states):
             if snr >= SNR_THRESHOLD:
                 G.add_edge(na, nb, weight=1.0, dist=d, snr=snr)
 
+    # sensor <-> sensor (peer-to-peer acoustic links between deployed sensors)
+    for i in range(len(sensors)):
+        for j in range(i + 1, len(sensors)):
+            _maybe_link(f"sensor_{i}", f"sensor_{j}", sensors[i], sensors[j])
+
     # sensor <-> AUV
     for i, spos in enumerate(sensors):
         for a in auv_states:
             _maybe_link(f"sensor_{i}", f"auv_{a['id']}", spos, a["pos"])
+
+    # sensor <-> buoys (direct gateway link if within acoustic range)
+    for name, pos in BUOYS.items():
+        for i, spos in enumerate(sensors):
+            _maybe_link(f"sensor_{i}", name, spos, pos)
 
     # AUV <-> AUV
     for i in range(len(auv_states)):
@@ -278,6 +293,10 @@ def route_detections(fleet, sensors, auv_states, graph, frame):
     avg_latency_def = (total_lat_def / delivered_count) if delivered_count > 0 else 0.0
     avg_latency_comp = (total_lat_comp / delivered_count) if delivered_count > 0 else 0.0
 
+    sensor_states = sim.get_sensor_states()
+    network_broken = (pdr < 30.0 and total_detections > 0) or (sensor_states['snapped'] >= 10)
+    sim.OCEAN_STATE['network_broken'] = network_broken
+
     network_stats = {
         "scenario": sim.get_active_scenario()["name"],
         "scenario_key": sim.ACTIVE_SCENARIO_KEY,
@@ -288,7 +307,13 @@ def route_detections(fleet, sensors, auv_states, graph, frame):
         "total_energy_saved_j": round(total_energy_saved, 1),
         "avg_latency_default_s": round(avg_latency_def, 3),
         "avg_latency_compressed_s": round(avg_latency_comp, 3),
-        "node_states": {n: ("ACTIVE" if is_node_active(n, frame) else "SLEEPING") for n in graph.nodes}
+        "node_states": {n: ("ACTIVE" if is_node_active(n, frame) else "SLEEPING") for n in graph.nodes},
+        "network_broken": network_broken,
+        "drifting_sensors": sensor_states['snapped'],
+        "moored_sensors": sensor_states['moored'],
+        "strained_sensors": sensor_states['strained'],
+        "total_sensors": sensor_states['total'],
+        "active_edges_count": graph.number_of_edges()
     }
                     
     return delivered_paths, all_packets, network_stats

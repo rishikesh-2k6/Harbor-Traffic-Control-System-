@@ -152,26 +152,187 @@ def get_seabed_depth(x, y):
     return np.minimum(slope + wave - 5, -2)
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# SECTION 2b – Non-Deterministic Ocean Current & Wave Physics Engine
+# ─────────────────────────────────────────────────────────────────────────────
+
+OCEAN_STATE = {
+    'intensity_mps': 0.35,          # instantaneous effective current speed (m/s)
+    'target_intensity': 0.35,       # stochastic drift target
+    'squall_timer': 0,              # frames remaining in sudden violent squall
+    'squall_surge': 0.0,            # added speed during squall (m/s)
+    'surge_water_level': 0.0,       # mean water level displacement (m)
+    'wave_height': 0.3,             # significant wave height peak-to-trough (m)
+    'gust_heading_rad': np.radians(225.0), # direction of storm surge flow
+    'vortices': [                   # wandering turbulent gyres [x, y, spin]
+        [3200.0, 4200.0, 1.4],
+        [7200.0, 6200.0, -1.2],
+        [4800.0, 2400.0, 1.6]
+    ],
+    'snapped_count': 0,             # sensors broken away
+    'network_broken': False
+}
+
+def step_ocean_environment(frame, dt=1.0/60.0):
+    """
+    Step the non-deterministic ocean current, water level disruption,
+    and wave field state forward by dt.
+    """
+    scenario = get_active_scenario()
+    is_monsoon = (scenario.get('key') == 'MONSOON')
+
+    if not is_monsoon:
+        # Normal Season: calm, predictable, gentle tidal breathing
+        t_phase = frame * 0.02
+        OCEAN_STATE['intensity_mps'] = 0.35 + 0.04 * np.sin(t_phase)
+        OCEAN_STATE['target_intensity'] = 0.35
+        OCEAN_STATE['squall_timer'] = 0
+        OCEAN_STATE['squall_surge'] = 0.0
+        OCEAN_STATE['surge_water_level'] = 0.15 * np.sin(t_phase * 0.5)
+        OCEAN_STATE['wave_height'] = 0.35 + 0.08 * np.cos(t_phase * 0.7)
+        return OCEAN_STATE
+
+    # Monsoon Season: Non-deterministic stochastic current intensity and water level disruptions
+    # 1. Stochastic intensity drift-diffusion
+    if frame % 30 == 0:
+        # Pick new stochastic target intensity between 2.6 and 4.6 m/s
+        OCEAN_STATE['target_intensity'] = random.uniform(2.8, 4.6)
+
+    # Ornstein-Uhlenbeck drift towards stochastic target + random Gaussian turbulence
+    dI = 0.08 * (OCEAN_STATE['target_intensity'] - OCEAN_STATE['intensity_mps']) + random.gauss(0, 0.16)
+    OCEAN_STATE['intensity_mps'] = float(np.clip(OCEAN_STATE['intensity_mps'] + dI, 1.8, 6.8))
+
+    # 2. Sudden Gale Squall Bursts (non-deterministic random severe surges)
+    if OCEAN_STATE['squall_timer'] > 0:
+        OCEAN_STATE['squall_timer'] -= 1
+        if OCEAN_STATE['squall_timer'] == 0:
+            OCEAN_STATE['squall_surge'] = 0.0
+    else:
+        # ~2.5% chance per frame to trigger sudden violent current surge
+        if random.random() < 0.025:
+            OCEAN_STATE['squall_timer'] = random.randint(45, 120)
+            OCEAN_STATE['squall_surge'] = random.uniform(1.8, 3.4)
+            print(f"[Monsoon Gale] Severe Squall Surge struck! Current spiking by +{OCEAN_STATE['squall_surge']:.2f} m/s!")
+
+    # 3. Disrupted Water Level (storm surge + chaotic oscillation)
+    t_phase = frame * 0.03
+    base_surge = 3.2 + 1.8 * np.sin(t_phase * 0.4) + 0.9 * np.cos(t_phase * 0.8)
+    squall_bonus = (OCEAN_STATE['squall_surge'] * 0.45) if OCEAN_STATE['squall_timer'] > 0 else 0.0
+    OCEAN_STATE['surge_water_level'] = float(base_surge + squall_bonus + random.gauss(0, 0.08))
+
+    # Significant wave height peak-to-trough (5.0m to 8.5m+)
+    OCEAN_STATE['wave_height'] = float(5.2 + 1.6 * np.sin(t_phase * 0.6) + squall_bonus * 0.8)
+
+    # 4. Wandering turbulent vortices
+    for v in OCEAN_STATE['vortices']:
+        v[0] += random.uniform(-18.0, 18.0)
+        v[1] += random.uniform(-18.0, 18.0)
+        v[0] = float(np.clip(v[0], 1000.0, MAP_SIZE - 1000.0))
+        v[1] = float(np.clip(v[1], 1000.0, MAP_SIZE - 1000.0))
+        v[2] += random.gauss(0, 0.03)
+
+    return OCEAN_STATE
+
+
+def trigger_monsoon_squall():
+    """Immediately trigger a violent non-deterministic current burst."""
+    OCEAN_STATE['squall_timer'] = random.randint(60, 140)
+    OCEAN_STATE['squall_surge'] = random.uniform(2.5, 4.2)
+    print(f"[Manual Trigger] Violent Monsoon Squall Injected! Surge: +{OCEAN_STATE['squall_surge']:.2f} m/s")
+    return OCEAN_STATE['squall_surge']
+
+
+def get_monsoon_current_info():
+    """Return live telemetry snapshot of the ocean current and wave dynamics."""
+    total_speed = OCEAN_STATE['intensity_mps'] + (OCEAN_STATE['squall_surge'] if OCEAN_STATE['squall_timer'] > 0 else 0.0)
+    return {
+        'intensity_mps': round(float(total_speed), 2),
+        'base_intensity': round(float(OCEAN_STATE['intensity_mps']), 2),
+        'squall_active': OCEAN_STATE['squall_timer'] > 0,
+        'squall_surge': round(float(OCEAN_STATE['squall_surge']), 2),
+        'surge_level': round(float(OCEAN_STATE['surge_water_level']), 2),
+        'wave_height': round(float(OCEAN_STATE['wave_height']), 2),
+        'vortices': OCEAN_STATE['vortices'],
+        'snapped_count': OCEAN_STATE.get('snapped_count', 0),
+        'network_broken': OCEAN_STATE.get('network_broken', False)
+    }
+
+
+def get_water_surface_height(x, y, t):
+    """
+    Returns water surface elevation (Z in meters) at (x, y) at time t.
+    In Normal season: flat calm surface (~0m, gentle ripple).
+    In Monsoon season: severely disrupted water levels with storm surge,
+    rolling chaotic waves, and turbulent crests.
+    """
+    scenario = get_active_scenario()
+    is_monsoon = (scenario.get('key') == 'MONSOON')
+
+    if not is_monsoon:
+        return 0.35 * np.sin(x/850.0 + t*1.2) * np.cos(y/1100.0 + t*0.9)
+
+    surge = OCEAN_STATE['surge_water_level']
+    # Multi-harmonic chaotic storm wave superposition
+    w1 = 2.4 * np.sin(x/620.0 + y/820.0 - t*3.5)
+    w2 = 1.9 * np.cos(x/440.0 - y/640.0 + t*4.2)
+    w3 = 1.2 * np.sin(x/280.0 + t*5.1) * np.cos(y/310.0 - t*4.6)
+    w4 = 0.7 * np.sin((x - y)/160.0 + t*6.8)  # high-frequency foaming wave chop
+
+    squall_extra = (OCEAN_STATE['squall_surge'] * 0.35) if OCEAN_STATE['squall_timer'] > 0 else 0.0
+    return surge + w1 + w2 + w3 + w4 + squall_extra
+
+
 def get_current_vector(x, y, z, t):
     """
-    Depth-dependent, time-varying water current field — m/s.
-
-    Real harbor currents are strongest near the surface (wind + tidal driven)
-    and weaken toward the seabed. Modeled as a slowly-oscillating tidal term
-    plus large spatial gyres, scaled down with depth. Multiplied by scenario current multiplier.
+    Non-deterministic, depth-dependent, time-varying water current field — m/s.
+    In Normal season: nominal tidal current (~0.35 m/s peak).
+    In Monsoon season: violent turbulent storm surge currents (~2.2 - 6.5 m/s)
+    with wandering vortex gyres and vertical heave.
     """
     depth_frac     = np.clip(-z / 60.0, 0.0, 1.0)     # 0 at surface, 1 near seabed
-    surface_factor = 1.0 - 0.75 * depth_frac          # currents weaken with depth
+    surface_factor = 1.0 - 0.65 * depth_frac          # currents strongest near surface
 
     scenario = get_active_scenario()
-    current_mult = scenario.get('current_mult', 1.0)
+    is_monsoon = (scenario.get('key') == 'MONSOON')
 
-    tphase = t / 400.0
-    vx = surface_factor * (0.35*np.sin(y/2200.0 + tphase) + 0.15*np.cos(x/3000.0 - tphase*0.6)) * current_mult
-    vy = surface_factor * (0.30*np.cos(x/2500.0 - tphase*0.8) + 0.12*np.sin(y/1800.0 + tphase*0.4)) * current_mult
-    vz = 0.03*np.sin((x + y)/4000.0 + tphase*0.3) * current_mult     # vertical heave
+    if not is_monsoon:
+        tphase = t / 400.0
+        vx = surface_factor * (0.35*np.sin(y/2200.0 + tphase) + 0.15*np.cos(x/3000.0 - tphase*0.6))
+        vy = surface_factor * (0.30*np.cos(x/2500.0 - tphase*0.8) + 0.12*np.sin(y/1800.0 + tphase*0.4))
+        vz = 0.02 * np.sin((x + y)/4000.0 + tphase*0.3)
+        return float(vx), float(vy), float(vz)
 
-    return vx, vy, vz
+    # Monsoon season: highly non-deterministic current field
+    speed_mult = OCEAN_STATE['intensity_mps']
+    if OCEAN_STATE['squall_timer'] > 0:
+        speed_mult += OCEAN_STATE['squall_surge']
+
+    tphase = t * 0.8
+    # 1. Storm surge flow generally westward / southwestward through the harbor
+    base_vx = -0.55 + 0.30 * np.sin(y/1900.0 + tphase*0.4) + 0.20 * np.cos(x/2600.0 - tphase*0.3)
+    base_vy = 0.32 * np.cos(x/2100.0 + tphase*0.35) - 0.25 * np.sin(y/1600.0 - tphase*0.25)
+
+    # 2. Multi-scale chaotic spatial turbulence
+    turb_vx = 0.25 * np.sin(x/700.0 + y/900.0 + tphase*0.9) + 0.15 * np.cos(y/550.0 - tphase*1.1)
+    turb_vy = 0.25 * np.cos(x/850.0 - y/750.0 + tphase*1.0) + 0.15 * np.sin(x/500.0 + tphase*0.8)
+
+    # 3. Wandering vortex gyres (swirling ocean eddies)
+    vortex_vx, vortex_vy = 0.0, 0.0
+    for vx_c, vy_c, v_spin in OCEAN_STATE['vortices']:
+        dx_v = (x - vx_c)
+        dy_v = (y - vy_c)
+        dist = np.sqrt(dx_v*dx_v + dy_v*dy_v + 1e5)
+        # Bounded vortex swirl velocity (0.35 m/s peak)
+        vortex_vx += -v_spin * (dy_v / dist) * 0.30
+        vortex_vy +=  v_spin * (dx_v / dist) * 0.30
+
+    # 4. Vertical current heave (upwelling / downwelling dragging sensors)
+    vz = surface_factor * 0.35 * np.sin((x*1.3 + y)/1600.0 + tphase*1.2) * (speed_mult / 3.0)
+
+    total_vx = surface_factor * (base_vx + turb_vx + vortex_vx) * (speed_mult / 1.5)
+    total_vy = surface_factor * (base_vy + turb_vy + vortex_vy) * (speed_mult / 1.5)
+
+    return float(total_vx), float(total_vy), float(vz)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -280,24 +441,167 @@ def is_overspeeding(vessel, zone):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# SECTION 5 – Sensor layout
+# SECTION 5 – Sensor layout & Moored Hydrodynamic Physics
 # ─────────────────────────────────────────────────────────────────────────────
 
+class MooredSensor:
+    """
+    Physical representation of a seabed-moored acoustic sensor node.
+    Equipped with anchor on the seabed, elastic tether cable, hydrodynamic drag,
+    mechanical strain fatigue tracking, and drift physics when driven away by harsh currents.
+    """
+    def __init__(self, sensor_id, anchor_x, anchor_y, target_depth):
+        self.id = int(sensor_id)
+        bed_z = float(get_seabed_depth(anchor_x, anchor_y))
+        self.anchor = np.array([anchor_x, anchor_y, bed_z], dtype=float)
+        self.initial_pos = np.array([anchor_x, anchor_y, float(target_depth)], dtype=float)
+        self.pos = self.initial_pos.copy()
+        self.vel = np.array([0.0, 0.0, 0.0], dtype=float)
+        self.target_depth = float(target_depth)
+        self.status = "MOORED"   # "MOORED", "STRAINED", "SNAPPED" (drifting)
+        # Structural breaking velocity threshold (m/s)
+        self.break_threshold = random.uniform(2.2, 3.4)
+        self.strain_accum = 0.0
+        self.tether_length = abs(target_depth - bed_z)
+        self.trail = []
+
+    def __getitem__(self, idx):
+        return float(self.pos[idx])
+
+    def __len__(self):
+        return 3
+
+    def __iter__(self):
+        return iter(self.pos)
+
+    def reanchor(self):
+        """Restore sensor to initial seabed mooring state."""
+        self.status = "MOORED"
+        self.pos = self.initial_pos.copy()
+        self.vel = np.array([0.0, 0.0, 0.0], dtype=float)
+        self.strain_accum = 0.0
+        self.trail = []
+
+    def update(self, frame, dt, is_monsoon):
+        t = frame * dt
+        cvx, cvy, cvz = get_current_vector(self.pos[0], self.pos[1], self.pos[2], t)
+        current_vec = np.array([cvx, cvy, cvz], dtype=float)
+        current_speed = float(np.linalg.norm(current_vec[:2]))
+
+        bed_z = float(get_seabed_depth(self.pos[0], self.pos[1]))
+        water_surf_z = float(get_water_surface_height(self.pos[0], self.pos[1], t))
+
+        if not is_monsoon:
+            # Normal Season: tether holds firm, small gentle sway around mooring
+            if self.status != "SNAPPED":
+                self.status = "MOORED"
+                self.strain_accum = max(0.0, self.strain_accum - dt * 2.0)
+                sway_t = t * 1.5 + self.id
+                sway = np.array([6.0 * np.sin(sway_t), 6.0 * np.cos(sway_t * 0.8), 0.3 * np.sin(sway_t * 2.0)])
+                self.pos = self.initial_pos + sway
+                self.vel = np.array([0.0, 0.0, 0.0])
+                return
+
+        # Monsoon Season:
+        if self.status in ("MOORED", "STRAINED"):
+            if current_speed > 1.3:
+                self.status = "STRAINED"
+                self.strain_accum += dt * (current_speed / 1.2)
+            else:
+                self.status = "MOORED"
+                self.strain_accum = max(0.0, self.strain_accum - dt * 0.6)
+
+            # Snap trigger: instantaneous violent current spike OR cumulative mechanical fatigue
+            if current_speed >= self.break_threshold or self.strain_accum > 12.0:
+                self.status = "SNAPPED"
+                print(f"[Monsoon Hazard] Sensor #{self.id} mooring SNAPPED by harsh current ({current_speed:.2f} m/s)! Sensor is DRIVEN AWAY!")
+            else:
+                # Moored elastic sway in current direction
+                sway_dist = min(current_speed * 40.0, 220.0)
+                dir_c = current_vec[:2] / (current_speed + 1e-6)
+                self.pos[0] = self.anchor[0] + dir_c[0] * sway_dist
+                self.pos[1] = self.anchor[1] + dir_c[1] * sway_dist
+                self.pos[2] = np.clip(self.initial_pos[2] + cvz * 6.0, bed_z + 1.0, water_surf_z - 1.0)
+                return
+
+        # If SNAPPED / DRIFTING:
+        # The sensor is DRIVEN AWAY by the harsh water currents!
+        VISUAL_DRIFT_MULT = 14.0
+        target_vel = current_vec * random.uniform(0.85, 1.15) * VISUAL_DRIFT_MULT
+        # Inertial lag
+        self.vel += (target_vel - self.vel) * min(dt * 4.0, 1.0)
+        self.pos += self.vel * dt
+
+        # Disrupted water level heave
+        if self.target_depth > -5.0:
+            # Surface sensor: rides undulating wave peaks & troughs
+            self.pos[2] = water_surf_z - random.uniform(0.6, 1.8)
+        else:
+            # Subsurface sensor: heaved vertically by water currents
+            self.pos[2] = np.clip(self.pos[2] + cvz * 8.0 * dt, bed_z + 2.0, water_surf_z - 1.5)
+
+        # Soft wrap / bounce if drifting past map boundaries
+        if self.pos[0] < 50:
+            self.pos[0] = MAP_SIZE - 200
+        elif self.pos[0] > MAP_SIZE - 50:
+            self.pos[0] = 200
+        if self.pos[1] < 50:
+            self.pos[1] = MAP_SIZE - 200
+        elif self.pos[1] > MAP_SIZE - 50:
+            self.pos[1] = 200
+
+        # Maintain drift trail history
+        if len(self.trail) == 0 or np.linalg.norm(self.pos[:2] - self.trail[-1][:2]) > 90.0:
+            self.trail.append(self.pos.copy())
+            if len(self.trail) > 12:
+                self.trail.pop(0)
+
+_active_sensors = []
+
 def generate_sensors(num_sensors=35):
-    sensors = []
-    for _ in range(num_sensors):
-        sx = random.uniform(400, MAP_SIZE - 400)
-        sy = random.uniform(400, MAP_SIZE - 400)
+    global _active_sensors
+    _active_sensors = []
+    for i in range(num_sensors):
+        sx = random.uniform(600, MAP_SIZE - 600)
+        sy = random.uniform(600, MAP_SIZE - 600)
         bed = float(get_seabed_depth(sx, sy))
         z_type = random.choice(['surface', 'mid', 'bed'])
         if z_type == 'surface':
-            sz = -2
+            sz = -2.0
         elif z_type == 'mid':
-            sz = bed / 2
+            sz = bed / 2.0
         else:
-            sz = bed + 2
-        sensors.append((sx, sy, sz))
-    return sensors
+            sz = bed + 2.0
+        _active_sensors.append(MooredSensor(sensor_id=i+1, anchor_x=sx, anchor_y=sy, target_depth=sz))
+    return _active_sensors
+
+def step_sensors(frame, dt=1.0/60.0):
+    scenario = get_active_scenario()
+    is_monsoon = (scenario.get('key') == 'MONSOON')
+    snapped = 0
+    for s in _active_sensors:
+        s.update(frame, dt, is_monsoon)
+        if s.status == "SNAPPED":
+            snapped += 1
+    OCEAN_STATE['snapped_count'] = snapped
+    return _active_sensors
+
+def reset_all_sensors():
+    for s in _active_sensors:
+        s.reanchor()
+    OCEAN_STATE['snapped_count'] = 0
+    print("[Sensors] All 35 sensors re-anchored to seabed moorings.")
+
+def get_sensor_states():
+    moored = sum(1 for s in _active_sensors if s.status == "MOORED")
+    strained = sum(1 for s in _active_sensors if s.status == "STRAINED")
+    snapped = sum(1 for s in _active_sensors if s.status == "SNAPPED")
+    return {
+        'total': len(_active_sensors),
+        'moored': moored,
+        'strained': strained,
+        'snapped': snapped
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -470,7 +774,7 @@ def collect_sensor_detections(fleet, sensors, frame):
     
     # 1. Process stationary sensors
     if sensors:
-        sensor_xyz = np.array(sensors)
+        sensor_xyz = np.array([s.pos for s in sensors], dtype=float)
         # Vectorized distance using NumPy broadcasting
         # Shape: (M_sens, 1, 3) - (1, N, 3) -> (M_sens, N, 3)
         diff_3d = sensor_xyz[:, np.newaxis, :] - ship_xyz[np.newaxis, :, :]
