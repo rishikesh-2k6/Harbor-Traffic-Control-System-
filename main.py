@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import matplotlib
 matplotlib.use('TkAgg')                                      # MUST be before pyplot import
 
@@ -53,13 +53,15 @@ _server_thread = threading.Thread(target=_run_dashboard_server, daemon=True)
 _server_thread.start()
 
 def open_dashboard():
-    """Opens live web dashboard in default web browser."""
+    """Opens live web dashboard in default web browser asynchronously."""
     url = f"http://127.0.0.1:{DASHBOARD_PORT}/dashboard.html"
     print(f"[Dashboard] Opening live web dashboard: {url}")
-    try:
-        webbrowser.open(url)
-    except Exception as e:
-        print(f"[Dashboard] Error opening browser: {e}")
+    def _open():
+        try:
+            webbrowser.open(url)
+        except Exception as e:
+            print(f"[Dashboard] Error opening browser: {e}")
+    threading.Thread(target=_open, daemon=True).start()
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. Boot
@@ -104,43 +106,423 @@ TYPE_COLORS = {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 3. Tkinter root window
+# 2b. Dedicated Desktop Network Operations Dashboard Widget
+# ─────────────────────────────────────────────────────────────────────────────
+class NetworkDashboard(tk.Frame):
+    """
+    Dedicated Desktop Network Operations Dashboard.
+    Visualizes multi-hop topology, live packet hop telemetry,
+    quantitative metrics, and dynamically streaming simulation logs.
+    """
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg='#0B132B', width=380, bd=1, relief='solid', **kwargs)
+        self.pack_propagate(False)
+
+        # Header: State badge + Health score & meter bar
+        hdr_frame = tk.Frame(self, bg='#111C38', bd=1, relief='ridge', padx=10, pady=8)
+        hdr_frame.pack(fill='x', padx=8, pady=(8, 4))
+
+        tk.Label(hdr_frame, text="📡 NETWORK STATUS & HEALTH", font=('Segoe UI', 10, 'bold'),
+                 bg='#111C38', fg='#64FFDA').pack(anchor='w')
+
+        badge_row = tk.Frame(hdr_frame, bg='#111C38')
+        badge_row.pack(fill='x', pady=(4, 2))
+
+        self.state_badge = tk.Label(badge_row, text="STABLE", font=('Segoe UI', 10, 'bold'),
+                                    bg='#065F46', fg='#34D399', padx=10, pady=3, relief='solid', bd=1)
+        self.state_badge.pack(side=tk.LEFT)
+
+        self.health_score_lbl = tk.Label(badge_row, text="Health: 100.0%", font=('Segoe UI', 9, 'bold'),
+                                         bg='#111C38', fg='#F8FAFC')
+        self.health_score_lbl.pack(side=tk.RIGHT, padx=4)
+
+        self.meter_canvas = tk.Canvas(hdr_frame, height=8, bg='#1E293B', highlightthickness=0)
+        self.meter_canvas.pack(fill='x', pady=(4, 4))
+        self.meter_fill = self.meter_canvas.create_rectangle(0, 0, 340, 8, fill='#10B981', width=0)
+
+        self.env_details_lbl = tk.Label(hdr_frame, text="Regime: Normal Season | Noise: 64.8 dB",
+                                        font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8')
+        self.env_details_lbl.pack(anchor='w')
+
+        # Collapse Alert Panel (hidden until actual COLLAPSED state is triggered)
+        self.collapse_alert = tk.Label(
+            self,
+            text="🚨 SENSOR NETWORK COLLAPSED 🚨\nGateway connectivity severed under severe conditions!\nRe-anchor sensors or revert to Normal Season.",
+            font=('Segoe UI', 8, 'bold'), bg='#7F1D1D', fg='#FCA5A5',
+            bd=2, relief='ridge', padx=8, pady=6, justify='center'
+        )
+        self._collapse_shown = False
+
+        # Section 1: Hop Progression & Packet Flow Visualizer
+        self.topo_frame = tk.Frame(self, bg='#111C38', bd=1, relief='ridge', padx=8, pady=6)
+        self.topo_frame.pack(fill='x', padx=8, pady=4)
+
+        tk.Label(self.topo_frame, text="HOP PROGRESSION & PACKET FLOW", font=('Segoe UI', 8, 'bold'),
+                 bg='#111C38', fg='#38BDF8').pack(anchor='w')
+
+        self.topo_canvas = tk.Canvas(self.topo_frame, height=66, bg='#070D1A',
+                                     highlightthickness=1, highlightbackground='#1E293B')
+        self.topo_canvas.pack(fill='x', pady=(4, 2))
+
+        # Section 2: Current Packet Telemetry
+        pkt_frame = tk.Frame(self, bg='#111C38', bd=1, relief='ridge', padx=8, pady=6)
+        pkt_frame.pack(fill='x', padx=8, pady=4)
+
+        tk.Label(pkt_frame, text="CURRENT PACKET TELEMETRY", font=('Segoe UI', 8, 'bold'),
+                 bg='#111C38', fg='#38BDF8').pack(anchor='w')
+
+        grid_pkt = tk.Frame(pkt_frame, bg='#111C38')
+        grid_pkt.pack(fill='x', pady=(4, 2))
+
+        tk.Label(grid_pkt, text="Packet ID:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=0, column=0, sticky='w')
+        self.pkt_id_lbl = tk.Label(grid_pkt, text="--", font=('Segoe UI', 8, 'bold'), bg='#111C38', fg='#F8FAFC')
+        self.pkt_id_lbl.grid(row=0, column=1, sticky='w', padx=(4, 12))
+
+        tk.Label(grid_pkt, text="Status:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=0, column=2, sticky='w')
+        self.pkt_status_lbl = tk.Label(grid_pkt, text="IDLE", font=('Segoe UI', 8, 'bold'), bg='#111C38', fg='#38BDF8')
+        self.pkt_status_lbl.grid(row=0, column=3, sticky='w', padx=(4, 0))
+
+        tk.Label(grid_pkt, text="Source:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=1, column=0, sticky='w')
+        self.pkt_src_lbl = tk.Label(grid_pkt, text="--", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.pkt_src_lbl.grid(row=1, column=1, sticky='w', padx=(4, 12))
+
+        tk.Label(grid_pkt, text="Current Hop:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=1, column=2, sticky='w')
+        self.pkt_hop_lbl = tk.Label(grid_pkt, text="--", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.pkt_hop_lbl.grid(row=1, column=3, sticky='w', padx=(4, 0))
+
+        tk.Label(grid_pkt, text="Total Hops:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=2, column=0, sticky='w')
+        self.pkt_hops_lbl = tk.Label(grid_pkt, text="--", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.pkt_hops_lbl.grid(row=2, column=1, sticky='w', padx=(4, 12))
+
+        tk.Label(grid_pkt, text="Delay / Latency:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=2, column=2, sticky='w')
+        self.pkt_delay_lbl = tk.Label(grid_pkt, text="--", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.pkt_delay_lbl.grid(row=2, column=3, sticky='w', padx=(4, 0))
+
+        tk.Label(grid_pkt, text="Link SNR:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=3, column=0, sticky='w')
+        self.pkt_snr_lbl = tk.Label(grid_pkt, text="--", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.pkt_snr_lbl.grid(row=3, column=1, sticky='w', padx=(4, 12))
+
+        tk.Label(grid_pkt, text="Tally (Del/Drop):", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=3, column=2, sticky='w')
+        self.pkt_tally_lbl = tk.Label(grid_pkt, text="0 / 0", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.pkt_tally_lbl.grid(row=3, column=3, sticky='w', padx=(4, 0))
+
+        # Section 3: Compact Quantitative Network Metrics
+        metrics_frame = tk.Frame(self, bg='#111C38', bd=1, relief='ridge', padx=8, pady=6)
+        metrics_frame.pack(fill='x', padx=8, pady=4)
+
+        tk.Label(metrics_frame, text="NETWORK METRICS", font=('Segoe UI', 8, 'bold'),
+                 bg='#111C38', fg='#38BDF8').pack(anchor='w')
+
+        m_grid = tk.Frame(metrics_frame, bg='#111C38')
+        m_grid.pack(fill='x', pady=(4, 2))
+
+        tk.Label(m_grid, text="Packets Sent:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=0, column=0, sticky='w')
+        self.m_sent = tk.Label(m_grid, text="0", font=('Segoe UI', 8, 'bold'), bg='#111C38', fg='#F8FAFC')
+        self.m_sent.grid(row=0, column=1, sticky='w', padx=(4, 14))
+
+        tk.Label(m_grid, text="Delivered:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=0, column=2, sticky='w')
+        self.m_deliv = tk.Label(m_grid, text="0", font=('Segoe UI', 8, 'bold'), bg='#111C38', fg='#10B981')
+        self.m_deliv.grid(row=0, column=3, sticky='w', padx=(4, 0))
+
+        tk.Label(m_grid, text="Packets Dropped:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=1, column=0, sticky='w')
+        self.m_drop = tk.Label(m_grid, text="0", font=('Segoe UI', 8, 'bold'), bg='#111C38', fg='#EF4444')
+        self.m_drop.grid(row=1, column=1, sticky='w', padx=(4, 14))
+
+        tk.Label(m_grid, text="Packet Loss %:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=1, column=2, sticky='w')
+        self.m_loss = tk.Label(m_grid, text="0.0%", font=('Segoe UI', 8, 'bold'), bg='#111C38', fg='#EF4444')
+        self.m_loss.grid(row=1, column=3, sticky='w', padx=(4, 0))
+
+        tk.Label(m_grid, text="Average Delay:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=2, column=0, sticky='w')
+        self.m_delay = tk.Label(m_grid, text="0.000 s", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.m_delay.grid(row=2, column=1, sticky='w', padx=(4, 14))
+
+        tk.Label(m_grid, text="Avg Hop Count:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=2, column=2, sticky='w')
+        self.m_hop = tk.Label(m_grid, text="0.0", font=('Segoe UI', 8), bg='#111C38', fg='#F8FAFC')
+        self.m_hop.grid(row=2, column=3, sticky='w', padx=(4, 0))
+
+        tk.Label(m_grid, text="Active Nodes:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=3, column=0, sticky='w')
+        self.m_active = tk.Label(m_grid, text="35 / 35", font=('Segoe UI', 8), bg='#111C38', fg='#10B981')
+        self.m_active.grid(row=3, column=1, sticky='w', padx=(4, 14))
+
+        tk.Label(m_grid, text="Failed / Snapped:", font=('Segoe UI', 8), bg='#111C38', fg='#94A3B8').grid(row=3, column=2, sticky='w')
+        self.m_failed = tk.Label(m_grid, text="0", font=('Segoe UI', 8), bg='#111C38', fg='#EF4444')
+        self.m_failed.grid(row=3, column=3, sticky='w', padx=(4, 0))
+
+        # Section 4: Live Monospace Simulation Event Log
+        log_frame = tk.Frame(self, bg='#111C38', bd=1, relief='ridge', padx=8, pady=6)
+        log_frame.pack(fill='both', expand=True, padx=8, pady=(4, 8))
+
+        tk.Label(log_frame, text="SIMULATION EVENT LOG", font=('Segoe UI', 8, 'bold'),
+                 bg='#111C38', fg='#38BDF8').pack(anchor='w')
+
+        text_wrap = tk.Frame(log_frame, bg='#060C18')
+        text_wrap.pack(fill='both', expand=True, pady=(4, 0))
+
+        self.log_text = tk.Text(text_wrap, bg='#060C18', fg='#94A3B8', font=('Consolas', 8),
+                                bd=0, height=8, wrap=tk.WORD)
+        self.log_scroll = ttk.Scrollbar(text_wrap, orient=tk.VERTICAL, command=self.log_text.yview)
+        self.log_text.configure(yscrollcommand=self.log_scroll.set)
+
+        self.log_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self.log_text.pack(side=tk.LEFT, fill='both', expand=True)
+
+        self.log_text.tag_configure('delivered', foreground='#34D399')
+        self.log_text.tag_configure('dropped', foreground='#F87171')
+        self.log_text.tag_configure('degraded', foreground='#FBBF24')
+        self.log_text.tag_configure('trans', foreground='#38BDF8')
+        self.log_text.tag_configure('squall', foreground='#F472B6')
+        self.log_text.tag_configure('collapsed', foreground='#EF4444', font=('Consolas', 8, 'bold'))
+
+        self._rendered_logs_count = 0
+
+    def reset(self):
+        """Reset dashboard display to initial clean state."""
+        self.state_badge.config(text="STABLE", bg='#065F46', fg='#34D399')
+        self.health_score_lbl.config(text="Health: 100.0%")
+        self.meter_canvas.coords(self.meter_fill, 0, 0, 340, 8)
+        self.meter_canvas.itemconfig(self.meter_fill, fill='#10B981')
+        if self._collapse_shown:
+            self.collapse_alert.pack_forget()
+            self._collapse_shown = False
+        self.topo_canvas.delete('all')
+        self.topo_canvas.create_text(180, 33, text="Awaiting Acoustic Packet Transmission...", fill='#64748B', font=('Segoe UI', 8))
+        self.pkt_id_lbl.config(text="--")
+        self.pkt_status_lbl.config(text="IDLE", fg='#38BDF8')
+        self.pkt_src_lbl.config(text="--")
+        self.pkt_hop_lbl.config(text="--")
+        self.pkt_hops_lbl.config(text="--")
+        self.pkt_delay_lbl.config(text="--")
+        self.pkt_snr_lbl.config(text="--")
+        self.pkt_tally_lbl.config(text="0 / 0")
+        self.m_sent.config(text="0")
+        self.m_deliv.config(text="0")
+        self.m_drop.config(text="0")
+        self.m_loss.config(text="0.0%")
+        self.m_delay.config(text="0.000 s")
+        self.m_hop.config(text="0.0")
+        self.m_active.config(text="35 / 35")
+        self.m_failed.config(text="0")
+        self.log_text.delete('1.0', tk.END)
+        self._rendered_logs_count = 0
+
+    def draw_topology(self, pkt_info):
+        self.topo_canvas.delete('all')
+        if not pkt_info or not pkt_info.get('path'):
+            self.topo_canvas.create_text(180, 33, text="Awaiting Acoustic Packet Transmission...", fill='#64748B', font=('Segoe UI', 8))
+            return
+
+        path = pkt_info['path']
+        N = len(path)
+        if N < 2:
+            return
+
+        margin_x = 32
+        w_avail = 360 - 2 * margin_x
+        dx = w_avail / (N - 1)
+        y = 26
+
+        curr_idx = pkt_info.get('current_hop_idx', 0)
+        prog = pkt_info.get('hop_progress', 0.0)
+        status = pkt_info.get('status', 'IN TRANSIT')
+
+        # Links
+        for i in range(N - 1):
+            x1 = margin_x + i * dx
+            x2 = margin_x + (i + 1) * dx
+            if status == 'DROPPED' and i == curr_idx:
+                line_color = '#EF4444'
+                self.topo_canvas.create_line(x1 + 16, y, x2 - 16, y, fill=line_color, width=2, dash=(3, 2), arrow=tk.LAST)
+                self.topo_canvas.create_text((x1 + x2) / 2, y - 9, text="✖", fill='#EF4444', font=('Segoe UI', 8, 'bold'))
+            elif i < curr_idx or (status == 'DELIVERED' and i <= curr_idx):
+                line_color = '#10B981'
+                self.topo_canvas.create_line(x1 + 16, y, x2 - 16, y, fill=line_color, width=2, arrow=tk.LAST)
+            elif i == curr_idx:
+                line_color = '#00E5FF'
+                self.topo_canvas.create_line(x1 + 16, y, x2 - 16, y, fill=line_color, width=2, dash=(4, 2), arrow=tk.LAST)
+            else:
+                line_color = '#334155'
+                self.topo_canvas.create_line(x1 + 16, y, x2 - 16, y, fill=line_color, width=1.5, arrow=tk.LAST)
+
+        # Nodes
+        for i, node_name in enumerate(path):
+            x = margin_x + i * dx
+            if i == 0:
+                box_fill = '#0F2847'
+                outline = '#00B4D8'
+                tag = f"SRC: {node_name}"
+                fg = '#90E0EF'
+            elif i == N - 1:
+                if status == 'DELIVERED':
+                    box_fill = '#064E3B'
+                    outline = '#10B981'
+                    fg = '#A7F3D0'
+                else:
+                    box_fill = '#3B2904'
+                    outline = '#F59E0B'
+                    fg = '#FDE68A'
+                tag = f"DEST: {node_name}"
+            else:
+                if status == 'DROPPED' and i == curr_idx:
+                    box_fill = '#450A0A'
+                    outline = '#EF4444'
+                    fg = '#FCA5A5'
+                elif i <= curr_idx:
+                    box_fill = '#1E293B'
+                    outline = '#38BDF8'
+                    fg = '#BAE6FD'
+                else:
+                    box_fill = '#111827'
+                    outline = '#475569'
+                    fg = '#94A3B8'
+                tag = f"H{i}: {node_name}"
+
+            self.topo_canvas.create_rectangle(x - 20, y - 11, x + 20, y + 11, fill=box_fill, outline=outline, width=1.5)
+            self.topo_canvas.create_text(x, y, text=tag, fill=fg, font=('Segoe UI', 6, 'bold'))
+
+        # Packet indicator
+        if status == 'IN TRANSIT' and curr_idx < N - 1:
+            x_from = margin_x + curr_idx * dx
+            x_to = margin_x + (curr_idx + 1) * dx
+            xp = (x_from + 16) + prog * ((x_to - 16) - (x_from + 16))
+            self.topo_canvas.create_oval(xp - 4, y - 4, xp + 4, y + 4, fill='#FF1744', outline='#FFFFFF', width=1.5)
+            self.topo_canvas.create_text(xp, y + 15, text=f"● {pkt_info['id']}", fill='#FF80AB', font=('Segoe UI', 6, 'bold'))
+        elif status == 'DELIVERED':
+            x_dest = margin_x + (N - 1) * dx
+            self.topo_canvas.create_text(x_dest, y + 16, text="✓ DELIVERED", fill='#34D399', font=('Segoe UI', 6, 'bold'))
+        elif status == 'DROPPED':
+            x_drop = margin_x + min(curr_idx, N - 1) * dx
+            self.topo_canvas.create_text(x_drop, y + 16, text="✖ DROPPED", fill='#F87171', font=('Segoe UI', 6, 'bold'))
+
+    def update_dashboard(self, stats):
+        if not stats:
+            return
+
+        state = stats.get('network_state', 'STABLE')
+        health = stats.get('health_score', 100.0)
+
+        # 1. State badge
+        state_colors = {
+            'STABLE': ('#065F46', '#34D399'),
+            'DEGRADED': ('#854D0E', '#FDE047'),
+            'CRITICAL': ('#9A3412', '#FB923C'),
+            'COLLAPSED': ('#7F1D1D', '#FCA5A5'),
+        }
+        bg_col, fg_col = state_colors.get(state, ('#065F46', '#34D399'))
+        self.state_badge.config(text=state, bg=bg_col, fg=fg_col)
+        self.health_score_lbl.config(text=f"Health: {health:.1f}%")
+
+        # Meter
+        meter_w = 340.0 * (health / 100.0)
+        meter_col = '#10B981' if health >= 75 else ('#FBBF24' if health >= 50 else ('#F97316' if health >= 25 else '#EF4444'))
+        self.meter_canvas.coords(self.meter_fill, 0, 0, meter_w, 8)
+        self.meter_canvas.itemconfig(self.meter_fill, fill=meter_col)
+
+        scen_name = stats.get('scenario', 'Normal Season')
+        amb_noise = stats.get('ambient_noise_db', 65.0)
+        self.env_details_lbl.config(text=f"Regime: {scen_name} | Noise: {amb_noise:.1f} dB")
+
+        # Collapse banner
+        if state == 'COLLAPSED':
+            if not self._collapse_shown:
+                self.collapse_alert.pack(fill='x', padx=8, pady=2, before=self.topo_frame)
+                self._collapse_shown = True
+        else:
+            if self._collapse_shown:
+                self.collapse_alert.pack_forget()
+                self._collapse_shown = False
+
+        # 2. Topology
+        pkt = stats.get('current_packet')
+        self.draw_topology(pkt)
+
+        # 3. Packet Telemetry
+        if pkt:
+            self.pkt_id_lbl.config(text=pkt.get('id', '--'))
+            st = pkt.get('status', 'IDLE')
+            st_color = '#10B981' if st == 'DELIVERED' else ('#EF4444' if st == 'DROPPED' else '#38BDF8')
+            self.pkt_status_lbl.config(text=st, fg=st_color)
+            self.pkt_src_lbl.config(text=pkt.get('source', '--'))
+            self.pkt_hop_lbl.config(text=f"{pkt.get('current_hop_name', '--')}")
+            self.pkt_hops_lbl.config(text=f"{pkt.get('total_hops', 1)} hops")
+            self.pkt_delay_lbl.config(text=f"{pkt.get('delay', 0.0):.3f} s")
+            self.pkt_snr_lbl.config(text=f"{pkt.get('snr', 0.0):.1f} dB")
+        deliv = stats.get('packets_delivered', 0)
+        drop = stats.get('packets_dropped', 0)
+        self.pkt_tally_lbl.config(text=f"{deliv} / {drop}")
+
+        # 4. Metrics
+        self.m_sent.config(text=str(stats.get('packets_sent', 0)))
+        self.m_deliv.config(text=str(deliv))
+        self.m_drop.config(text=str(drop))
+        loss_pct = stats.get('packet_loss_pct', 0.0)
+        self.m_loss.config(text=f"{loss_pct:.1f}%")
+        self.m_delay.config(text=f"{stats.get('avg_delay_s', 0.0):.3f} s")
+        self.m_hop.config(text=f"{stats.get('avg_hop_count', 0.0):.1f}")
+        self.m_active.config(text=f"{stats.get('active_nodes_count', 0)} nodes")
+        self.m_failed.config(text=f"{stats.get('failed_nodes_count', 0)} sensors")
+
+        # 5. Simulation Logs
+        all_logs = stats.get('recent_logs', [])
+        if len(all_logs) > self._rendered_logs_count:
+            new_entries = all_logs[self._rendered_logs_count:]
+            for entry in new_entries:
+                tag = None
+                if 'delivered' in entry.lower():
+                    tag = 'delivered'
+                elif 'dropped' in entry.lower():
+                    tag = 'dropped'
+                elif 'degraded' in entry.lower() or 'strained' in entry.lower():
+                    tag = 'degraded'
+                elif 'squall' in entry.lower():
+                    tag = 'squall'
+                elif 'collapsed' in entry.lower():
+                    tag = 'collapsed'
+                elif 'transmitted' in entry.lower():
+                    tag = 'trans'
+                
+                if tag:
+                    self.log_text.insert(tk.END, entry + "\n", tag)
+                else:
+                    self.log_text.insert(tk.END, entry + "\n")
+            self._rendered_logs_count = len(all_logs)
+            self.log_text.see(tk.END)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. Tkinter root window & Menu Controls
 # ─────────────────────────────────────────────────────────────────────────────
 root = tk.Tk()
-root.title("⚓ Harbor Traffic Control — Outer Yard | LOC | Inner Zone")
+root.title("⚓ Harbor Traffic Control System — Underwater Sensor Network (UWSN)")
 root.configure(bg=C_WIN)
 try:
     root.state('zoomed')
 except Exception:
-    root.geometry("1200x800")
+    root.geometry("1400x850")
 
-# ── Top status bar ──────────────────────────────────────────────────────────
-top_bar = tk.Frame(root, bg='#1A2B4C', height=40)
-top_bar.pack(side=tk.TOP, fill=tk.X)
+# Simulation execution state control
+is_paused = False
 
-tk.Label(top_bar,
-         text="  ⚓  Harbor Traffic Control System  |  Outer Yard — LOC — Inner Zone",
-         font=('Segoe UI', 11, 'bold'),
-         bg='#1A2B4C', fg='#FFFFFF').pack(side=tk.LEFT, padx=10, pady=7)
+def set_pause(paused):
+    global is_paused
+    is_paused = paused
+    if 'btn_pause' in globals():
+        btn_pause.config(text="▶ Resume" if is_paused else "⏸ Pause")
+    status_var.set("Simulation paused" if is_paused else "Simulation running…")
 
-season_var = tk.StringVar(value=f"{sim.get_active_scenario()['badge']}")
+def toggle_pause():
+    set_pause(not is_paused)
+
+def set_season(scenario_key):
+    sim.set_active_scenario(scenario_key)
+    sc = sim.get_active_scenario()
+    season_var.set(f"{sc['badge']}")
+    status_var.set(f"Switched scenario to: {sc['name']} ({sc['badge']})")
+    network.log_network_event(f"Season switched to: {sc['name']}")
 
 def toggle_scenario():
     curr = sim.ACTIVE_SCENARIO_KEY
     new_key = 'MONSOON' if curr == 'NORMAL' else 'NORMAL'
-    sim.set_active_scenario(new_key)
-    sc = sim.get_active_scenario()
-    season_var.set(f"{sc['badge']}")
-    status_var.set(f"Switched scenario to: {sc['name']} ({sc['badge']})")
-
-tk.Label(top_bar, textvariable=season_var,
-         font=('Segoe UI', 9, 'bold'), bg='#0F2847', fg='#FFD166',
-         padx=8, pady=2, relief='groove', bd=1).pack(side=tk.LEFT, padx=6)
-
-tk.Button(top_bar, text="⇄ Switch Season", bg='#2B4C6F', fg='white',
-          activebackground='#3A608F', activeforeground='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=toggle_scenario).pack(side=tk.LEFT, padx=3)
+    set_season(new_key)
 
 def trigger_squall_action():
     sim.set_active_scenario('MONSOON')
@@ -149,43 +531,168 @@ def trigger_squall_action():
     surge = sim.trigger_monsoon_squall()
     status_var.set(f"🌪️ Violent Gale Squall injected (+{surge:.2f} m/s)! Harsh currents surging!")
 
-tk.Button(top_bar, text="🌪️ Gale Squall Surge", bg='#D62828', fg='white',
+def reanchor_action():
+    global _net_banner_visible
+    sim.reset_all_sensors()
+    sim.OCEAN_STATE['network_broken'] = False
+    sim.OCEAN_STATE['squall_timer'] = 0.0
+    network.on_reanchor()
+    if '_net_banner_visible' in globals() and _net_banner_visible:
+        net_broken_banner.place_forget()
+        _net_banner_visible = False
+    status_var.set("⚓ All 35 sensors re-anchored to seabed moorings. Network restored.")
+
+
+def reset_simulation():
+    global fleet, is_paused, _net_banner_visible
+    sim.reset_all_sensors()
+    sim.OCEAN_STATE['network_broken'] = False
+    sim.OCEAN_STATE['squall_timer'] = 0.0
+    network.reset_network()
+    fleet = sim.generate_fleet()
+    auv.init_physics()
+    auv.spawn_auvs()
+    if 'net_dashboard' in globals():
+        net_dashboard.reset()
+    if '_net_banner_visible' in globals() and _net_banner_visible:
+        net_broken_banner.place_forget()
+        _net_banner_visible = False
+    status_var.set("Simulation reset to initial state.")
+    canvas.draw_idle()
+
+def reset_view():
+    ax.view_init(elev=28, azim=-55)
+    canvas.draw_idle()
+
+_net_dash_visible = True
+def toggle_net_dashboard():
+    global _net_dash_visible
+    if _net_dash_visible:
+        net_dashboard.pack_forget()
+        _net_dash_visible = False
+    else:
+        net_dashboard.pack(side=tk.RIGHT, fill=tk.Y)
+        _net_dash_visible = True
+
+def show_about_dialog():
+    messagebox.showinfo(
+        "About Harbor Traffic Control & UWSN Simulation",
+        "Harbor Traffic Control System with Underwater Sensor Network (UWSN)\n\n"
+        "• Key Capabilities:\n"
+        "  - Multi-hop acoustic depth-based routing (DBR)\n"
+        "  - Mobile autonomous underwater vehicle (AUV) relays\n"
+        "  - Real-time Normal vs Monsoon environmental effects\n"
+        "  - Stochastic wave surge, turbulence, and mooring strain physics\n"
+        "  - Live desktop network topology & telemetry dashboard\n\n"
+        "Status evaluation assesses gateway reachability, packet loss,\n"
+        "hop availability, and mooring integrity:\n"
+        "STABLE (≥75%) | DEGRADED (50–74%) | CRITICAL (20–49%) | COLLAPSED (<20%)."
+    )
+
+# ── Menubar ──────────────────────────────────────────────────────────────────
+menubar = tk.Menu(root)
+
+# 1. Simulation Menu
+sim_menu = tk.Menu(menubar, tearoff=0)
+sim_menu.add_command(label="▶  Start / Resume", command=lambda: set_pause(False), accelerator="Ctrl+S")
+sim_menu.add_command(label="⏸  Pause", command=lambda: set_pause(True), accelerator="Space")
+sim_menu.add_command(label="↺  Reset Simulation", command=reset_simulation, accelerator="Ctrl+R")
+sim_menu.add_separator()
+sim_menu.add_command(label="Exit", command=lambda: on_closing())
+menubar.add_cascade(label="Simulation", menu=sim_menu)
+
+# 2. Season Menu
+season_menu = tk.Menu(menubar, tearoff=0)
+season_menu.add_command(label="☀️  Normal Season", command=lambda: set_season('NORMAL'))
+season_menu.add_command(label="⛈️  Monsoon Season", command=lambda: set_season('MONSOON'))
+season_menu.add_separator()
+season_menu.add_command(label="🌪️  Trigger Gale Squall Surge", command=trigger_squall_action)
+season_menu.add_command(label="⚓  Re-Anchor Sensors", command=reanchor_action)
+menubar.add_cascade(label="Season", menu=season_menu)
+
+# 3. View Menu
+view_menu = tk.Menu(menubar, tearoff=0)
+view_menu.add_command(label="⟲  Reset 3D View Angle", command=reset_view)
+view_menu.add_command(label="📊  Live Web Dashboard", command=open_dashboard)
+view_menu.add_separator()
+view_menu.add_command(label="Toggle Network Dashboard Panel", command=toggle_net_dashboard)
+menubar.add_cascade(label="View", menu=view_menu)
+
+# 4. Help Menu
+help_menu = tk.Menu(menubar, tearoff=0)
+help_menu.add_command(label="About UWSN Simulation", command=show_about_dialog)
+menubar.add_cascade(label="Help", menu=help_menu)
+
+root.config(menu=menubar)
+
+# Keyboard shortcuts
+root.bind("<space>", lambda e: toggle_pause())
+root.bind("<Control-s>", lambda e: set_pause(False))
+root.bind("<Control-r>", lambda e: reset_simulation())
+
+# ── Top Toolbar ──────────────────────────────────────────────────────────────
+top_bar = tk.Frame(root, bg='#1A2B4C', height=40)
+top_bar.pack(side=tk.TOP, fill=tk.X)
+
+tk.Label(top_bar,
+         text=" ⚓ Harbor Traffic Control System ",
+         font=('Segoe UI', 11, 'bold'),
+         bg='#1A2B4C', fg='#FFFFFF').pack(side=tk.LEFT, padx=(8, 4), pady=6)
+
+# Simulation controls
+btn_pause = tk.Button(top_bar, text="⏸ Pause", bg='#2B4C6F', fg='white',
+                      activebackground='#3A608F', activeforeground='white',
+                      font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
+                      command=toggle_pause)
+btn_pause.pack(side=tk.LEFT, padx=3)
+
+btn_reset = tk.Button(top_bar, text="↺ Reset", bg='#2B4C6F', fg='white',
+                      activebackground='#3A608F', activeforeground='white',
+                      font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
+                      command=reset_simulation)
+btn_reset.pack(side=tk.LEFT, padx=3)
+
+# Season indicator badge & toggle
+season_var = tk.StringVar(value=f"{sim.get_active_scenario()['badge']}")
+tk.Label(top_bar, textvariable=season_var,
+         font=('Segoe UI', 8, 'bold'), bg='#0F2847', fg='#FFD166',
+         padx=8, pady=2, relief='groove', bd=1).pack(side=tk.LEFT, padx=6)
+
+tk.Button(top_bar, text="⇄ Switch Season", bg='#2B4C6F', fg='white',
+          activebackground='#3A608F', activeforeground='white',
+          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
+          command=toggle_scenario).pack(side=tk.LEFT, padx=3)
+
+tk.Button(top_bar, text="🌪️ Gale Squall", bg='#D62828', fg='white',
           activebackground='#E63946', activeforeground='white',
           font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
           command=trigger_squall_action).pack(side=tk.LEFT, padx=3)
-
-def reanchor_action():
-    sim.reset_all_sensors()
-    status_var.set("⚓ All 35 sensors re-anchored to seabed moorings. Network recovering…")
 
 tk.Button(top_bar, text="⚓ Re-Anchor Sensors", bg='#0077B6', fg='white',
           activebackground='#0096C7', activeforeground='white',
           font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
           command=reanchor_action).pack(side=tk.LEFT, padx=3)
 
+# Right-aligned buttons and counters
+tk.Button(top_bar, text="📊 Web Dashboard", bg='#0077B6', fg='white',
+          activebackground='#0096C7', activeforeground='white',
+          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
+          command=open_dashboard).pack(side=tk.RIGHT, padx=8)
+
+tk.Button(top_bar, text="⟲ Reset View", bg='#3A4C6C', fg='white',
+          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
+          command=reset_view).pack(side=tk.RIGHT, padx=4)
+
 frame_var      = tk.StringVar(value="Frame: 0000")
 sensor_var     = tk.StringVar(value="Active Sensors: 0")
 violation_var  = tk.StringVar(value="Violations: 0")
 
-def reset_view():
-    ax.view_init(elev=28, azim=-55)
-    canvas.draw_idle()
-
-tk.Button(top_bar, text="📊 Live Web Dashboard", bg='#0077B6', fg='white',
-          activebackground='#0096C7', activeforeground='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=open_dashboard).pack(side=tk.RIGHT, padx=10)
-
-tk.Button(top_bar, text="⟲ Reset View", bg='#3A4C6C', fg='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=reset_view).pack(side=tk.RIGHT, padx=6)
-
 tk.Label(top_bar, textvariable=violation_var,
-         font=('Segoe UI', 9, 'bold'), bg='#1A2B4C', fg='#FF6B6B').pack(side=tk.RIGHT, padx=10)
+         font=('Segoe UI', 8, 'bold'), bg='#1A2B4C', fg='#FF6B6B').pack(side=tk.RIGHT, padx=6)
 tk.Label(top_bar, textvariable=sensor_var,
-         font=('Segoe UI', 8), bg='#1A2B4C', fg='#90CAF9').pack(side=tk.RIGHT, padx=10)
-tk.Label(top_bar, textvariable=frame_var,
          font=('Segoe UI', 8), bg='#1A2B4C', fg='#90CAF9').pack(side=tk.RIGHT, padx=6)
+tk.Label(top_bar, textvariable=frame_var,
+         font=('Segoe UI', 8), bg='#1A2B4C', fg='#90CAF9').pack(side=tk.RIGHT, padx=4)
 
 # ── Dynamic Monsoon Environment & Water Current HUD Bar ─────────────────────
 hud_bar = tk.Frame(root, bg='#0B1B30', height=28)
@@ -194,7 +701,7 @@ hud_bar.pack(side=tk.TOP, fill=tk.X)
 water_level_var  = tk.StringVar(value="🌊 Water Level: Normal (0.0 m) | Wave H: 0.3 m")
 current_info_var = tk.StringVar(value="💨 Current: 0.35 m/s [Nominal Tide]")
 drift_status_var = tk.StringVar(value="⚓ Sensors: 35/35 Moored Securely")
-net_health_var   = tk.StringVar(value="📡 Network: Active (PDR: 100%)")
+net_health_var   = tk.StringVar(value="📡 Network: STABLE (Health: 100%)")
 
 tk.Label(hud_bar, textvariable=water_level_var,
          font=('Segoe UI', 8, 'bold'), bg='#0B1B30', fg='#48CAE4').pack(side=tk.LEFT, padx=10, pady=3)
@@ -216,9 +723,15 @@ tk.Label(bot_bar, text="LOC @ X=5000 m  |  Outer Yard (X>5000)  |  Inner Patrol 
          font=('Segoe UI', 8), bg='#E2EAF4', fg='#4A6FA5').pack(side=tk.RIGHT, padx=10)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 4. Matplotlib figure embedded in Tkinter
+# 4. Main Simulation Container: 3D Viewport (Left) + Network Dashboard (Right)
 # ─────────────────────────────────────────────────────────────────────────────
-fig = plt.figure(figsize=(18, 10), facecolor=C_PANEL)
+main_container = tk.Frame(root, bg=C_WIN)
+main_container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+canvas_frame = tk.Frame(main_container, bg=C_PANEL)
+canvas_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+fig = plt.figure(figsize=(16, 10), facecolor=C_PANEL)
 ax  = fig.add_axes([0.0, 0.0, 1.0, 1.0], projection='3d')
 
 ax.set_facecolor(C_PANEL)
@@ -242,8 +755,12 @@ ax.set_ylabel("Y — Northing (m)", labelpad=10, fontsize=9)
 ax.set_zlabel("Depth (m)",         labelpad=8,  fontsize=9)
 ax.view_init(elev=28, azim=-55)
 
-canvas = FigureCanvasTkAgg(fig, master=root)
+canvas = FigureCanvasTkAgg(fig, master=canvas_frame)
 canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+# Dock dedicated desktop Network Dashboard on the right
+net_dashboard = NetworkDashboard(main_container)
+net_dashboard.pack(side=tk.RIGHT, fill=tk.Y)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 5. Seabed & ocean surface
@@ -445,8 +962,8 @@ rain_scatter = ax.scatter(_rain_x, _rain_y, _rain_z,
 # ─────────────────────────────────────────────────────────────────────────────
 # 9h. Lightning Flash Overlay (Tkinter canvas label, shown on squall)
 # ─────────────────────────────────────────────────────────────────────────────
-lightning_label = tk.Label(root, text="⚡ VIOLENT SQUALL SURGE ⚡",
-                            font=('Segoe UI', 18, 'bold'), bg='#1A0020',
+lightning_label = tk.Label(canvas_frame, text="⚡ VIOLENT SQUALL SURGE ⚡",
+                            font=('Segoe UI', 16, 'bold'), bg='#1A0020',
                             fg='#FFD166', bd=3, relief='ridge',
                             padx=14, pady=8)
 # Hidden initially — placed over canvas when squall fires
@@ -456,7 +973,7 @@ _lightning_frame_count = 0
 # ─────────────────────────────────────────────────────────────────────────────
 # 9i. Network-Broken Alert Banner (Tkinter label overlay)
 # ─────────────────────────────────────────────────────────────────────────────
-net_broken_banner = tk.Label(root,
+net_broken_banner = tk.Label(canvas_frame,
     text="🚨  SENSOR NETWORK COLLAPSED  🚨\nHarsh currents drove sensors away — communication links severed!",
     font=('Segoe UI', 12, 'bold'), bg='#7D0000', fg='#FFD166',
     bd=3, relief='ridge', padx=16, pady=10, justify='center')
@@ -584,6 +1101,14 @@ def master_loop(frame):
     global fleet, ocean_surf, _lightning_visible, _lightning_frame_count, _net_banner_visible
     global _rain_x, _rain_y, _rain_z
 
+    if is_paused:
+        quiver_artists = [q[2] for q in current_quivers] + [q[3] for q in current_quivers]
+        trail_artists = [seg for pool in drift_trail_lines for seg in pool]
+        vortex_ring_artists = vortex_rings
+        return (v_plots + v_texts + sensor_glow + sensor_core + tether_lines +
+                auv_cores + auv_rings + auv_labels + comm_lines + quiver_artists +
+                trail_artists + [vortex_markers] + vortex_ring_artists + [rain_scatter])
+
     frame_var.set(f"Frame: {frame:04d}")
     dt = 1.0 / 60.0
     t_sec = frame * dt
@@ -674,7 +1199,7 @@ def master_loop(frame):
         rain_color = '#A8DADC' if not squall_active else '#E0FBFC'
         rain_scatter.set_color(rain_color)
         rain_scatter.set_alpha(0.35 + 0.25 * rain_intensity)
-        rain_scatter.set_sizes([10 + 8 * rain_intensity] * _N_RAIN)
+        rain_scatter.set_sizes(np.full(_N_RAIN, 10.0 + 8.0 * rain_intensity))
     else:
         rain_scatter.set_alpha(0.0)
 
@@ -720,11 +1245,12 @@ def master_loop(frame):
     delivered_paths, active_packets, network_stats = network.route_detections(fleet, sensors, auv_states, graph, frame)
     # ──────────────────────────────────────────────────────────────────────
 
-    # 3e. Network-Broken Banner
-    net_broken = ocean_env.get('network_broken', False)
-    # Also check if many sensors are snapped
-    snap_count = ocean_env.get('snapped_count', 0)
-    show_net_banner = is_monsoon and (net_broken or snap_count >= len(sensors) // 2)
+    # Update dedicated Desktop Network Dashboard
+    net_dashboard.update_dashboard(network_stats)
+
+    # 3e. Network Collapsed Alert — ONLY shown when network actually reaches COLLAPSED state
+    net_state = network_stats.get('network_state', 'STABLE')
+    show_net_banner = (net_state == 'COLLAPSED')
     if show_net_banner:
         banner_fg = '#FFD166' if (frame % 10) < 5 else '#FF6B6B'
         net_broken_banner.config(fg=banner_fg)
@@ -849,15 +1375,20 @@ def master_loop(frame):
         drift_status_var.set(f"⚓ Sensors: {len(sensors)}/{len(sensors)} Moored Securely")
 
     pdr_val = network_stats.get('pdr', 100.0)
-    if network_stats.get('network_broken', False):
-        net_health_var.set(f"🚨 NETWORK BROKEN! (PDR: {pdr_val:.1f}% | Links Severed)")
+    health_score = network_stats.get('health_score', 100.0)
+    if net_state == 'COLLAPSED':
+        net_health_var.set(f"🚨 NETWORK COLLAPSED (PDR: {pdr_val:.1f}% | Links Severed)")
+    elif net_state == 'CRITICAL':
+        net_health_var.set(f"⚠️ Network: CRITICAL (PDR: {pdr_val:.1f}% | Health: {health_score:.0f}%)")
+    elif net_state == 'DEGRADED':
+        net_health_var.set(f"⚡ Network: DEGRADED (PDR: {pdr_val:.1f}% | Health: {health_score:.0f}%)")
     else:
-        net_health_var.set(f"📡 Network: Active (PDR: {pdr_val:.1f}%)")
+        net_health_var.set(f"📡 Network: STABLE (PDR: {pdr_val:.1f}% | Health: {health_score:.0f}%)")
 
     ml_prefix = "ML LIVE" if ml_is_live else "Collecting"
     status_var.set(
         f"Frame {frame:04d}  |  {ml_prefix}: {total_detections} detections  |  "
-        f"Drifting: {drifting_count}/{len(sensors)}  |  PDR: {pdr_val:.1f}%"
+        f"State: {net_state} ({health_score:.0f}%)  |  PDR: {pdr_val:.1f}%"
     )
 
     # Vessel movement
@@ -1128,85 +1659,21 @@ def on_closing():
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
-def start_simulation(scenario_key):
+# Set initial default scenario: Normal Season
+sim.set_active_scenario('NORMAL')
+sc = sim.get_active_scenario()
+season_var.set(f"{sc['badge']}")
+status_var.set(f"Simulation active — {sc['name']} ({sc['badge']})")
+
+def start_animation():
     global ani
-    sim.set_active_scenario(scenario_key)
-    sc = sim.get_active_scenario()
-    season_var.set(f"{sc['badge']}")
-    status_var.set(f"Simulation active — {sc['name']} ({sc['badge']})")
+    if ani is None:
+        ani = FuncAnimation(fig, master_loop, interval=16, blit=False, cache_frame_data=False)
+        canvas.draw_idle()
 
-    # Dismiss selection overlay
-    if startup_overlay.winfo_exists():
-        startup_overlay.destroy()
-
-    # Launch FuncAnimation on the single existing engine
-    ani = FuncAnimation(fig, master_loop, frames=6000, interval=1, blit=True)
-    canvas.draw_idle()
-    root.after(1000, open_dashboard)
-
-
-# ── Clean Startup Selection Overlay ───────────────────────────────────────────
-startup_overlay = tk.Frame(root, bg='#0A192F')
-startup_overlay.place(relx=0, rely=0, relwidth=1.0, relheight=1.0)
-
-center_card = tk.Frame(startup_overlay, bg='#112240', bd=2, relief='ridge', padx=28, pady=24)
-center_card.place(relx=0.5, rely=0.5, anchor='center')
-
-tk.Label(center_card, text="⚓  HARBOR TRAFFIC CONTROL SYSTEM",
-         font=('Segoe UI', 15, 'bold'), bg='#112240', fg='#64FFDA').pack(pady=(0, 4))
-tk.Label(center_card, text="Select Simulation Environmental Scenario",
-         font=('Segoe UI', 12, 'bold'), bg='#112240', fg='#FFFFFF').pack(pady=(0, 6))
-tk.Label(center_card, text="Choose atmospheric and oceanographic conditions for the acoustic & network simulation:\n(Both scenarios run on the exact same underlying simulation engine)",
-         font=('Segoe UI', 9), bg='#112240', fg='#8892B0', justify='center').pack(pady=(0, 18))
-
-btn_container = tk.Frame(center_card, bg='#112240')
-btn_container.pack(fill='x', pady=5)
-
-# Normal Season Card
-card_normal = tk.Frame(btn_container, bg='#172A45', bd=1, relief='solid', padx=18, pady=16)
-card_normal.pack(side=tk.LEFT, padx=12, fill='both', expand=True)
-
-tk.Label(card_normal, text="☀️  Normal Season", font=('Segoe UI', 12, 'bold'),
-         bg='#172A45', fg='#FFD166').pack(anchor='w', pady=(0, 8))
-normal_details = (
-    "• Water Level: Normal (0.0 m) | Wave H: 0.3–0.5 m (calm)\n"
-    "• Water Currents: Tidal nominal (~0.35 m/s)\n"
-    "• Ambient Noise: ~65 dB (baseline ocean)\n"
-    "• Moored Sensors: Tethers hold firm, 35/35 anchored\n"
-    "• Acoustic Links: Long reach (~1.5 km), >95% PDR\n"
-    "• AUV Status: High battery endurance, stable relay"
-)
-tk.Label(card_normal, text=normal_details, font=('Segoe UI', 8),
-         bg='#172A45', fg='#CCD6F6', justify='left', anchor='w').pack(anchor='w', pady=(0, 14))
-
-tk.Button(card_normal, text="▶  Select Normal Season", bg='#0077B6', fg='white',
-          activebackground='#0096C7', activeforeground='white',
-          font=('Segoe UI', 10, 'bold'), bd=0, padx=14, pady=8, cursor='hand2',
-          command=lambda: start_simulation('NORMAL')).pack(fill='x')
-
-# Monsoon Season Card
-card_monsoon = tk.Frame(btn_container, bg='#1F2438', bd=1, relief='solid', padx=18, pady=16)
-card_monsoon.pack(side=tk.RIGHT, padx=12, fill='both', expand=True)
-
-tk.Label(card_monsoon, text="⛈️  Monsoon Season", font=('Segoe UI', 12, 'bold'),
-         bg='#1F2438', fg='#FF6B6B').pack(anchor='w', pady=(0, 8))
-monsoon_details = (
-    "• Water Level: Severe storm surge (disrupted ±5.5m)\n"
-    "• Wave Field: Douglas 6–8 (chaotic 5.0–8.5m waves)\n"
-    "• Water Currents: Stochastic violent surges (2.5–6.5+ m/s)\n"
-    "• Moored Sensors: Moorings snap under strain; DRIVEN AWAY!\n"
-    "• Network Health: Topology BROKEN / PDR collapses to near zero\n"
-    "• AUV Status: Heavy drift turbulence, fighting squalls"
-)
-tk.Label(card_monsoon, text=monsoon_details, font=('Segoe UI', 8),
-         bg='#1F2438', fg='#CCD6F6', justify='left', anchor='w').pack(anchor='w', pady=(0, 14))
-
-tk.Button(card_monsoon, text="▶  Select Monsoon Season", bg='#D62828', fg='white',
-          activebackground='#E63946', activeforeground='white',
-          font=('Segoe UI', 10, 'bold'), bd=0, padx=14, pady=8, cursor='hand2',
-          command=lambda: start_simulation('MONSOON')).pack(fill='x')
-
-tk.Label(center_card, text="* You can also dynamically switch seasons at any time during simulation using the top control bar.",
-         font=('Segoe UI', 8, 'italic'), bg='#112240', fg='#64FFDA').pack(pady=(16, 0))
 if __name__ == '__main__':
+    # Launch FuncAnimation directly on app startup (Normal season default, no intro overlay)
+    start_animation()
+    # Open live web dashboard after initial boot telemetry settles
+    root.after(1200, open_dashboard)
     root.mainloop()

@@ -193,9 +193,9 @@ The system provides selectable environmental scenarios driven by **ONE underlyin
 ```
 
 ### 4.1 Unified Engine & Scenario Selection
-* **Startup Selection**: When `main.py` launches, an overlay card allows the user to select **Normal Season** or **Monsoon Season**.
+* **Direct Startup**: When `main.py` launches, it opens directly into the primary 3D simulation and docked Network Dashboard with **Normal Season** active by default (no blocking overlay cards or AI-generated intro dialogs).
 * **Zero Engine Duplication**: The simulation does not spawn secondary processes or duplicate physics loops. Selecting a scenario updates the centralized `SCENARIOS` state in `simulator.py`.
-* **Live Toggle**: Users can also switch scenarios dynamically at runtime using the `⇄ Switch Season` button in the top control bar to observe real-time network degradation and recovery.
+* **Desktop Menus & Controls**: Users can switch seasons, pause/resume (`Space`), trigger squall surges, or re-anchor sensors via the native desktop menubar (`Simulation`, `Season`, `View`, `Help`), the top toolbar, or keyboard shortcut (`Ctrl+S`).
 
 ### 4.2 Comparative Atmospheric & Oceanographic Parameters
 
