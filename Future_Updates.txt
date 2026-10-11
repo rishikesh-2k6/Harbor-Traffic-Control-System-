@@ -1,98 +1,838 @@
-================================================================================
-⚓ HARBOR TRAFFIC CONTROL SYSTEM - FUTURE UPDATES & UPGRADATION ROADMAP
-================================================================================
+# MASTER PROMPT — Robotics Simulation UI, Prediction Validation, ML Audit & Documentation Upgrade
 
-PROJECT EXTENSION OBJECTIVE:
-Extend the existing Harbor Traffic Control System into a collaborative network 
-of fixed sensors and mobile robot nodes. When moving surface vessels (cargo ships, 
-speedboats, cruisers, tankers, ferries, etc.) interact with sensors or robot nodes 
-in the harbor, active communication is established across the network to process 
-acoustic telemetry, classify vessel types, detect speed violations, and route 
-traffic control alerts.
+## ROLE
 
-================================================================================
-PHASE 0: PRE-REQUISITES & ENVIRONMENT SETUP
-================================================================================
-• Goal:
-  Ensure environment compatibility, verify baseline simulation performance, and 
-  prepare modular code structures before introducing the robot network.
+Act as a Senior Robotics Simulation Engineer, Python Architect, Machine Learning Engineer, UI/UX Designer, and Software Quality Assurance Engineer.
 
-• Prerequisites from USER Side:
-  1. Python Dependencies: Ensure Python 3.9+ is active and required libraries 
-     are installed (`pip install numpy pandas matplotlib scikit-learn joblib torch`).
-  2. Baseline Verification: Run `python main.py` once to confirm the 3D simulation 
-     window opens smoothly and ML training initializes without errors.
-  3. Dashboard Test: Open `dashboard.html` in a web browser to verify real-time 
-     polling of `dashboard_data.json`.
-  4. Data Reset (Optional): Delete or back up `collected_data.csv` if starting 
-     with a fresh dataset for the new network experiments.
+You are working on our existing **Harbor Traffic Control System**, an autonomous maritime robotics simulation that combines:
 
-• Prerequisites from AGENT Side:
-  1. Codebase Audit: Inspect interfaces in `simulator.py`, `main.py`, `traffic_algo.py`, 
-     and `dashboard.html` for clean extensibility.
-  2. Schema Extension Plan: Design non-breaking JSON schema fields in `dashboard_data.json` 
-     to carry robot statuses and active network links alongside vessel metrics.
-  3. Modular Class Architecture: Draft clean object models (`RobotNode`, `CommLink`, 
-     `NetworkManager`) ready for seamless integration into `simulator.py`.
+- 3D harbor simulation and vessel movement
+- Autonomous Underwater Vehicles (AUVs)
+- Seabed hydrophones and underwater acoustic communication
+- Dynamic network topology and Depth-Based Routing (DBR)
+- Machine Learning-based vessel classification and displacement prediction
+- Maritime traffic monitoring, speed enforcement, and autonomous AUV dispatch
+- Normal and monsoon environmental scenarios
+- Tkinter + Matplotlib desktop simulation
+- HTML/CSS/JavaScript web dashboards
+- Python HTTP server and JSON-based telemetry updates
 
-================================================================================
-PHASE 1: DYNAMIC ROBOT NODE DEPLOYMENT & REGIONAL SETUP
-================================================================================
-• Goal:
-  Introduce mobile robot nodes into the 10 km × 10 km harbor grid alongside 
-  the existing 35 stationary UWSN sensors.
+Your task is to implement the following improvements in the existing repository while preserving all currently working features.
 
-• Key Upgradations:
-  1. Define a `RobotNode` class in `simulator.py` featuring 3D positioning, 
-     patrol movement, battery consumption, and regional assignment.
-  2. Deploy robot nodes across critical harbor zones (Outer Yard, LOC Boundary wall, 
-     and Inner Harbor channels).
-  3. Render 3D visual representations of robot nodes with distinct color-coded 
-     markers in `main.py`.
+**Do not rebuild the project from scratch. Audit first, understand the architecture, then modify the existing implementation.**
 
-================================================================================
-PHASE 2: VESSEL INTERACTION & EVENT-DRIVEN COMMUNICATION
-================================================================================
-• Goal:
-  Trigger active network communication whenever a surface vessel enters the 
-  interaction range of any sensor or robot node.
+---
 
-• Key Upgradations:
-  1. Implement proximity-based vessel interaction detection between moving ships 
-     and network nodes (sensors/robots).
-  2. Generate event-driven data payloads containing acoustic features, ML vessel 
-     classification, speed, direction, and predicted weight.
-  3. Establish peer-to-peer (P2P) communication links (Sensor ↔ Robot ↔ Sensor) 
-     within local harbor sectors.
+# PHASE 1 — REPOSITORY AUDIT AND IMPLEMENTATION PLAN
 
-================================================================================
-PHASE 3: ADAPTIVE NETWORK TELEMETRY & MULTI-REGION ROUTING
-================================================================================
-• Goal:
-  Route vessel telemetry across the sensor/robot network to Harbor Traffic 
-  Control while handling underwater channel constraints.
+Before editing any code:
 
-• Key Upgradations:
-  1. Implement multi-hop data propagation algorithms across neighboring nodes to 
-     ensure unbroken coverage across all harbor zones.
-  2. Model acoustic channel conditions including signal attenuation, limited 
-     communication ranges, and link quality.
-  3. Enable dynamic repositioning of robot nodes to cover high-traffic corridors 
-     or temporary signal-blind spots.
+1. Inspect the complete repository structure and all relevant source files.
+2. Read the existing README files, project context documents, ML implementation, simulation engine, networking modules, traffic control logic, dashboard files, and environment verification scripts.
+3. Identify the actual execution flow between:
+   - `main.py`
+   - `simulator.py`
+   - `mlmodel.py`
+   - `network.py`
+   - `network_manager.py`
+   - `auv.py`
+   - `traffic_algo.py`
+   - `dashboard.html`
+   - `networking_dashboard.html`
+   - Any other modules discovered in the repository.
+4. Identify where simulation exceptions are handled, where flash messages are rendered, how window geometry is configured, how predictions are generated, and how telemetry is persisted.
+5. Determine which model outputs are already implemented and which outputs are only simulated or displayed.
+6. Identify existing tests, data schemas, and compatibility constraints.
 
-================================================================================
-PHASE 4: NETWORK ANALYTICS & CONTINUOUS LIVE DASHBOARD INTEGRATION
-================================================================================
-• Goal:
-  Integrate live network communication status, active links, and robot telemetry 
-  into the real-time web dashboard (`dashboard.html`).
+Create a short implementation plan before making changes.
 
-• Key Upgradations:
-  1. Extend `dashboard_data.json` to stream live robot node states, active 
-     communication link pairs, packet delivery rates, and battery levels.
-  2. Upgrade `dashboard.html` UI with dedicated telemetry cards for active 
-     network interactions, node connectivity status, and violation alerts.
-  3. Ensure the live web dashboard runs continuously and seamlessly alongside 
-     the 3D simulation without interruption.
+Do not assume the filenames above are exhaustive or that the current code matches the documentation. Verify everything directly.
 
-================================================================================
+**Important:** Do not fabricate features, model outputs, metrics, test results, or existing capabilities.
+
+---
+
+# PHASE 2 — FIX SIMULATION CRASH NOTIFICATIONS
+
+## Problem
+
+When the simulation crashes or an error occurs, the flash/error message appears over the simulation itself and obstructs the visualization.
+
+## Required implementation
+
+1. Inspect the existing exception-handling and notification mechanisms.
+2. Move crash notifications, warnings, and relevant system status messages into a dedicated side panel, status sidebar, or clearly separated notification region.
+3. Ensure notifications never obscure the central 3D simulation viewport.
+4. Differentiate between:
+   - Informational messages
+   - Warnings
+   - Recoverable errors
+   - Fatal simulation errors
+5. Include concise error descriptions, timestamps, and an optional expandable technical traceback.
+6. Ensure fatal errors are clearly distinguishable from ordinary warnings.
+7. Prevent duplicate notifications from repeated exceptions.
+8. Avoid swallowing exceptions silently or falsely displaying success after a failure.
+9. If the simulation can safely recover from a particular error, implement recovery without resetting unrelated simulation state.
+10. If recovery is impossible, stop the affected simulation loop cleanly and display a useful diagnostic.
+
+### Technical constraints
+
+- Respect Tkinter's main-thread restrictions.
+- Do not update Tkinter widgets directly from background threads.
+- Use a thread-safe queue and periodic UI polling if background tasks need to send notifications.
+- Prevent repeated callbacks from being scheduled after shutdown.
+- Ensure the application can close cleanly even when an error occurs.
+
+### Acceptance criteria
+
+- Errors appear in the notification sidebar or designated side region.
+- The main simulation remains unobstructed.
+- Error details are actionable and visible.
+- Recoverable failures do not unnecessarily terminate the entire application.
+- Fatal failures are not misrepresented as successful operation.
+
+---
+
+# PHASE 3 — REDESIGN THE TKINTER SIMULATION WINDOW
+
+## Problem
+
+The current desktop UI uses screen space inefficiently, has inconsistent font sizes, and leaves excessive blank space.
+
+## Goal
+
+Make the application look like a professional maritime monitoring and robotics control station.
+
+The simulation should occupy approximately **75% or more of the usable application window**, where practical. Use the remaining space for controls, notifications, status indicators, and supporting information.
+
+## Required changes
+
+### A. Responsive window layout
+
+1. Inspect the current Tkinter widget hierarchy and Matplotlib embedding.
+2. Use a responsive layout based on appropriate `grid` weights, `pack` expansion, or another suitable Tkinter layout strategy.
+3. Use the available screen dimensions intelligently.
+4. Start with a large, maximized, or near-maximized window when appropriate for the operating system.
+5. Preserve normal window controls and avoid forcing an unmanageable borderless fullscreen mode.
+6. Eliminate unnecessary margins, unused frames, fixed-size containers, and oversized empty areas.
+7. Ensure the interface adapts to different window sizes.
+8. Keep important controls visible without unnecessary scrolling.
+
+### B. Simulation viewport
+
+1. Give the 3D Matplotlib simulation the largest practical region.
+2. Allow the visualization to resize when the application window changes.
+3. Preserve orbit, zoom, rotation, and other existing interactions.
+4. Prevent axis labels, legends, HUD information, and status overlays from being clipped.
+5. Optimize rendering so UI improvements do not unnecessarily slow the simulation.
+
+### C. Professional typography
+
+Create a consistent typography system with defined styles for:
+
+- Application title
+- Section headings
+- Body text
+- Status labels
+- Numeric telemetry
+- Buttons
+- Warnings and errors
+- Supporting metadata
+
+Use readable fonts available on the host system, with sensible fallbacks.
+
+Use consistent font weights, sizes, padding, alignment, and line spacing. Do not arbitrarily enlarge individual widgets.
+
+### D. Suggested layout
+
+Implement an appropriate responsive structure similar to:
+
+`┌─────────────────────────────────────────────────────────────┐`
+
+`│ Header: Project Title | Season | Simulation Status | Controls│`
+
+`├───────────────────────────────────────┬─────────────────────┤`
+
+`│                                       │ System Status        │`
+
+`│                                       ├─────────────────────┤`
+
+`│         LARGE 3D SIMULATION           │ Notifications        │`
+
+`│                                       ├─────────────────────┤`
+
+`│                                       │ Network / ML Metrics │`
+
+`├───────────────────────────────────────┴─────────────────────┤`
+
+`│ Footer: FPS | Active Nodes | Simulation Time | Health        │`
+
+`└─────────────────────────────────────────────────────────────┘`
+
+Treat this as a layout reference, not a rigid pixel-perfect specification.
+
+Prioritize the visualization and make the supporting panels compact and useful.
+
+### Acceptance criteria
+
+- The 3D viewport uses at least approximately 75% of the available application area where practical.
+- The interface contains no large, unexplained blank regions.
+- Font sizes and visual hierarchy are consistent.
+- Resizing the window does not break the layout.
+- Existing simulation controls continue to work.
+
+---
+
+# PHASE 4 — ADD DARK AND LIGHT THEMES TO THE WEB DASHBOARDS
+
+## Problem
+
+The web dashboards need a theme toggle, clearer text, and consistent typography.
+
+Apply this to all relevant web dashboards, particularly:
+
+- `dashboard.html`
+- `networking_dashboard.html`
+
+Also inspect any additional dashboard pages in the repository.
+
+## Required implementation
+
+### A. Theme toggle
+
+Add a clearly visible Light/Dark toggle in the dashboard header.
+
+The toggle must:
+
+1. Switch the entire dashboard between light and dark themes.
+2. Update backgrounds, cards, text, tables, borders, inputs, buttons, tooltips, legends, and status indicators.
+3. Preserve readable contrast in both themes.
+4. Update charts, graph labels, and network topology visualization colors as appropriate.
+5. Avoid leaving isolated components in the previous theme.
+6. Work without a full page reload.
+7. Use CSS custom properties/design tokens rather than scattered hardcoded colors.
+8. Remember the user's preference across reloads where appropriate, using local storage or another suitable existing mechanism.
+9. Provide sensible behavior when no saved preference exists.
+
+### B. Typography
+
+Use **Consolas or JetBrains Mono** for numerical telemetry, coordinates, timestamps, logs, packet statistics, and technical values.
+
+Use a suitable readable sans-serif font for headings and longer explanatory text where that improves readability.
+
+Provide appropriate fallback fonts if JetBrains Mono is unavailable.
+
+Avoid using monospace typography for every element if doing so harms readability.
+
+### C. Visual design
+
+Use a clean, professional technical-dashboard aesthetic.
+
+Improve:
+
+- Text/background contrast
+- Font sizing and line height
+- Card spacing
+- Table readability
+- Status badges
+- Hover and focus states
+- Responsive behavior
+- Empty states
+- Loading and error indicators
+- Network topology labels
+
+Maintain a restrained visual palette suitable for a robotics monitoring system.
+
+Do not sacrifice accessibility for visual effects.
+
+### D. Accessibility
+
+- Use semantic buttons and accessible labels.
+- Ensure keyboard navigation works.
+- Provide visible focus states.
+- Avoid communicating status through color alone.
+- Respect reduced-motion preferences where relevant.
+
+### Acceptance criteria
+
+- Theme switching works on every relevant dashboard.
+- All text remains legible in both themes.
+- Charts and network diagrams remain readable.
+- The theme toggle does not interrupt live telemetry updates.
+- Existing dashboard functionality remains intact.
+
+---
+
+# PHASE 5 — IMPLEMENT PREDICTION LOGGING AND GROUND-TRUTH VALIDATION
+
+## Problem
+
+The simulation produces predictions, but we need a systematic way to determine whether those predictions are correct.
+
+We need to record predictions such as:
+
+- Vessel class
+- Vessel displacement/weight
+- Vessel speed
+- Vessel direction
+- Other existing model outputs that can be validated
+
+We must be able to compare these predictions against the actual simulated values.
+
+**This is a core functional requirement, not just a dashboard enhancement.**
+
+## Step 1: Audit the existing prediction pipeline
+
+Inspect `mlmodel.py`, `simulator.py`, `traffic_algo.py`, and related modules.
+
+Determine which models actually predict which variables.
+
+For example:
+
+- If the existing VesselMLP predicts vessel class and displacement, log those predictions.
+- If speed and direction are calculated by the simulation rather than predicted by a trained model, record them as simulation estimates or controller outputs instead of falsely attributing them to ML.
+- If speed and direction prediction models do not exist, implement them only if the current project requirements, available training data, and architecture support a defensible solution.
+
+Do not label a ground-truth value as a prediction.
+
+## Step 2: Create a structured prediction record
+
+Design a reusable prediction logging interface.
+
+Each record should contain, where applicable:
+
+- Unique prediction ID
+- Simulation run ID
+- Timestamp or simulation frame
+- Vessel ID
+- Prediction source/model name
+- Model version or artifact identifier
+- Prediction task
+- Predicted value
+- Actual ground-truth value
+- Error or correctness result
+- Validation status
+- Environmental scenario: normal or monsoon
+- Relevant confidence score, if the model provides one
+- Relevant metadata required for debugging
+
+For a multi-output prediction, store individual outputs in a clear, queryable structure.
+
+Do not log sensitive or unnecessary information.
+
+## Step 3: Establish reliable ground truth
+
+Use the authoritative state maintained by the simulation as the ground truth.
+
+Examples:
+
+| Prediction | Ground-truth source | Validation |
+|---|---|---|
+| Vessel class | Actual vessel class configured in the simulator | Exact match / accuracy |
+| Displacement or weight | Actual simulated displacement in consistent units | Absolute error, MAE and RMSE |
+| Speed | Actual simulated vessel speed at the corresponding timestamp | Absolute error, MAE and RMSE |
+| Direction | Actual simulated heading/direction | Angular error with circular wraparound |
+| Other continuous output | Corresponding authoritative simulator state | Task-appropriate error metric |
+
+Important rules:
+
+1. Match predictions to the correct vessel and simulation frame.
+2. Use consistent units throughout.
+3. Compare values from the same simulated time, or explicitly account for prediction horizon.
+4. Do not compare predictions against values that have already been overwritten by later simulation updates.
+5. Separate unavailable ground truth from an incorrect prediction.
+6. If a field is not actually predicted by any model, mark it as not applicable rather than inventing a model result.
+
+For direction, account for the circular nature of angles. For example, predictions of 359° and 1° differ by 2°, not 358°.
+
+## Step 4: Create a persistent prediction log
+
+Use a suitable persistent format such as SQLite or CSV, depending on the current architecture and query requirements.
+
+Prefer a design that can support:
+
+- Multiple simulation runs
+- Historical comparisons
+- Filtering by vessel, model, scenario, and time
+- Exporting results for reports
+- Restarting the application without losing earlier records
+
+If using SQLite, design sensible tables, indexes, unique identifiers, and transactions.
+
+If CSV is sufficient for the existing scale, document its limitations and ensure records are written safely.
+
+Do not rewrite the entire telemetry storage architecture unnecessarily.
+
+## Step 5: Build the prediction validation engine
+
+Create a modular component that:
+
+1. Receives the prediction record.
+2. Retrieves the corresponding ground-truth state.
+3. Computes the appropriate error or correctness metric.
+4. Stores the validation result.
+5. Updates aggregate statistics.
+6. Exposes the results to the UI and reporting layer.
+
+Support, as applicable:
+
+**Classification**
+- Correct/incorrect
+- Accuracy
+- Per-class precision, recall, and F1 score when enough labeled observations exist
+
+**Regression**
+- Absolute error
+- Mean Absolute Error (MAE)
+- Root Mean Squared Error (RMSE)
+- Mean Absolute Percentage Error only when mathematically appropriate and the target values make it meaningful
+
+**Direction**
+- Circular angular error
+
+Clearly distinguish per-prediction correctness from aggregate model performance.
+
+Do not present a model as accurate merely because a few predictions matched.
+
+## Step 6: Add validation metrics to the dashboard
+
+Display useful metrics such as:
+
+- Total predictions
+- Number validated
+- Correct classification count
+- Classification accuracy
+- MAE/RMSE for applicable regression outputs
+- Recent prediction history
+- Predicted versus actual values
+- Error trends over time
+- Normal versus monsoon performance
+- Per-model or per-task metrics
+
+Include a prediction history table, with filters where practical.
+
+Example:
+
+| Vessel | Task | Predicted | Actual | Error/Result |
+|---|---|---|---|---|
+| V-001 | Class | Cargo | Cargo | Correct |
+| V-002 | Weight | 12,400 kg | 12,000 kg | 400 kg |
+| V-003 | Speed | 8.2 kn | 9.0 kn | 0.8 kn |
+| V-004 | Direction | 359° | 1° | 2° angular error |
+
+These values are illustrative only. The running system must display real results from the simulator.
+
+Provide a detail view for individual records when useful.
+
+### Acceptance criteria
+
+- Every supported prediction is logged with a unique identifier.
+- The prediction is matched to the correct ground truth.
+- Validation occurs automatically during simulation.
+- The system persists records across application restarts.
+- Users can distinguish validated, incorrect, unavailable, and pending results.
+- Aggregate metrics are calculated from actual logged observations.
+- The dashboard does not fabricate validation metrics.
+
+---
+
+# PHASE 6 — BUILD A MODEL OR EVALUATION PIPELINE THAT CHECKS PREDICTIONS AGAINST REAL SIMULATION VALUES
+
+## Objective
+
+Provide a defensible way to evaluate whether our prediction models perform well against the actual simulated system.
+
+Do not confuse an evaluation mechanism with a second predictive model.
+
+### A. First implement a ground-truth evaluation baseline
+
+Use the simulation's authoritative state to create a reliable evaluation pipeline.
+
+For every supported prediction task:
+
+1. Capture the model input.
+2. Capture the model prediction.
+3. Capture the matching ground-truth value.
+4. Compute the appropriate metric.
+5. Save the result.
+6. Aggregate performance by task, model, vessel class, and environmental scenario.
+
+### B. Audit existing trained models
+
+Inspect:
+
+- Model architecture
+- Training procedure
+- Training dataset
+- Feature definitions
+- Feature scaler
+- Label encoder
+- Saved model weights
+- Inference pipeline
+- Model loading and preprocessing
+- Existing train/test splits
+- Existing evaluation metrics
+
+Ensure the model receives the same feature order and preprocessing during inference as it did during training.
+
+### C. Determine whether additional predictive models are necessary
+
+If speed and direction are intended to be predicted but no suitable trained models exist:
+
+1. Assess whether historical or generated labeled training data is available.
+2. Define the prediction target and prediction horizon.
+3. Prevent data leakage.
+4. Split training, validation, and test data appropriately.
+5. Establish a simple baseline before introducing a more complex model.
+6. Train and evaluate a suitable model only if justified by the data.
+7. Save model artifacts and preprocessing requirements.
+8. Compare the new model against the baseline on held-out data.
+9. Integrate inference into the existing architecture only after the model passes validation.
+
+Do not use current ground truth as an input feature if doing so leaks the answer into the prediction.
+
+Do not train and evaluate on the same observations and then claim the resulting score demonstrates generalization.
+
+### D. Prevent misleading evaluation
+
+The simulation is a source of ground truth, but the model must not automatically receive perfect scores simply because the simulator knows the actual answer.
+
+Keep the roles separate:
+
+`Simulation state → Ground truth`
+
+`Available sensor/features → Model prediction`
+
+`Prediction + matching ground truth → Evaluation`
+
+Where appropriate, use time-separated observations and realistic noise or missing data.
+
+Clearly label results as simulation-based evaluation. Do not imply that simulated performance proves real-world maritime deployment readiness.
+
+### E. Evaluate normal and monsoon conditions separately
+
+Produce separate performance reports for normal and monsoon scenarios.
+
+Check whether increased acoustic noise, missing sensor readings, drifting sensors, and communication delays affect:
+
+- Prediction quality
+- Availability of model inputs
+- Number of predictions produced
+- Validation coverage
+- Error rates
+- End-to-end detection latency
+
+Distinguish model prediction errors from missing data, delayed packets, and unavailable communication links.
+
+### Acceptance criteria
+
+- Existing models have a reproducible evaluation procedure.
+- Predictions can be compared against authoritative ground truth.
+- Metrics are computed from held-out data when assessing model generalization.
+- Normal and monsoon results can be compared independently.
+- Unsupported predictions are clearly identified.
+- No artificial accuracy improvements or fabricated results are introduced.
+
+---
+
+# PHASE 7 — REWRITE AND IMPROVE THE README DOCUMENTATION
+
+## Problem
+
+The README files should clearly communicate what the project does, what we implemented, where ML is used, how the system works, and how the objectives are achieved.
+
+The documentation must be technically accurate and suitable for academic project evaluation.
+
+## Required documentation
+
+Audit all existing README and project documentation files.
+
+Update the primary README and any genuinely necessary supporting documentation.
+
+Avoid maintaining multiple conflicting versions of the same technical explanation.
+
+### Suggested README structure
+
+#### 1. Project title
+
+Harbor Traffic Control System — Networked Autonomous Maritime Monitoring and Governance.
+
+Use the actual official project name if the repository establishes a different one.
+
+#### 2. Project overview
+
+Explain the problem being addressed, the intended users, and the proposed system.
+
+#### 3. Objectives and achievements
+
+For every objective, identify:
+
+- What problem it addresses
+- What was implemented
+- Which module implements it
+- How it was verified
+- What limitations remain
+
+Separate implemented achievements from future work.
+
+#### 4. Evolution from the previous semester
+
+Clearly explain what existed previously and what was added in the current extension.
+
+Emphasize verified additions such as:
+
+- Networked AUV swarm
+- Underwater acoustic communication
+- Dynamic network topology
+- Depth-Based Routing
+- Packet compression
+- Duty cycling
+- Monsoon resilience simulation
+- Prediction logging and evaluation, once implemented
+- Improved visualization and dashboards
+
+Do not claim that a feature is new if it already existed in the previous version.
+
+#### 5. System architecture
+
+Provide an architecture diagram showing:
+
+`Vessels → Acoustic Sensing → Feature Extraction → ML Inference → Telemetry → Underwater Network → Surface Gateway → Traffic Controller → AUV Response`
+
+Adapt this diagram to the actual code flow.
+
+#### 6. Machine Learning models
+
+Create a dedicated ML section.
+
+For every model, explain:
+
+- Model name and architecture
+- Input features
+- Output targets
+- Training data source
+- Preprocessing
+- Training objectives and loss functions
+- Inference location in the system
+- Downstream decisions influenced by the output
+- Evaluation methodology and actual results
+- Limitations
+
+Specifically audit and document the existing VesselMLP implementation.
+
+If the code confirms a shared neural network with vessel-class classification and displacement regression, explain both tasks separately and accurately.
+
+Document the use of the appropriate classification and regression losses only if confirmed in the implementation.
+
+Explain how the saved model weights, scaler, and label encoder are loaded and used.
+
+Do not describe a rule-based algorithm as an ML model.
+
+Do not claim a model predicts speed or direction unless that capability is implemented and verified.
+
+#### 7. Networking architecture
+
+Explain:
+
+- Acoustic link evaluation
+- SNR thresholds
+- Dynamic topology
+- Three-tier link hierarchy
+- DBR routing
+- AUV relay behavior
+- Duty cycling
+- Packet compression
+- Network performance metrics
+- Monsoon-induced degradation and route changes
+
+#### 8. Robotics and simulation
+
+Explain AUV motion, patrol states, interception, battery behavior, and interaction with traffic governance.
+
+#### 9. Environmental scenarios
+
+Explain the normal and monsoon scenarios, including which parameters change and how they affect the modeled system.
+
+Clearly identify modeled assumptions versus empirically validated physical behavior.
+
+#### 10. Prediction evaluation
+
+Once implemented, document the prediction logging schema, ground-truth comparison, evaluation metrics, storage format, and how to view reports.
+
+#### 11. UI and dashboards
+
+Explain the desktop interface, theme toggle, notification panel, network visualization, and prediction history.
+
+#### 12. Technology stack
+
+List actual technologies and their roles.
+
+#### 13. Installation and execution
+
+Provide tested setup instructions, dependencies, launch commands, dashboard URLs, and troubleshooting steps.
+
+#### 14. Testing and verification
+
+Document test commands, test coverage, and actual observed outcomes.
+
+#### 15. Limitations and future improvements
+
+Be honest about simulation assumptions, model limitations, missing features, and the distinction between simulation and real-world deployment.
+
+#### 16. Repository structure
+
+Explain the responsibility of every major module and relevant model artifact.
+
+### Documentation quality rules
+
+- Use concise, professional technical writing.
+- Avoid marketing exaggeration and generic AI-generated filler.
+- Include meaningful architecture diagrams, tables, and examples.
+- Explain what we achieved and how it is demonstrated.
+- Use real evaluation results only.
+- Mark unverified results as unverified.
+- Keep commands and file paths consistent with the actual repository.
+
+---
+
+# PHASE 8 — TESTING AND REGRESSION PREVENTION
+
+After implementation, run all feasible existing tests and add focused tests for the new behavior.
+
+## Required test categories
+
+### UI
+- Large window and resize behavior
+- Notification placement
+- Consistent layout
+- Clean application shutdown
+
+### Web dashboards
+- Light/dark switching
+- Theme persistence
+- Readable charts and tables
+- Live data updates
+- Responsive layout
+
+### Prediction validation
+- Correct classification match
+- Incorrect classification match
+- Continuous-value error calculations
+- Direction wraparound
+- Missing ground truth
+- Duplicate prediction handling
+- Persistence across restart
+- Aggregation by simulation run
+- Separation of normal and monsoon results
+
+### Integration
+- ML inference still works
+- Networking and DBR still work
+- Monsoon switching still works
+- Traffic enforcement remains operational
+- AUV state transitions remain operational
+- Existing dashboard data continues to update
+
+### Error handling
+- Recoverable exception
+- Fatal exception
+- Duplicate exception notifications
+- Background-thread notification delivery
+- Clean shutdown following an exception
+
+Do not report a test as passing unless it was actually executed successfully.
+
+If a test cannot be run because of unavailable dependencies, missing hardware, environment restrictions, or another limitation, state the reason.
+
+---
+
+# PHASE 9 — PERFORMANCE, CODE QUALITY, AND ARCHITECTURE
+
+Follow these principles throughout the implementation:
+
+1. Keep modules modular and responsibilities clear.
+2. Avoid duplicated business logic.
+3. Do not block the Tkinter main loop with expensive training, file I/O, or network operations.
+4. Do not retrain models on every simulation frame.
+5. Use background processing where appropriate, with thread-safe communication.
+6. Avoid unnecessary dependencies.
+7. Validate incoming telemetry and model outputs.
+8. Handle malformed or missing data safely.
+9. Use explicit units for speed, direction, displacement, distance, and time.
+10. Avoid hardcoded screen dimensions and brittle file paths.
+11. Keep prediction logging efficient enough for continuous simulation.
+12. Do not remove existing functionality simply to simplify implementation.
+13. Do not silently change the scientific assumptions or model behavior.
+14. Preserve reproducibility wherever practical.
+
+If architectural changes are needed, explain why they are necessary and minimize unrelated refactoring.
+
+---
+
+# PHASE 10 — FINAL REPORT
+
+After implementation, provide a concise but complete engineering report containing:
+
+## A. Changes made
+
+For each requirement, identify the files modified and the behavior changed.
+
+## B. Prediction validation
+
+Explain:
+
+- Which predictions are logged
+- Where ground truth comes from
+- Which metrics are calculated
+- Where results are stored
+- How to view the validation history
+- Whether speed and direction prediction models actually exist
+
+## C. ML documentation
+
+List each confirmed ML model, its input, output, purpose, and evaluation status.
+
+## D. Test results
+
+Separate:
+
+- Tests passed
+- Tests failed
+- Tests not executed
+- Known limitations
+
+## E. Execution instructions
+
+Give exact commands to launch the application and open the dashboards.
+
+## F. Remaining issues
+
+Identify any unfinished requirements and explain why they remain unfinished.
+
+## G. Recommended next steps
+
+Prioritize the remaining work by correctness, functionality, and academic demonstration value.
+
+---
+
+# FINAL EXECUTION INSTRUCTIONS
+
+Work directly within the existing repository.
+
+Do not stop after producing an audit, plan, sample code, or recommendations. Proceed with implementation, testing, and documentation updates.
+
+Use small, understandable changes and verify each phase before moving to the next.
+
+Do not overwrite working files unnecessarily.
+
+Do not create fake data to make the UI appear functional.
+
+Do not invent evaluation results or claim improvements without evidence.
+
+Do not break the existing simulation, acoustic networking, DBR, ML inference, AUV behavior, traffic control, or dashboards.
+
+If you discover a serious scientific or architectural flaw, document it and address it when possible without silently changing the project's intended behavior.
+
+**Definition of done:** The desktop interface uses its available space effectively; crash notifications do not obstruct the simulation; web dashboards have working light/dark themes; supported predictions are logged and compared against real simulation ground truth; model evaluation is reproducible; and the README accurately explains the project objectives, architecture, ML usage, networking, achievements, tests, and limitations.
+
+Begin with the repository audit, then execute the complete implementation workflow.

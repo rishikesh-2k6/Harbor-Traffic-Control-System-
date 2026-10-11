@@ -829,8 +829,9 @@ def collect_sensor_detections(fleet, sensors, frame):
         tmp_path  = COLLECTED_FILE + ".tmp"
         try:
             if file_exists:
-                # Read existing, concatenate, write back atomically
-                existing = pd.read_csv(COLLECTED_FILE)
+                # Read existing, concatenate, write back atomically.
+                # low_memory=False avoids the mixed-type DtypeWarning on Sea_State.
+                existing = pd.read_csv(COLLECTED_FILE, low_memory=False)
                 combined = pd.concat([existing, new_df], ignore_index=True)
             else:
                 combined = new_df
@@ -846,7 +847,8 @@ def collect_sensor_detections(fleet, sensors, frame):
     try:
         if os.path.exists(COLLECTED_FILE):
             total_rows = sum(1 for _ in open(COLLECTED_FILE)) - 1  # -1 for header
-    except Exception:
-        pass
+    except OSError as exc:
+        # Row count is display-only; report rather than hide, but never crash
+        print(f"[Detection Data] Could not read row count: {exc}")
 
     return sensor_active, max(total_rows, 0)

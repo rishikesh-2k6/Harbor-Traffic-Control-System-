@@ -1,0 +1,5 @@
+generated,accuracy,correct,mae,mae_kg,mape_pct,max_angular_error_deg,mean_angular_error_deg,median_ae_kg,not_predicted,p90_ae_kg,rmse_kg,task,total_predictions,unavailable,validated
+2026-10-11T17:09:54,1.0,46,,,,,,,0,,,vessel_class,46,0,46
+2026-10-11T17:09:54,,,,22708.15755,97.64959057433828,,,8300.354,0,72987.6249,36123.12151682535,displacement_kg,46,0,46
+2026-10-11T17:09:54,,,,,,,,,46,,,speed_kn,46,0,0
+2026-10-11T17:09:54,,,,,,,,,0,,,heading_deg,0,0,0

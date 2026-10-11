@@ -45,7 +45,7 @@ def format_node_name(name):
         try:
             idx = int(s.split("_")[1]) + 1
             return f"S{idx:02d}"
-        except Exception:
+        except (IndexError, ValueError):
             return s
     if s.startswith("auv_"):
         aid = s.split("_")[1]
@@ -93,22 +93,22 @@ def get_current_ambient_noise_db():
 def is_node_active(node_name, frame):
     """
     Simulates acoustic wake-up and duty cycling.
-    In Normal: high availability (>94%) with low-power listening wake-up preamble.
-    In Monsoon: severe ambient noise masks preambles, increasing sleep/unavailability (~65%).
+    In Normal: high availability (~91%) with low-power listening wake-up preamble.
+    In Monsoon: severe ambient noise masks preambles, increasing sleep/unavailability (~71%).
     AUVs and Buoys are always active.
     """
     if node_name.startswith("sensor_"):
         try:
             idx = int(node_name.split("_")[1])
-        except Exception:
+        except (IndexError, ValueError):
             idx = 0
         scenario = sim.get_active_scenario()
         is_monsoon = (scenario.get('key') == 'MONSOON')
         if not is_monsoon:
-            # Normal: 94% availability
+            # Normal: ~91% availability (measured over 35 sensors)
             return (idx * 3 + frame // 40) % 16 != 0
         else:
-            # Monsoon: 65% availability due to storm acoustic masking
+            # Monsoon: ~71% availability (storm acoustic masking)
             return (idx * 3 + frame // 30) % 10 < 7
     return True
 

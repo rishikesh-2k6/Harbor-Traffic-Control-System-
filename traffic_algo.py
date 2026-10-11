@@ -58,7 +58,14 @@ def _knots(v):
 
 
 def _assign_dock(v):
-    """Assign (or recall) a dock slot for this vessel. Returns (slot_name, y)."""
+    """
+    Assign a dock slot to this vessel. Returns (slot_name, y) or (None, None).
+
+    Berth capacity is limited: the fleet needs more berths than exist, so a
+    vessel whose class is fully booked must WAIT rather than be stacked on top
+    of an occupied berth. Returning None puts the vessel into a HOLD_AT_BERTH
+    queue, which is both physically meaningful and observable to the operator.
+    """
     vid = v['id']
     if vid in _dock_assignments:
         return _dock_assignments[vid]
@@ -74,9 +81,20 @@ def _assign_dock(v):
         if y not in used_ys:
             _dock_assignments[vid] = (name, y)
             return (name, y)
-    # All slots full — use first slot anyway
-    _dock_assignments[vid] = slots[0]
-    return slots[0]
+
+    # All berths for this class are occupied - queue instead of colliding.
+    _dock_assignments[vid] = (None, None)
+    return (None, None)
+
+
+def release_dock(vessel_id):
+    """Free a berth when a vessel leaves, so waiting traffic can dock."""
+    _dock_assignments.pop(vessel_id, None)
+
+
+def clear_dock_assignments():
+    """Reset all berth assignments (used by the simulation reset)."""
+    _dock_assignments.clear()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -197,10 +215,18 @@ def _handle_outer_yard(v):
 def _handle_inner_zone(v):
     """
     Smart parking: assign a dock slot, then route the vessel there.
-    States: ROUTING → DOCKING → DOCKED
+    States: HOLDING_FOR_BERTH -> ROUTING -> DOCKING -> DOCKED
     """
     slot_name, dock_y = _assign_dock(v)
     v['dock_slot'] = slot_name
+
+    # No berth available yet - hold position safely inside the patrol zone.
+    if slot_name is None:
+        v['state'] = 'HOLDING_FOR_BERTH'
+        v['tms_command'] = 'HOLD — AWAITING BERTH'
+        v['current_speed'] = 0
+        v['halt_time'] = v.get('halt_time', 0) + 1
+        return
 
     target = np.array([DOCK_X, dock_y])
     dist   = np.linalg.norm(v['pos'] - target)

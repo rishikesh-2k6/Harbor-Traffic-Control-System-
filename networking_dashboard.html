@@ -6,27 +6,145 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
+    /* ── Design tokens — dark default, light overrides below ─────────────── */
     :root {
       --bg: #030914;
       --panel: #071224;
+      --panel-2: #0a1a2e;
       --border: rgba(0, 229, 255, 0.18);
       --accent: #00e5ff;
+      --accent-soft: rgba(0, 229, 255, 0.08);
       --text: #e2eaf4;
-      --grey: #8a9ba8;
+      --text-muted: #b3c4d2;
+      --grey: #9fb2bf;
       --green: #00ff99;
       --red: #ff3d3d;
       --orange: #ff7043;
       --yellow: #ffd700;
+      --amber: #ffb300;
+
+      --panel-shadow:  0 8px 32px rgba(0, 0, 0, 0.4);
+      --metric-bg:     rgba(0, 229, 255, 0.03);
+      --metric-border: rgba(0, 229, 255, 0.08);
+      --metric-glow:   0 0 10px rgba(0, 229, 255, 0.2);
+      --title-glow:    0 0 10px rgba(0, 229, 255, 0.3);
+      --sub-panel-bg:  rgba(0, 0, 0, 0.15);
+      --sub-panel-border: rgba(255, 255, 255, 0.04);
+      --buoy-bg:       rgba(255, 215, 0, 0.03);
+      --buoy-border:   rgba(255, 215, 0, 0.15);
+      --node-sensor-border: rgba(255, 255, 255, 0.08);
+      --node-auv-bg:   rgba(255, 112, 67, 0.04);
+      --node-auv-border: rgba(255, 112, 67, 0.3);
+      --state-active-bg:   rgba(0, 255, 153, 0.08);
+      --state-active-border: rgba(0, 255, 153, 0.3);
+      --state-sleep-bg:    rgba(138, 155, 168, 0.05);
+      --state-sleep-border: rgba(138, 155, 168, 0.15);
+      --path-bg:  rgba(0, 0, 0, 0.25);
+      --path-border: rgba(255, 255, 255, 0.08);
+      --path-divider: rgba(255, 255, 255, 0.04);
+      --scroll-track: rgba(0, 0, 0, 0.1);
+      --scroll-thumb: rgba(255, 255, 255, 0.15);
+      --scroll-thumb-hover: rgba(255, 255, 255, 0.3);
+      --warn-bg: rgba(255, 61, 61, 0.08);
+      --warn-border: rgba(255, 61, 61, 0.3);
+
+      --font-sans: 'Rajdhani', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --font-mono: 'Share Tech Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    }
+
+    /* ── Light theme ────────────────────────────────────────────────────── */
+    html[data-theme="light"] {
+      --bg: #eef3f8;
+      --panel: #ffffff;
+      --panel-2: #f4f8fb;
+      --border: rgba(0, 119, 182, 0.25);
+      --accent: #00648f;
+      --accent-soft: rgba(0, 119, 182, 0.08);
+      --text: #14243a;
+      --text-muted: #33485c;
+      --grey: #55697a;
+      --green: #0f8a5f;
+      --red: #c62828;
+      --orange: #d35400;
+      --yellow: #9a6b00;
+      --amber: #b26a00;
+
+      --panel-shadow:  0 8px 32px rgba(20, 45, 70, 0.12);
+      --metric-bg:     rgba(0, 119, 182, 0.04);
+      --metric-border: rgba(0, 119, 182, 0.12);
+      --metric-glow:   none;
+      --title-glow:    none;
+      --sub-panel-bg:  rgba(0, 119, 182, 0.03);
+      --sub-panel-border: rgba(0, 0, 0, 0.07);
+      --buoy-bg:       rgba(154, 107, 0, 0.05);
+      --buoy-border:   rgba(154, 107, 0, 0.22);
+      --node-sensor-border: rgba(0, 0, 0, 0.12);
+      --node-auv-bg:   rgba(211, 84, 0, 0.06);
+      --node-auv-border: rgba(211, 84, 0, 0.32);
+      --state-active-bg:   rgba(15, 138, 95, 0.10);
+      --state-active-border: rgba(15, 138, 95, 0.35);
+      --state-sleep-bg:    rgba(95, 115, 130, 0.07);
+      --state-sleep-border: rgba(95, 115, 130, 0.22);
+      --path-bg:  #f7fafc;
+      --path-border: rgba(0, 0, 0, 0.10);
+      --path-divider: rgba(0, 0, 0, 0.07);
+      --scroll-track: rgba(0, 0, 0, 0.04);
+      --scroll-thumb: rgba(0, 0, 0, 0.20);
+      --scroll-thumb-hover: rgba(0, 0, 0, 0.35);
+      --warn-bg: rgba(198, 40, 40, 0.07);
+      --warn-border: rgba(198, 40, 40, 0.32);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: 'Rajdhani', sans-serif;
+      font-family: var(--font-sans);
       padding: 24px;
       line-height: 1.4;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
+
+    /* Visible focus states for keyboard navigation */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* Respect reduced-motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    /* ── Theme toggle button ────────────────────────────────────────────── */
+    #theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
+    }
+    #theme-toggle:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    #theme-toggle .theme-icon { font-size: 0.95rem; line-height: 1; }
+    #theme-toggle .theme-label { line-height: 1; }
 
     header {
       display: flex;
@@ -42,7 +160,7 @@
       letter-spacing: 0.05em;
       color: var(--accent);
       text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+      text-shadow: var(--title-glow);
     }
     header h1 span { color: var(--text); font-weight: 300; }
 
@@ -52,7 +170,7 @@
       gap: 14px;
       font-size: 0.95rem;
       color: var(--grey);
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
     }
     #live-dot {
       width: 10px; height: 10px;
@@ -78,8 +196,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(10px);
+      box-shadow: var(--panel-shadow);
     }
     .panel-title {
       font-size: 1.2rem;
@@ -107,16 +224,16 @@
       text-align: center;
       height: 120px;
       border-radius: 8px;
-      background: rgba(0, 229, 255, 0.03);
-      border: 1px solid rgba(0, 229, 255, 0.08);
+      background: var(--metric-bg);
+      border: 1px solid var(--metric-border);
       position: relative;
     }
     .metric-val {
       font-size: 2.2rem;
       font-weight: 700;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
       color: var(--accent);
-      text-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+      text-shadow: var(--metric-glow);
     }
     .metric-lbl {
       font-size: 0.85rem;
@@ -140,7 +257,7 @@
     .comp-val {
       font-size: 1.6rem;
       font-weight: 700;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
     }
     .comp-lbl {
       font-size: 0.8rem;
@@ -156,8 +273,8 @@
     }
     .buoy-card {
       flex: 1;
-      background: rgba(255, 215, 0, 0.03);
-      border: 1px solid rgba(255, 215, 0, 0.15);
+      background: var(--buoy-bg);
+      border: 1px solid var(--buoy-border);
       border-radius: 8px;
       padding: 12px;
       text-align: center;
@@ -169,7 +286,7 @@
       margin-bottom: 4px;
     }
     .buoy-pos {
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.8rem;
       color: var(--grey);
     }
@@ -190,26 +307,26 @@
       justify-content: center;
       padding: 8px 4px;
       border-radius: 6px;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.72rem;
       text-align: center;
       transition: all 0.3s ease;
     }
     .node-sensor {
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--node-sensor-border);
     }
     .node-auv {
-      border: 1px solid rgba(255, 112, 67, 0.3);
-      background: rgba(255, 112, 67, 0.04);
+      border: 1px solid var(--node-auv-border);
+      background: var(--node-auv-bg);
     }
     .state-active {
-      background: rgba(0, 255, 153, 0.08);
-      border-color: rgba(0, 255, 153, 0.3);
+      background: var(--state-active-bg);
+      border-color: var(--state-active-border);
       color: var(--green);
     }
     .state-sleeping {
-      background: rgba(138, 155, 168, 0.05);
-      border-color: rgba(138, 155, 168, 0.15);
+      background: var(--state-sleep-bg);
+      border-color: var(--state-sleep-border);
       color: var(--grey);
     }
     .pulse-dot {
@@ -223,23 +340,24 @@
       animation: pulse 1s infinite alternate;
     }
     .pulse-sleep {
-      background: #444;
+      background: var(--grey);
+      opacity: 0.5;
     }
 
     /* Paths Feed */
     .path-log {
       max-height: 240px;
       overflow-y: auto;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.8rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--path-border);
       border-radius: 8px;
       padding: 12px;
-      background: rgba(0,0,0,0.25);
+      background: var(--path-bg);
       line-height: 1.6;
     }
     .path-row {
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--path-divider);
       padding: 6px 0;
       display: flex;
       justify-content: space-between;
@@ -251,13 +369,13 @@
 
     /* Scrollbars */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+    ::-webkit-scrollbar-track { background: var(--scroll-track); }
+    ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
 
     .warning-banner {
-      background: rgba(255, 61, 61, 0.08);
-      border: 1px solid rgba(255, 61, 61, 0.3);
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
       padding: 12px;
       border-radius: 8px;
       margin-bottom: 20px;
@@ -273,11 +391,15 @@
   <header>
     <div style="display: flex; align-items: center; gap: 20px;">
       <h1>📡 Underwater Acoustic Network <span>· Multi-Gateway &amp; Relaying</span></h1>
-      <span id="env-badge" style="background: rgba(255,209,102,0.12); color: #FFD166; border: 1px solid rgba(255,209,102,0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">☀️ Normal Season</span>
-      <a href="dashboard.html" style="color: var(--accent); font-size: 0.85rem; text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 6px; background: rgba(0,229,255,0.08); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">⚓ Harbor Traffic Dashboard</a>
+      <span id="env-badge" style="background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 32%, transparent); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">☀️ Normal Season</span>
+      <a href="dashboard.html" style="color: var(--accent); font-size: 0.85rem; text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 6px; background: var(--accent-soft); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">⚓ Harbor Traffic Dashboard</a>
     </div>
     <div id="status-row">
-      <div id="live-dot"></div>
+      <button id="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle light / dark theme">
+        <span class="theme-icon" aria-hidden="true">🌙</span>
+        <span class="theme-label">Dark</span>
+      </button>
+      <div id="live-dot" role="status" aria-label="Live telemetry status"></div>
       <span id="frame-lbl">Frame —</span>
       <span id="last-update">Waiting...</span>
     </div>
@@ -305,14 +427,14 @@
           <div class="metric-val" id="val-alerts" style="color: var(--red);">—</div>
           <div class="metric-lbl">Active Alerts</div>
         </div>
-        <div class="metric-card" style="background: rgba(0, 255, 153, 0.03); border-color: rgba(0, 255, 153, 0.12);">
+        <div class="metric-card" style="background: color-mix(in srgb, var(--green) 5%, transparent); border-color: color-mix(in srgb, var(--green) 16%, transparent);">
           <div class="metric-val" id="val-energy" style="color: var(--green);">—</div>
           <div class="metric-lbl">Total Energy Saved</div>
         </div>
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div class="panel" style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.04);">
+        <div class="panel" style="background: var(--sub-panel-bg); border: 1px solid var(--sub-panel-border);">
           <div class="panel-title" style="font-size: 0.95rem; margin-bottom: 8px;">Acoustic Transmission Latency</div>
           <div class="comp-block">
             <div class="comp-item">
@@ -327,7 +449,7 @@
           </div>
         </div>
 
-        <div class="panel" style="background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.04);">
+        <div class="panel" style="background: var(--sub-panel-bg); border: 1px solid var(--sub-panel-border);">
           <div class="panel-title" style="font-size: 0.95rem; margin-bottom: 8px;">Multi-Gateway Buoy Statuses</div>
           <div class="buoy-container">
             <div class="buoy-card">
@@ -371,6 +493,50 @@
   <script>
     const DATA_FILE = 'dashboard_data.json';
     const POLL_MS = 1000;
+
+    /* ── Theme toggle (light / dark) ─────────────────────────────────────── */
+    const THEME_KEY = 'harbor-dashboard-theme';   // shared key across both dashboards
+
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+      const btn = document.getElementById('theme-toggle');
+      if (btn) {
+        const isLight = theme === 'light';
+        btn.querySelector('.theme-icon').textContent = isLight ? '☀️' : '🌙';
+        btn.querySelector('.theme-label').textContent = isLight ? 'Light' : 'Dark';
+        btn.setAttribute('aria-pressed', String(isLight));
+      }
+      try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* storage unavailable */ }
+    }
+
+    function initTheme() {
+      let saved = null;
+      try { saved = localStorage.getItem(THEME_KEY); } catch (e) { /* storage unavailable */ }
+      if (saved !== 'light' && saved !== 'dark') {
+        const prefersLight = window.matchMedia &&
+                             window.matchMedia('(prefers-color-scheme: light)').matches;
+        saved = prefersLight ? 'light' : 'dark';
+      }
+      applyTheme(saved);
+    }
+
+    initTheme();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+          applyTheme(isLight ? 'dark' : 'light');
+        });
+      }
+    });
+
     let fallbackScript = null;
 
     function reloadDataFromScript() {
@@ -419,13 +585,13 @@
           if (eb) {
             eb.textContent = data.environment.badge;
             if (data.environment.scenario_key === 'MONSOON') {
-              eb.style.color = '#FF6B6B';
-              eb.style.borderColor = 'rgba(255,107,107,0.4)';
-              eb.style.background = 'rgba(255,107,107,0.14)';
+              eb.style.color = 'var(--red)';
+              eb.style.borderColor = 'color-mix(in srgb, var(--red) 40%, transparent)';
+              eb.style.background = 'color-mix(in srgb, var(--red) 14%, transparent)';
             } else {
-              eb.style.color = '#FFD166';
-              eb.style.borderColor = 'rgba(255,209,102,0.4)';
-              eb.style.background = 'rgba(255,209,102,0.12)';
+              eb.style.color = 'var(--amber)';
+              eb.style.borderColor = 'color-mix(in srgb, var(--amber) 40%, transparent)';
+              eb.style.background = 'color-mix(in srgb, var(--amber) 14%, transparent)';
             }
           }
         }
