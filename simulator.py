@@ -39,6 +39,29 @@ COLLECTED_FILE  = os.path.join(SCRIPT_DIR, "collected_data.csv")
 # Live inference snapshot written by mlmodel.py
 LIVE_FILE       = os.path.join(_TMP, "stage3_live_sensor_data.csv")
 
+# ── GPU Physics Engine Setup ──────────────────────────────────────────────────
+_USE_GPU = torch.cuda.is_available()
+_GPU_DEVICE = torch.device('cuda:0' if _USE_GPU else 'cpu')
+_GPU_NAME = torch.cuda.get_device_name(0) if _USE_GPU else "CPU"
+if _USE_GPU:
+    print(f"[GPU Physics Engine] CUDA acceleration active on: {_GPU_NAME}")
+
+def get_gpu_info():
+    """Return hardware acceleration status."""
+    return {
+        "cuda_available": _USE_GPU,
+        "device": _GPU_NAME,
+        "device_type": _GPU_DEVICE.type
+    }
+
+_total_collected_rows = 0
+if os.path.exists(COLLECTED_FILE):
+    try:
+        with open(COLLECTED_FILE, 'r', encoding='utf-8', errors='ignore') as _f:
+            _total_collected_rows = max(0, sum(1 for _ in _f) - 1)
+    except Exception:
+        pass
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Environmental Scenarios Configuration
@@ -264,19 +287,36 @@ def get_water_surface_height(x, y, t):
     In Normal season: flat calm surface (~0m, gentle ripple).
     In Monsoon season: severely disrupted water levels with storm surge,
     rolling chaotic waves, and turbulent crests.
+    Accelerated with PyTorch CUDA tensors when GPU is available.
     """
     scenario = get_active_scenario()
     is_monsoon = (scenario.get('key') == 'MONSOON')
+
+    if _USE_GPU and isinstance(x, np.ndarray) and x.size > 20:
+        with torch.inference_mode():
+            x_t = torch.as_tensor(x, device=_GPU_DEVICE, dtype=torch.float32)
+            y_t = torch.as_tensor(y, device=_GPU_DEVICE, dtype=torch.float32)
+            if not is_monsoon:
+                z_t = 0.35 * torch.sin(x_t/850.0 + t*1.2) * torch.cos(y_t/1100.0 + t*0.9)
+            else:
+                surge = float(OCEAN_STATE['surge_water_level'])
+                w1 = 2.4 * torch.sin(x_t/620.0 + y_t/820.0 - t*1.0)
+                w2 = 1.9 * torch.cos(x_t/440.0 - y_t/640.0 + t*1.2)
+                w3 = 1.2 * torch.sin(x_t/280.0 + t*1.4) * torch.cos(y_t/310.0 - t*1.3)
+                w4 = 0.7 * torch.sin((x_t - y_t)/160.0 + t*1.5)
+                squall_extra = float((OCEAN_STATE['squall_surge'] * 0.35) if OCEAN_STATE['squall_timer'] > 0 else 0.0)
+                z_t = surge + w1 + w2 + w3 + w4 + squall_extra
+            return z_t.cpu().numpy()
 
     if not is_monsoon:
         return 0.35 * np.sin(x/850.0 + t*1.2) * np.cos(y/1100.0 + t*0.9)
 
     surge = OCEAN_STATE['surge_water_level']
-    # Multi-harmonic chaotic storm wave superposition
-    w1 = 2.4 * np.sin(x/620.0 + y/820.0 - t*3.5)
-    w2 = 1.9 * np.cos(x/440.0 - y/640.0 + t*4.2)
-    w3 = 1.2 * np.sin(x/280.0 + t*5.1) * np.cos(y/310.0 - t*4.6)
-    w4 = 0.7 * np.sin((x - y)/160.0 + t*6.8)  # high-frequency foaming wave chop
+    # Multi-harmonic smooth ocean storm wave superposition
+    w1 = 2.4 * np.sin(x/620.0 + y/820.0 - t*1.0)
+    w2 = 1.9 * np.cos(x/440.0 - y/640.0 + t*1.2)
+    w3 = 1.2 * np.sin(x/280.0 + t*1.4) * np.cos(y/310.0 - t*1.3)
+    w4 = 0.7 * np.sin((x - y)/160.0 + t*1.5)
 
     squall_extra = (OCEAN_STATE['squall_surge'] * 0.35) if OCEAN_STATE['squall_timer'] > 0 else 0.0
     return surge + w1 + w2 + w3 + w4 + squall_extra
@@ -775,13 +815,19 @@ def collect_sensor_detections(fleet, sensors, frame):
     # 1. Process stationary sensors
     if sensors:
         sensor_xyz = np.array([s.pos for s in sensors], dtype=float)
-        # Vectorized distance using NumPy broadcasting
-        # Shape: (M_sens, 1, 3) - (1, N, 3) -> (M_sens, N, 3)
-        diff_3d = sensor_xyz[:, np.newaxis, :] - ship_xyz[np.newaxis, :, :]
-        dists_3d = np.linalg.norm(diff_3d, axis=2)
-        
-        diff_2d = sensor_xyz[:, np.newaxis, :2] - ship_xyz[np.newaxis, :, :2]
-        dists_2d = np.linalg.norm(diff_2d, axis=2)
+        if _USE_GPU and len(sensors) > 0 and len(fleet) > 0:
+            with torch.inference_mode():
+                s_t = torch.as_tensor(sensor_xyz, device=_GPU_DEVICE, dtype=torch.float32)
+                v_t = torch.as_tensor(ship_xyz, device=_GPU_DEVICE, dtype=torch.float32)
+                diff_2d_t = s_t[:, None, :2] - v_t[None, :, :2]
+                dists_2d = torch.linalg.vector_norm(diff_2d_t, dim=2).cpu().numpy()
+                diff_3d_t = s_t[:, None, :] - v_t[None, :, :]
+                dists_3d = torch.linalg.vector_norm(diff_3d_t, dim=2).cpu().numpy()
+        else:
+            diff_3d = sensor_xyz[:, np.newaxis, :] - ship_xyz[np.newaxis, :, :]
+            dists_3d = np.linalg.norm(diff_3d, axis=2)
+            diff_2d = sensor_xyz[:, np.newaxis, :2] - ship_xyz[np.newaxis, :, :2]
+            dists_2d = np.linalg.norm(diff_2d, axis=2)
         
         for i, (sx, sy, sz) in enumerate(sensors):
             for j, v in enumerate(fleet):
@@ -800,12 +846,19 @@ def collect_sensor_detections(fleet, sensors, frame):
     rob_states = auv.get_auv_states()
     if rob_states:
         rob_xyz = np.array([r['pos'] for r in rob_states])
-        # Vectorized distance using NumPy broadcasting
-        diff_3d_rob = rob_xyz[:, np.newaxis, :] - ship_xyz[np.newaxis, :, :]
-        dists_3d_rob = np.linalg.norm(diff_3d_rob, axis=2)
-        
-        diff_2d_rob = rob_xyz[:, np.newaxis, :2] - ship_xyz[np.newaxis, :, :2]
-        dists_2d_rob = np.linalg.norm(diff_2d_rob, axis=2)
+        if _USE_GPU and len(rob_states) > 0 and len(fleet) > 0:
+            with torch.inference_mode():
+                r_t = torch.as_tensor(rob_xyz, device=_GPU_DEVICE, dtype=torch.float32)
+                v_t = torch.as_tensor(ship_xyz, device=_GPU_DEVICE, dtype=torch.float32)
+                diff_2d_rob_t = r_t[:, None, :2] - v_t[None, :, :2]
+                dists_2d_rob = torch.linalg.vector_norm(diff_2d_rob_t, dim=2).cpu().numpy()
+                diff_3d_rob_t = r_t[:, None, :] - v_t[None, :, :]
+                dists_3d_rob = torch.linalg.vector_norm(diff_3d_rob_t, dim=2).cpu().numpy()
+        else:
+            diff_3d_rob = rob_xyz[:, np.newaxis, :] - ship_xyz[np.newaxis, :, :]
+            dists_3d_rob = np.linalg.norm(diff_3d_rob, axis=2)
+            diff_2d_rob = rob_xyz[:, np.newaxis, :2] - ship_xyz[np.newaxis, :, :2]
+            dists_2d_rob = np.linalg.norm(diff_2d_rob, axis=2)
         
         for i, r in enumerate(rob_states):
             rx, ry, rz = r['pos']
@@ -822,33 +875,16 @@ def collect_sensor_detections(fleet, sensors, frame):
                     )
                     new_rows.append(row)
 
-    # Atomic append: write to a temp file, then merge
+    # Fast direct append: avoids reading and rewriting entire multi-megabyte CSV on every frame
+    global _total_collected_rows
     if new_rows:
-        new_df    = pd.DataFrame(new_rows)
+        new_df = pd.DataFrame(new_rows)
         file_exists = os.path.exists(COLLECTED_FILE)
-        tmp_path  = COLLECTED_FILE + ".tmp"
         try:
-            if file_exists:
-                # Read existing, concatenate, write back atomically.
-                # low_memory=False avoids the mixed-type DtypeWarning on Sea_State.
-                existing = pd.read_csv(COLLECTED_FILE, low_memory=False)
-                combined = pd.concat([existing, new_df], ignore_index=True)
-            else:
-                combined = new_df
-            combined.to_csv(tmp_path, index=False)
-            os.replace(tmp_path, COLLECTED_FILE)
-        except Exception:
-            # Fallback: simple append (less safe but won't crash the simulation)
             new_df.to_csv(COLLECTED_FILE, mode='a',
-                          header=not file_exists, index=False)
+                          header=not file_exists, index=False, encoding='utf-8')
+            _total_collected_rows += len(new_rows)
+        except Exception:
+            pass
 
-    # Return total row count for status display
-    total_rows = 0
-    try:
-        if os.path.exists(COLLECTED_FILE):
-            total_rows = sum(1 for _ in open(COLLECTED_FILE)) - 1  # -1 for header
-    except OSError as exc:
-        # Row count is display-only; report rather than hide, but never crash
-        print(f"[Detection Data] Could not read row count: {exc}")
-
-    return sensor_active, max(total_rows, 0)
+    return sensor_active, max(_total_collected_rows, 0)

@@ -227,7 +227,11 @@ class NotificationSidebar(tk.Frame):
     Never obscures the central 3D simulation viewport.
     """
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg='#0B132B', width=380, bd=1, relief='solid', **kwargs)
+        kwargs.setdefault('width', 380)
+        kwargs.setdefault('bg', '#0B132B')
+        kwargs.setdefault('bd', 1)
+        kwargs.setdefault('relief', 'solid')
+        super().__init__(master, **kwargs)
         self.pack_propagate(False)
         self.notifications: List[Notification] = []
         self._notification_widgets: Dict[int, tk.Frame] = {}
@@ -531,7 +535,11 @@ class NetworkDashboard(tk.Frame):
     quantitative metrics, and dynamically streaming simulation logs.
     """
     def __init__(self, master, **kwargs):
-        super().__init__(master, bg='#0B132B', width=380, bd=1, relief='solid', **kwargs)
+        kwargs.setdefault('width', 380)
+        kwargs.setdefault('bg', '#0B132B')
+        kwargs.setdefault('bd', 1)
+        kwargs.setdefault('relief', 'solid')
+        super().__init__(master, **kwargs)
         self.pack_propagate(False)
 
         # Header: State badge + Health score & meter bar
@@ -922,7 +930,10 @@ def set_pause(paused):
     global is_paused
     is_paused = paused
     if 'btn_pause' in globals():
-        btn_pause.config(text="▶ Resume" if is_paused else "⏸ Pause")
+        if is_paused:
+            btn_pause.config(text="⏸ Paused", bg='#10B981', activebackground='#059669')
+        else:
+            btn_pause.config(text="⏸ Pause", bg='#2B4C6F', activebackground='#3A608F')
     status_var.set("Simulation paused" if is_paused else "Simulation running…")
 
 def toggle_pause():
@@ -932,6 +943,11 @@ def set_season(scenario_key):
     sim.set_active_scenario(scenario_key)
     sc = sim.get_active_scenario()
     season_var.set(f"{sc['badge']}")
+    if 'btn_season' in globals():
+        if scenario_key == 'MONSOON':
+            btn_season.config(text="⛈ Monsoon: ON", bg='#10B981', activebackground='#059669')
+        else:
+            btn_season.config(text="⇄ Season", bg='#2B4C6F', activebackground='#3A608F')
     status_var.set(f"Switched scenario to: {sc['name']} ({sc['badge']})")
     network.log_network_event(f"Season switched to: {sc['name']}")
     notify_info(f"Season switched to {sc['name']}", source="Scenario Control")
@@ -945,7 +961,11 @@ def trigger_squall_action():
     sim.set_active_scenario('MONSOON')
     sc = sim.get_active_scenario()
     season_var.set(f"{sc['badge']}")
+    if 'btn_season' in globals():
+        btn_season.config(text="⛈ Monsoon: ON", bg='#10B981', activebackground='#059669')
     surge = sim.trigger_monsoon_squall()
+    if 'btn_squall' in globals():
+        btn_squall.config(text="🌪 Squall: ON", bg='#10B981', activebackground='#059669')
     status_var.set(f"🌪️ Violent Gale Squall injected (+{surge:.2f} m/s)! Harsh currents surging!")
     notify_warning(f"Monsoon Gale Squall injected — current surge +{surge:.2f} m/s",
                    source="Monsoon Engine")
@@ -959,6 +979,9 @@ def reanchor_action():
     if '_net_banner_visible' in globals() and _net_banner_visible:
         net_broken_banner.place_forget()
         _net_banner_visible = False
+    if 'btn_reanchor' in globals():
+        btn_reanchor.config(text="⚓ Re-Anchored ✓", bg='#10B981')
+        root.after(2000, lambda: btn_reanchor.config(text="⚓ Re-Anchor", bg='#005F8A'))
     status_var.set("⚓ All 35 sensors re-anchored to seabed moorings. Network restored.")
     notify_info("All 35 sensors re-anchored to seabed moorings — network restored",
                 source="Sensor Recovery")
@@ -980,6 +1003,9 @@ def reset_simulation():
     if '_net_banner_visible' in globals() and _net_banner_visible:
         net_broken_banner.place_forget()
         _net_banner_visible = False
+    if 'btn_reset' in globals():
+        btn_reset.config(text="↺ Reset ✓", bg='#10B981')
+        root.after(1500, lambda: btn_reset.config(text="↺ Reset", bg='#2B4C6F'))
     status_var.set("Simulation reset to initial state.")
     notify_info("Simulation reset to initial state", source="System")
     canvas.draw_idle()
@@ -987,6 +1013,75 @@ def reset_simulation():
 def reset_view():
     ax.view_init(elev=28, azim=-55)
     canvas.draw_idle()
+    if 'btn_view' in globals():
+        btn_view.config(text="⟲ View ✓", bg='#10B981')
+        root.after(1000, lambda: btn_view.config(text="⟲ View", bg='#3A4C6C'))
+
+_sidebar_visible = True
+def toggle_sidebar():
+    global _sidebar_visible
+    _sidebar_visible = not _sidebar_visible
+    if _sidebar_visible:
+        if 'sidebar_container' in globals():
+            sidebar_container.grid(row=2, column=1, sticky='nsew', padx=(2, 0), pady=0)
+        if 'btn_sidebar' in globals():
+            btn_sidebar.config(text="◨ Sidebar", bg='#10B981', activebackground='#059669', fg='white')
+        _apply_sidebar_geometry()
+    else:
+        if 'sidebar_container' in globals():
+            sidebar_container.grid_remove()
+        root.grid_columnconfigure(1, minsize=0, weight=0)
+        if 'btn_sidebar' in globals():
+            btn_sidebar.config(text="◻ Sidebar (Off)", bg='#1E293B', activebackground='#334155', fg='#94A3B8')
+    if 'canvas' in globals():
+        canvas.draw_idle()
+
+_legend_visible = True
+def toggle_legend():
+    global _legend_visible
+    _legend_visible = not _legend_visible
+    if 'leg' in globals():
+        leg.set_visible(_legend_visible)
+    if 'btn_legend' in globals():
+        if _legend_visible:
+            btn_legend.config(text="📋 Legend", bg='#10B981', activebackground='#059669', fg='white')
+        else:
+            btn_legend.config(text="📋 Legend (Off)", bg='#1E293B', activebackground='#334155', fg='#94A3B8')
+    if 'canvas' in globals():
+        canvas.draw_idle()
+
+_label_mode = 'minimal'  # 'minimal' (clean #{id}), 'off' (no labels), 'full' (Type-ID [Zone])
+def cycle_labels():
+    global _label_mode
+    modes = ['minimal', 'off', 'full']
+    _label_mode = modes[(modes.index(_label_mode) + 1) % len(modes)]
+    label_titles = {'minimal': '🏷 Labels: Clean', 'off': '🏷 Labels: Off', 'full': '🏷 Labels: Full'}
+    if 'btn_labels' in globals():
+        if _label_mode != 'off':
+            btn_labels.config(text=label_titles[_label_mode], bg='#10B981', activebackground='#059669', fg='white')
+        else:
+            btn_labels.config(text="🏷 Labels: Off", bg='#1E293B', activebackground='#334155', fg='#94A3B8')
+    if _label_mode == 'off' and 'v_texts' in globals():
+        for t in v_texts:
+            t.set_text("")
+    if 'canvas' in globals():
+        canvas.draw_idle()
+
+def show_about_dialog():
+    messagebox.showinfo(
+        "About Harbor Traffic Control & UWSN Simulation",
+        "Harbor Traffic Control System with Underwater Sensor Network (UWSN)\n\n"
+        "• Key Capabilities:\n"
+        "  - Multi-hop acoustic depth-based routing (DBR)\n"
+        "  - Mobile autonomous underwater vehicle (AUV) relays\n"
+        "  - Real-time Normal vs Monsoon environmental effects\n"
+        "  - Stochastic wave surge, turbulence, and mooring strain physics\n"
+        "  - Live desktop network topology & telemetry dashboard\n"
+        "  - Dedicated notification panel (errors never obscure the viewport)\n\n"
+        "Status evaluation assesses gateway reachability, packet loss,\n"
+        "hop availability, and mooring integrity:\n"
+        "STABLE (>=75%) | DEGRADED (50-74%) | CRITICAL (20-49%) | COLLAPSED (<20%)."
+    )
 
 # ── Menubar ──────────────────────────────────────────────────────────────────
 menubar = tk.Menu(root)
@@ -1011,6 +1106,10 @@ view_menu = tk.Menu(menubar, tearoff=0)
 view_menu.add_command(label="⟲  Reset 3D View Angle", command=reset_view)
 view_menu.add_command(label="📊  Live Web Dashboard", command=open_dashboard)
 view_menu.add_separator()
+view_menu.add_command(label="📋  Toggle 3D Legend", command=toggle_legend, accelerator="Ctrl+L")
+view_menu.add_command(label="🏷  Cycle Vessel Labels", command=cycle_labels)
+view_menu.add_command(label="◨  Toggle Sidebar", command=toggle_sidebar, accelerator="Ctrl+B")
+view_menu.add_separator()
 view_menu.add_command(label="Toggle Notifications Panel", command=lambda: toggle_side_panel('notifications'))
 view_menu.add_command(label="Toggle Network Dashboard Panel", command=lambda: toggle_side_panel('network'))
 menubar.add_cascade(label="View", menu=view_menu)
@@ -1024,6 +1123,8 @@ root.config(menu=menubar)
 root.bind("<space>", lambda e: toggle_pause())
 root.bind("<Control-s>", lambda e: set_pause(False))
 root.bind("<Control-r>", lambda e: reset_simulation())
+root.bind("<Control-l>", lambda e: toggle_legend())
+root.bind("<Control-b>", lambda e: toggle_sidebar())
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 3a. Grid-based Responsive Layout — Professional Maritime Control Station
@@ -1093,12 +1194,30 @@ btn_reanchor = tk.Button(ctrl_group, text="⚓ Re-Anchor", bg='#005F8A', fg='whi
                          command=reanchor_action)
 btn_reanchor.pack(side=tk.LEFT, padx=3)
 
+btn_legend = tk.Button(ctrl_group, text="📋 Legend", bg='#10B981', fg='white',
+                       activebackground='#059669', activeforeground='white',
+                       font=btn_font, bd=0, padx=8, pady=4, cursor='hand2',
+                       command=toggle_legend)
+btn_legend.pack(side=tk.LEFT, padx=3)
+
+btn_labels = tk.Button(ctrl_group, text="🏷 Labels: Clean", bg='#10B981', fg='white',
+                       activebackground='#059669', activeforeground='white',
+                       font=btn_font, bd=0, padx=8, pady=4, cursor='hand2',
+                       command=cycle_labels)
+btn_labels.pack(side=tk.LEFT, padx=3)
+
 # Right-aligned buttons and counters
 btn_web = tk.Button(header_bar, text="📊 Web Dashboard", bg='#005F8A', fg='white',
                     activebackground='#0077B6', activeforeground='white',
                     font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
                     command=open_dashboard)
 btn_web.pack(side=tk.RIGHT, padx=8, pady=8)
+
+btn_sidebar = tk.Button(header_bar, text="◨ Sidebar", bg='#10B981', fg='white',
+                        activebackground='#059669', activeforeground='white',
+                        font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
+                        command=toggle_sidebar)
+btn_sidebar.pack(side=tk.RIGHT, padx=4, pady=8)
 
 btn_view = tk.Button(header_bar, text="⟲ View", bg='#3A4C6C', fg='white',
                      activebackground='#4A5F85', activeforeground='white',
@@ -1167,36 +1286,34 @@ tk.Label(bot_bar, text="LOC @ X=5000 m  │  Outer Yard X>5000  │  Inner Zone 
 # Grid weights: viewport takes all remaining width; sidebar is sized in px by
 # _apply_sidebar_geometry() so the viewport always keeps >= ~75% of the window.
 # SIDEBAR_TARGET_PCT keeps the 3D viewport at >=75% of the window on wide screens.
-# On narrow screens the sidebar auto-collapses so the viewport is never squeezed.
-SIDEBAR_TARGET_PCT = 0.22
-SIDEBAR_MINSIZE   = 400
-# Below this window width a full sidebar cannot leave the viewport at >=75%,
-# so the sidebar collapses automatically and the viewport takes the full width.
-SIDEBAR_COLLAPSE_W = 1700
+SIDEBAR_TARGET_PCT = 0.20
+SIDEBAR_MINSIZE   = 280
+SIDEBAR_COLLAPSE_W = 1100
 
 def _apply_sidebar_geometry(width_px=None):
     """
     Size the sidebar so the 3D viewport always keeps >= ~75% of the window.
-    On narrow windows (< SIDEBAR_COLLAPSE_W) the sidebar collapses entirely so
-    the simulation viewport is never squeezed below the target proportion.
+    When collapsed by user or on narrow windows (< SIDEBAR_COLLAPSE_W),
+    the sidebar hides completely and the 3D viewport takes 100% of the screen.
     """
+    if not _sidebar_visible:
+        root.grid_columnconfigure(1, minsize=0, weight=0)
+        if 'sidebar_container' in globals() and sidebar_container.winfo_ismapped():
+            sidebar_container.grid_remove()
+        return
     try:
         w = width_px or root.winfo_width()
         if w <= 1:
             return
         if w < SIDEBAR_COLLAPSE_W:
-            # Too narrow to afford the sidebar — collapse it to a slim rail
             root.grid_columnconfigure(1, minsize=0, weight=0)
-            if sidebar_container.winfo_ismapped():
+            if 'sidebar_container' in globals() and sidebar_container.winfo_ismapped():
                 sidebar_container.grid_remove()
             return
-        if not sidebar_container.winfo_ismapped():
-            sidebar_container.grid()
+        if 'sidebar_container' in globals() and not sidebar_container.winfo_ismapped():
+            sidebar_container.grid(row=2, column=1, sticky='nsew', padx=(2, 0), pady=0)
         desired = int(w * SIDEBAR_TARGET_PCT)
-        # Hard cap so the viewport always gets at least 75%
-        max_allowed = int(w * 0.25)
-        desired = min(desired, max_allowed)
-        desired = max(SIDEBAR_MINSIZE, desired)
+        desired = min(350, max(SIDEBAR_MINSIZE, desired))
         root.grid_columnconfigure(1, minsize=desired, weight=0)
     except Exception:
         pass
@@ -1226,6 +1343,8 @@ ax.zaxis._axinfo['grid'].update(color=C_GRID, linewidth=0.7)
 ax.grid(True)
 
 ax.set_xlim(0, MAP); ax.set_ylim(0, MAP); ax.set_zlim(-60, 70)
+ax.set_autoscale_on(False)
+ax.autoscale(False)
 ax.tick_params(colors='#555555', labelsize=7.5)
 for lbl in (ax.xaxis.label, ax.yaxis.label, ax.zaxis.label):
     lbl.set_color('#333333')
@@ -1238,7 +1357,7 @@ canvas = FigureCanvasTkAgg(fig, master=canvas_frame)
 canvas.get_tk_widget().grid(row=0, column=0, sticky='nsew')
 
 # ── Right Sidebar Container (Tabbed: Notifications | Network | Metrics) ───
-sidebar_container = tk.Frame(root, bg='#060D1A', width=420, bd=1, relief='solid')
+sidebar_container = tk.Frame(root, bg='#060D1A', width=340, bd=1, relief='solid')
 sidebar_container.grid(row=2, column=1, sticky='nsew', padx=(2, 0), pady=0)
 sidebar_container.grid_rowconfigure(2, weight=1)
 sidebar_container.grid_columnconfigure(0, weight=1)
@@ -1308,22 +1427,6 @@ def toggle_side_panel(which):
     elif which == 'network':
         toggle_side_panel('notifications')  # Single-panel sidebar: same toggle
 
-def show_about_dialog():
-    messagebox.showinfo(
-        "About Harbor Traffic Control & UWSN Simulation",
-        "Harbor Traffic Control System with Underwater Sensor Network (UWSN)\n\n"
-        "• Key Capabilities:\n"
-        "  - Multi-hop acoustic depth-based routing (DBR)\n"
-        "  - Mobile autonomous underwater vehicle (AUV) relays\n"
-        "  - Real-time Normal vs Monsoon environmental effects\n"
-        "  - Stochastic wave surge, turbulence, and mooring strain physics\n"
-        "  - Live desktop network topology & telemetry dashboard\n"
-        "  - Dedicated notification panel (errors never obscure the viewport)\n\n"
-        "Status evaluation assesses gateway reachability, packet loss,\n"
-        "hop availability, and mooring integrity:\n"
-        "STABLE (>=75%) | DEGRADED (50-74%) | CRITICAL (20-49%) | COLLAPSED (<20%)."
-    )
-
 # ── Sidebar tab buttons ────────────────────────────────────────────────────
 _tab_font = (Typography.FONT_SANS[0], Typography.SIZE_TINY, 'bold')
 
@@ -1343,6 +1446,11 @@ tk.Button(tab_strip, text="✕ Clear", font=_tab_font,
           bg='#111C38', fg='#64748B', activebackground='#16456E',
           activeforeground='#94A3B8', bd=0, padx=8, pady=4,
           cursor='hand2', command=notification_sidebar.clear_all).pack(side=tk.RIGHT, padx=2, pady=2)
+
+tk.Button(tab_strip, text="◀ Hide", font=_tab_font,
+          bg='#111C38', fg='#64748B', activebackground='#16456E',
+          activeforeground='#94A3B8', bd=0, padx=6, pady=4,
+          cursor='hand2', command=toggle_sidebar).pack(side=tk.RIGHT, padx=2, pady=2)
 
 # ── Install exception handlers routing to the notification sidebar ────────
 install_exception_handler(notification_sidebar)
@@ -1405,7 +1513,7 @@ Y_surf_pts = np.linspace(0, MAP, 18)
 X_surf, Y_surf = np.meshgrid(X_surf_pts, Y_surf_pts)
 Z_surf_init = sim.get_water_surface_height(X_surf, Y_surf, 0.0)
 ocean_surf = ax.plot_surface(X_surf, Y_surf, Z_surf_init,
-                             color=C_OCEAN_TOP, alpha=0.20, edgecolor='#90E0EF', linewidth=0.15)
+                             color=C_OCEAN_TOP, alpha=0.20, edgecolor='#90E0EF', linewidth=0.15, zorder=2)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 6. Zone floor shading
@@ -1429,7 +1537,7 @@ loc_verts = [
     [(LOC_X, 0,   -5), (LOC_X, MAP, -5),
      (LOC_X, MAP,  60), (LOC_X, 0,   60)]
 ]
-loc_poly = Poly3DCollection(loc_verts, alpha=0.18)
+loc_poly = Poly3DCollection(loc_verts, alpha=0.06)
 loc_poly.set_facecolor(C_LOC)
 loc_poly.set_edgecolor(C_LOC)
 ax.add_collection3d(loc_poly)
@@ -1646,7 +1754,7 @@ for a in auv_states:
     rx = ax_pos[0] + SENSING_RANGE * np.cos(theta_pts)
     ry = ax_pos[1] + SENSING_RANGE * np.sin(theta_pts)
     rz = np.full_like(theta_pts, ax_pos[2])
-    ring_line, = ax.plot(rx, ry, rz, color='#FF7043', linestyle='--', linewidth=0.9, alpha=0.45)
+    ring_line, = ax.plot(rx, ry, rz, color='#FF7043', linestyle='--', linewidth=0.6, alpha=0.12)
     auv_rings.append(ring_line)
     
     # Label text
@@ -1690,42 +1798,44 @@ SIZE_MAP = {'Cargo Ship': 28, 'Tanker': 32, 'Cruiser': 18, 'Ferry': 22, 'Speedbo
 # ─────────────────────────────────────────────────────────────────────────────
 legend_proxies = [
     Line2D([0],[0], marker='s', color='none', markerfacecolor='#E07B39',
-           markersize=11, label='Cargo  (HALT)',         linestyle='None', markeredgecolor='#555'),
+           markersize=9, label='Cargo (HALT)',           linestyle='None', markeredgecolor='#444'),
     Line2D([0],[0], marker='D', color='none', markerfacecolor='#C0392B',
-           markersize=11, label='Tanker (HALT)',         linestyle='None', markeredgecolor='#555'),
+           markersize=9, label='Tanker (HALT)',          linestyle='None', markeredgecolor='#444'),
     Line2D([0],[0], marker='P', color='none', markerfacecolor='#2E9E52',
-           markersize=11, label='Cruiser (SLOW)',        linestyle='None', markeredgecolor='#555'),
+           markersize=9, label='Cruiser (SLOW)',         linestyle='None', markeredgecolor='#444'),
     Line2D([0],[0], marker='h', color='none', markerfacecolor='#9B59B6',
-           markersize=11, label='Ferry  (SLOW)',         linestyle='None', markeredgecolor='#555'),
+           markersize=9, label='Ferry (SLOW)',           linestyle='None', markeredgecolor='#444'),
     Line2D([0],[0], marker='>', color='none', markerfacecolor='#3A7DD1',
-           markersize=9,  label='Speedboat (CONTINUE)',  linestyle='None', markeredgecolor='#555'),
+           markersize=8, label='Speedboat (CONTINUE)',   linestyle='None', markeredgecolor='#444'),
     Line2D([0],[0], marker='*', color='none', markerfacecolor='#16A085',
-           markersize=11, label='Fishing (CONTINUE)',    linestyle='None', markeredgecolor='#555'),
+           markersize=9, label='Fishing (CONTINUE)',     linestyle='None', markeredgecolor='#444'),
     Line2D([0],[0], marker='o', color='none', markerfacecolor=C_SENSOR_IDLE,
-           markersize=9,  label='Sensor — idle',         linestyle='None', markeredgecolor='#023E8A'),
+           markersize=7, label='Sensor — idle',          linestyle='None', markeredgecolor='#023E8A'),
     Line2D([0],[0], marker='o', color='none', markerfacecolor=C_SENSOR_ACTIVE,
-           markersize=9,  label='Sensor — active',       linestyle='None', markeredgecolor='#7D0000'),
+           markersize=7, label='Sensor — active',        linestyle='None', markeredgecolor='#7D0000'),
     Line2D([0],[0], marker='o', color='none', markerfacecolor='#FF1744',
-           markersize=9,  label='Sensor — Snapped/Drifting', linestyle='None', markeredgecolor='#FFD700'),
+           markersize=7, label='Sensor — Snapped',       linestyle='None', markeredgecolor='#FFD700'),
     Line2D([0],[0], marker='o', color='none', markerfacecolor='#FFB703',
-           markersize=9,  label='Sensor — Mooring Strained', linestyle='None', markeredgecolor='#FB8500'),
-    Line2D([0],[0], color='#00B4D8', linewidth=2.0, label='Water Current Flow Vector'),
+           markersize=7, label='Sensor — Strained',      linestyle='None', markeredgecolor='#FB8500'),
+    Line2D([0],[0], color='#00B4D8', linewidth=1.6,     label='Current Vector'),
     Line2D([0],[0], marker='D', color='none', markerfacecolor='#FF7043',
-           markersize=9,  label='Mobile AUV Node',       linestyle='None', markeredgecolor='#FFD700'),
-    Line2D([0],[0], color='#00E5FF', linewidth=1.5, linestyle='--', label='Active Multi-Hop Link'),
-    Line2D([0],[0], color='#5A7A8A', linewidth=0.8, linestyle=':', label='Topology Link'),
-    Line2D([0],[0], color=C_LOC, linewidth=2, linestyle='--', label='LOC — Line of Control'),
+           markersize=8, label='AUV Node',               linestyle='None', markeredgecolor='#FFD700'),
+    Line2D([0],[0], color='#00E5FF', linewidth=1.5, linestyle='--', label='Multi-Hop Link'),
+    Line2D([0],[0], color='#5A7A8A', linewidth=0.8, linestyle=':',  label='Topology Link'),
+    Line2D([0],[0], color=C_LOC, linewidth=1.8, linestyle='--',     label='LOC Barrier'),
 ]
 leg = ax.legend(handles=legend_proxies,
-                loc='upper right',
-                fancybox=True, framealpha=0.95,
+                loc='lower left',
+                bbox_to_anchor=(0.01, 0.02),
+                ncol=2,
+                fancybox=True, framealpha=0.72,
                 labelcolor='#111111',
                 facecolor='#FFFFFF',
                 edgecolor=C_BORDER,
-                fontsize=8,
+                fontsize=6.5,
                 title='  Fleet & Zones',
-                title_fontsize=9,
-                borderpad=0.9, labelspacing=0.6)
+                title_fontsize=7.5,
+                borderpad=0.35, labelspacing=0.25, handletextpad=0.3, columnspacing=0.6)
 leg.get_title().set_color(C_TITLE)
 leg.get_title().set_fontweight('bold')
 
@@ -1807,8 +1917,8 @@ def _master_loop_body(frame):
     ocean_env = sim.step_ocean_environment(frame, dt)
     sim.step_sensors(frame, dt)
 
-    # 2. Dynamic 3D ocean surface update (every 2 frames for smooth animation)
-    if frame % 2 == 0:
+    # 2. Dynamic 3D ocean surface update (every 4 frames for smooth 60 FPS animation)
+    if frame % 4 == 0:
         try:
             ocean_surf.remove()
         except Exception:
@@ -1817,9 +1927,9 @@ def _master_loop_body(frame):
         sc_key = sim.ACTIVE_SCENARIO_KEY
         if sc_key == 'MONSOON':
             surf_color = '#1B3A4B'
-            edge_color = '#E0FAFF' if (frame % 6 < 3) else '#468FAF'
-            surf_alpha = 0.38
-            surf_lw    = 0.30
+            edge_color = '#2C6E8A'  # Stable ocean edge: NO white glittering strobe
+            surf_alpha = 0.30
+            surf_lw    = 0.15
         else:
             surf_color = C_OCEAN_TOP
             edge_color = '#90E0EF'
@@ -1827,12 +1937,18 @@ def _master_loop_body(frame):
             surf_lw    = 0.15
         ocean_surf = ax.plot_surface(X_surf, Y_surf, Z_surf,
                                      color=surf_color, alpha=surf_alpha,
-                                     edgecolor=edge_color, linewidth=surf_lw)
+                                     edgecolor=edge_color, linewidth=surf_lw, zorder=2)
+        ax.set_xlim(0, MAP); ax.set_ylim(0, MAP); ax.set_zlim(-60, 70)
 
     # 3. Dynamic Water Current Flow Indicators (quivers)
     sc_key = sim.ACTIVE_SCENARIO_KEY
     is_monsoon = (sc_key == 'MONSOON')
     squall_active = ocean_env.get('squall_timer', 0) > 0
+    if 'btn_squall' in globals():
+        if squall_active:
+            btn_squall.config(text="🌪 Squall: ON", bg='#10B981', activebackground='#059669')
+        else:
+            btn_squall.config(text="🌪 Squall", bg='#8B1A1A', activebackground='#B22222')
     quiver_color = '#FF1744' if squall_active else ('#FF9E00' if is_monsoon else '#00B4D8')
     arrow_mult = 300.0 if not is_monsoon else 150.0
 
@@ -1886,18 +2002,16 @@ def _master_loop_body(frame):
         _rain_x = np.clip(_rain_x, 0, MAP)
         _rain_y = np.clip(_rain_y, 0, MAP)
         rain_scatter._offsets3d = (_rain_x, _rain_y, _rain_z)
-        rain_color = '#A8DADC' if not squall_active else '#E0FBFC'
-        rain_scatter.set_color(rain_color)
-        rain_scatter.set_alpha(0.35 + 0.25 * rain_intensity)
-        rain_scatter.set_sizes(np.full(_N_RAIN, 10.0 + 8.0 * rain_intensity))
+        rain_scatter.set_color('#468FAF')  # Calm oceanic blue rain, no white flashing
+        rain_scatter.set_alpha(0.20)
+        rain_scatter.set_sizes(np.full(_N_RAIN, 3.5))
     else:
         rain_scatter.set_alpha(0.0)
 
-    # 3d. Lightning Flash Effect on Squall Events — indicator lives in the HUD bar,
-    #     NOT over the 3D viewport (Phase 2: notifications must not obstruct the sim).
+    # 3d. Lightning Indicator on Squall Events — lives strictly in the HUD bar
     if squall_active and is_monsoon:
         _lightning_frame_count += 1
-        flash_on = (_lightning_frame_count % 8) < 4  # flicker every 4 frames
+        flash_on = (_lightning_frame_count % 8) < 4
         if flash_on:
             if not _lightning_visible:
                 lightning_label.pack(side=tk.RIGHT, padx=(4, 10), pady=4, before=net_health_label)
@@ -1906,13 +2020,13 @@ def _master_loop_body(frame):
             if _lightning_visible:
                 lightning_label.pack_forget()
                 _lightning_visible = False
-        fig.patch.set_facecolor('#0D1117' if flash_on else C_PANEL)
     else:
         _lightning_frame_count = 0
         if _lightning_visible:
             lightning_label.pack_forget()
             _lightning_visible = False
-        fig.patch.set_facecolor(C_PANEL)
+    # Background remains solid C_PANEL — never strobe the viewport background
+    fig.patch.set_facecolor(C_PANEL)
 
     # ── DYNAMIC UWSN PIPELINE ──────────────────────────────────────────────
     sensor_active, total_detections = sim.collect_sensor_detections(
@@ -2030,20 +2144,18 @@ def _master_loop_body(frame):
 
         active = sensor_active[i]
         if status == "SNAPPED":
-            blink = (frame % 4) < 2
-            fg = '#FF1744' if blink else '#9D0208'
-            edge = '#FFD700' if blink else '#D00000'
-            glow_alpha = 0.95
+            fg = '#E63946'
+            edge = '#D00000'
+            glow_alpha = 0.75
         elif status == "STRAINED":
             fg = '#FF9E00'
             edge = '#FB8500'
-            glow_alpha = 0.80
+            glow_alpha = 0.70
         elif active:
             active_count += 1
-            blink_on   = (frame % 6) < 3
-            fg         = C_SENSOR_ACTIVE if blink_on else '#FF6B6B'
-            edge       = '#7D0000'  if blink_on else C_SENSOR_ACTIVE
-            glow_alpha = 0.90 if blink_on else 0.50
+            fg         = C_SENSOR_ACTIVE
+            edge       = '#7D0000'
+            glow_alpha = 0.85
         else:
             fg         = C_SENSOR_IDLE
             edge       = '#023E8A'
@@ -2135,13 +2247,25 @@ def _master_loop_body(frame):
         v_plots[idx].set_marker(cfg['marker'])
         v_plots[idx].set_markersize(m_size)
 
-        # Label: TYPE-ID [ZONE] [DIR]
-        zone_tag = {'outer_yard': 'OY', 'inner_zone': 'IZ', 'harbor': 'H'}.get(
-            v.get('zone', 'outer_yard'), '?')
-        dir_tag  = v.get('direction', 'IN')[:2]
-        v_texts[idx].set_position((v['pos'][0], v['pos'][1]))
-        v_texts[idx].set_3d_properties(22)
-        v_texts[idx].set_text(f"{v['type'][:5]}-{v['id']} [{zone_tag}][{dir_tag}]")
+        # Label: Clean minimal #{id} by default, or Full / Off based on _label_mode
+        if _label_mode == 'off':
+            v_texts[idx].set_text("")
+        elif _label_mode == 'minimal':
+            if v.get('overspeed'):
+                v_texts[idx].set_text(f"⚠ #{v['id']}")
+                v_texts[idx].set_color('#D90429')
+            else:
+                v_texts[idx].set_text(f"#{v['id']}")
+                v_texts[idx].set_color('#111827')
+            v_texts[idx].set_position((v['pos'][0], v['pos'][1]))
+            v_texts[idx].set_3d_properties(18)
+        else:  # 'full'
+            zone_tag = {'outer_yard': 'OY', 'inner_zone': 'IZ', 'harbor': 'H'}.get(
+                v.get('zone', 'outer_yard'), '?')
+            v_texts[idx].set_position((v['pos'][0], v['pos'][1]))
+            v_texts[idx].set_3d_properties(22)
+            v_texts[idx].set_text(f"{v['type'][:4]}-{v['id']} [{zone_tag}]")
+            v_texts[idx].set_color('#111111')
 
         n_sensors = int(vessel_sensor_hits[idx])
         dashboard_vessels.append({
@@ -2186,8 +2310,8 @@ def _master_loop_body(frame):
         
         auv_labels[idx].set_position((ax_pos[0], ax_pos[1]))
         auv_labels[idx].set_3d_properties(ax_pos[2] + 4.0)
-        status_abbrev = {"PATROLLING": "PATR", "DISPATCHED": "DISP", "CHARGING": "CHRG"}.get(a["status"], "AUV")
-        auv_labels[idx].set_text(f"AUV-{a['id']} [{status_abbrev}] ({int(a['battery_pct'])}%)")
+        disp_tag = " [DISP]" if a["status"] == "DISPATCHED" else ""
+        auv_labels[idx].set_text(f"AUV-{a['id']}{disp_tag}")
 
     # Update active and topology communication lines
     pos_map = {}
@@ -2310,6 +2434,7 @@ def _master_loop_body(frame):
                 "active_sensors":    active_count,
                 "total_sensors":     len(sensors),
                 "ml_status":         ml_status,
+                "hardware":          sim.get_gpu_info(),
                 "violations":        violations,
                 "vessels":           dashboard_vessels,
                 "robots":            dashboard_robots,

@@ -1,0 +1,329 @@
+﻿================================================================================
+   HARBOR TRAFFIC CONTROL SYSTEM - COMPLETE PROJECT EXPLANATION
+   For Professor Presentation | Prepared: October 2026
+================================================================================
+
+--------------------------------------------------------------------------------
+WHAT IS THIS PROJECT IN ONE SENTENCE?
+--------------------------------------------------------------------------------
+A real-time 3D simulation of a smart harbor that uses UNDERWATER ACOUSTIC MODEMS
+(not WiFi, not Bluetooth) to form a sensor network that detects, classifies, and
+manages maritime vessel traffic - powered by machine learning and robotics.
+
+
+================================================================================
+SECTION 1: WHY NOT WIFI OR BLUETOOTH? (THE CORE MOTIVATION)
+================================================================================
+
+This is the most important concept to explain to your professor.
+
+WiFi and Bluetooth are RADIO WAVES. Radio waves travel through air extremely
+well. But water is a completely different story:
+
+  WHAT HAPPENS TO RADIO WAVES UNDERWATER:
+  ----------------------------------------
+  - Seawater is a conductor (salt + water = electrical conductor)
+  - Radio frequency (RF) signals are attenuated (absorbed) EXPONENTIALLY
+    by seawater
+  - At 2.4 GHz (WiFi frequency): signal dies within a FEW CENTIMETRES
+  - At 2.4 GHz (Bluetooth): same problem - dies within centimetres
+  - Even at lower RF frequencies (VLF), you need MASSIVE antenna arrays
+    like military submarines use
+
+  OUR SOLUTION - UNDERWATER ACOUSTIC MODEMS:
+  -------------------------------------------
+  - Sound waves travel through water VERY WELL (like how dolphins communicate!)
+  - In seawater, sound travels at ~1500 m/s (vs. 343 m/s in air)
+  - Acoustic modems operate at ~12,000 Hz (12 kHz) carrier frequency
+  - Communication range: up to 1,800 metres (R_comm = 1.8 km)
+  - Detection range: up to 2,000 metres (R_detect = 2.0 km)
+  - Bitrate: ~1000 bps (slow, but it WORKS underwater!)
+  - Transmit power: 10 Watts per modem
+
+  WHERE WE USE THIS IN CODE (simulator.py):
+  ------------------------------------------
+    AUV_COMM_FREQ_HZ = 12000         # 12 kHz acoustic carrier
+    AUV_COMM_SOURCE_LEVEL = 178.0    # dB re 1 uPa @ 1m (transmit power)
+    LINK_SNR_THRESHOLD_DB = 10.0     # minimum signal-to-noise ratio needed
+    AUV_COMM_RANGE_M = 1800          # max communication radius in metres
+
+  REAL PHYSICS EQUATIONS USED:
+  - Mackenzie (1981): sound speed in water (depends on temp, salinity, depth)
+  - Thorp (1967): acoustic absorption loss in dB per km
+  - Ross (1976): ship radiated noise (how loud a ship is acoustically)
+  - Wenz (1962): ambient ocean noise model (wind + shipping + biological)
+  - Nystuen rain noise model: +15 dB from monsoon rain hitting the surface
+
+
+================================================================================
+SECTION 2: THE BIG PICTURE - WHAT THE SIMULATION DOES
+================================================================================
+
+Imagine a harbor (10 km x 10 km area) divided into 3 zones:
+
+  OUTER YARD (x > 5000 m)     - Speed limit: 10 knots, open sea approach
+  INNER ZONE (700m < x < 5000m) - Speed limit: 6 knots, AUV patrol zone
+  HARBOR     (x < 700 m)      - Docking area, berths by vessel type
+
+The simulation runs at 60 frames per second with:
+  - 22 vessels (Cargo Ships, Tankers, Cruisers, Ferries, Speedboats, Fishing)
+  - 35 underwater hydrophone sensor nodes on the seabed
+  - 8 Autonomous Underwater Vehicles (AUVs) patrolling
+  - 3 surface buoy gateways (Buoy-Alpha, Buoy-Beta, Buoy-Gamma)
+
+
+================================================================================
+SECTION 3: THE ACOUSTIC SENSOR NETWORK (network.py)
+================================================================================
+
+HOW A LINK IS ESTABLISHED (critical concept):
+  Two nodes can talk ONLY IF:
+    1. Distance <= 1800 metres (within acoustic range)
+    2. SNR >= 10 dB (signal strong enough above background noise)
+
+  The SNR formula:
+    SNR = Source_Level - Transmission_Loss - Ambient_Noise
+
+  Transmission Loss = Spherical Spreading + Thorp Absorption
+    = 20 * log10(range_m) + absorption_coefficient * range_km
+
+DEPTH-BASED ROUTING (DBR) - Our Routing Protocol:
+  - Data "floats upward" towards the surface
+  - Each node forwards data to a neighbor closer to the surface (higher z)
+  - Uses Dijkstra shortest path (NetworkX library)
+  - Multi-hop: sensor -> sensor -> AUV -> buoy (2 to 8 hops)
+  - This protocol is designed specifically for underwater networks
+
+MULTI-GATEWAY DIVERSITY:
+  3 buoys (Alpha, Beta, Gamma) provide redundancy.
+  If one path is degraded, traffic reroutes through another gateway.
+
+DUTY CYCLING (Sleep/Wake Cycles):
+  - Sensors sleep to save battery, waking periodically
+  - Wake-up uses an acoustic PREAMBLE (a tone sent before each packet)
+  - Normal season: 94% availability
+  - Monsoon season: rain noise masks preamble -> only 65% availability
+  - This is a real challenge in underwater sensor networks!
+
+KEY NETWORK PARAMETERS:
+  V_SOUND = 1500 m/s            # Speed of sound in seawater
+  BITRATE_BPS = 1000            # ~1 kbps data rate (slow but underwater!)
+  SIZE_DEFAULT = 256 bytes      # Standard packet
+  SIZE_COMPRESSED = 16 bytes    # Compressed packet (header only)
+  Trans_delay = 256*8/1000 = 2.048 seconds per hop! (vs. WiFi microseconds)
+
+
+================================================================================
+SECTION 4: PACKET TRANSMISSION - WHAT YOU SEE ON SCREEN
+================================================================================
+
+When a sensor detects a vessel, a DATA PACKET is created and travels
+hop-by-hop through the acoustic network. You see this in real time:
+
+VISUAL INDICATORS:
+  Moving dot (*)    = packet in transit
+  Green dashed line = strong link (SNR >= 20 dB)
+  Cyan dashed line  = marginal link (SNR 12-20 dB)
+  Red dashed line   = weak link (SNR < 12 dB), risk of drop
+  Red X symbol      = PACKET DROPPED (acoustic failure)
+
+PACKET LIFECYCLE:
+  IN TRANSIT -> hops are progressing visually
+  DELIVERED  -> reached the buoy gateway successfully
+  DROPPED    -> lost due to insufficient SNR on a hop
+
+WHAT IS MEASURED PER PACKET:
+  - SNR on each hop (dB) - is the signal strong enough?
+  - Transmission delay per hop (seconds) - how long does each hop take?
+  - Energy consumed per hop (Joules) - battery cost per transmission
+  - Which hop failed (if dropped)
+
+
+================================================================================
+SECTION 5: MONSOON vs. NORMAL - THE KEY DEMO
+================================================================================
+
+NORMAL SEASON:
+  Sea state 2-3, wind 8-16 knots, no rain noise
+  -> SNR is high, links are stable, 94% sensors active
+  -> Network: STABLE, packet delivery ~90%+
+
+MONSOON SEASON:
+  Sea state 6-8, wind 36-52 knots, +15 dB rain noise, +9 dB bubble loss
+  -> Total SNR degradation: up to 24 dB
+  -> A link with 20 dB SNR now has -4 dB = COMPLETELY DEAD
+  -> Only 65% sensors available (preamble masked by rain noise)
+  -> Network: DEGRADED -> CRITICAL -> COLLAPSED
+
+SQUALL EVENTS (random, non-deterministic):
+  - 2.5% chance per frame of a violent gale squall
+  - Current spikes +1.8 to +3.4 m/s randomly
+  - Sensors snap off their moorings and drift away
+  - Too many drifted sensors = NETWORK COLLAPSED
+  - Solution: click "Reanchor Sensors" to restore the network
+
+THE KEY DEMONSTRATION POINT FOR YOUR PROFESSOR:
+  "Even acoustic modems - the best technology available for underwater
+   communication - struggle severely in monsoon conditions. If we had
+   tried to use WiFi or Bluetooth, it would have failed completely even
+   in calm conditions. This simulation proves exactly WHY underwater
+   networking requires specialized protocols, acoustic modems, and
+   intelligent routing like DBR."
+
+
+================================================================================
+SECTION 6: ML COMPONENT - VESSEL CLASSIFICATION (mlmodel.py)
+================================================================================
+
+WHY ML?
+  A hydrophone hears a ship but doesn't know WHAT TYPE it is.
+  Different ships have different acoustic signatures.
+  We train a neural network to classify them from sensor readings.
+
+THE MODEL:
+  - Architecture: VesselMLP (Multi-Layer Perceptron in PyTorch)
+  - Runs on GPU (CUDA) if available, otherwise CPU
+  - Input: 18 features (speed, heading, acoustic source level,
+    Doppler shift, bearing, range, depth, temperature, salinity...)
+  - Output 1: Vessel Type (6 classes)
+  - Output 2: Vessel Weight in kg (regression)
+
+ONLINE RETRAINING:
+  - Every detection is saved to collected_data.csv (live data growing)
+  - After 100+ new rows, the model automatically retrains
+  - Validation gate: new model accepted only if validation loss improves
+  - So the system learns and improves in real time!
+
+DOPPLER SHIFT:
+  Moving ships shift the acoustic frequency (like ambulance siren effect):
+    f_received = f_source * (v_sound / (v_sound - v_radial))
+  This is captured as a feature to help classify vessel motion patterns.
+
+
+================================================================================
+SECTION 7: AUV ROBOTS (auv.py)
+================================================================================
+
+8 AUVs act as MOBILE NETWORK RELAY NODES:
+  - Fill communication gaps between fixed sensors
+  - Intercept vessels violating speed/zone rules
+  - Recharge at surface buoys when battery low
+
+AUV PHYSICS:
+  Max speed: 10 m/s | Mass: 500 kg | Max thrust: 900 N
+  Drag: 0.85 | Battery drain: 0.015%/frame | Charge: 0.2%/frame
+
+BEHAVIORS:
+  PATROLLING  = moving waypoint-to-waypoint in assigned zone
+  DISPATCHED  = intercepting a violating vessel
+  CHARGING    = returning to surface buoy for recharge
+
+
+================================================================================
+SECTION 8: TRAFFIC MANAGEMENT (traffic_algo.py)
+================================================================================
+
+VIOLATIONS:
+  - Speed > 10 knots in Outer Yard
+  - Speed > 6 knots in Inner Zone
+  - Proximity < 400 m to another vessel
+  - Unauthorized zone entry
+
+RESPONSES:
+  - Event logged to network dashboard
+  - AUV dispatched to intercept
+  - Vessel speed reduced or halted
+  - Vessel directed to type-specific dock slot
+
+
+================================================================================
+SECTION 9: FILES EXPLAINED
+================================================================================
+
+  main.py             - 3D visualization + animation loop + UI controls
+  simulator.py        - Physics engine, ocean/weather simulation, vessels
+  network.py          - Acoustic network, DBR routing, packet transmission
+  network_manager.py  - AUV link management, telemetry collection
+  mlmodel.py          - PyTorch neural network, online training
+  traffic_algo.py     - Harbor traffic rules + dock assignment
+  auv.py              - AUV robot kinematics + patrol + battery
+  dashboard.html      - Web dashboard (opens at localhost:8000)
+  networking_dashboard.html - Network-focused web dashboard
+
+
+================================================================================
+SECTION 10: DEMO GUIDE FOR PROFESSOR
+================================================================================
+
+STEP 1: Start in NORMAL mode
+  -> Show stable network health (STABLE, ~100%)
+  -> Show packets delivering successfully (green links)
+  -> Show 22 vessels moving through zones
+
+STEP 2: Switch to MONSOON (toggle button top bar)
+  -> Watch network health drop
+  -> Watch packets start dropping (red X symbols)
+  -> Watch sensor availability fall to 65%
+
+STEP 3: Click "Trigger Squall" button
+  -> Violent current surge starts
+  -> Sensors snap off moorings and drift
+  -> Network collapses (COLLAPSED state)
+
+STEP 4: Click "Reanchor Sensors"
+  -> Network slowly recovers
+  -> Packet delivery resumes
+
+STEP 5: Open Web Dashboard (button top bar)
+  -> Show per-vessel type table
+  -> Show active acoustic links with SNR values
+  -> Show environment statistics
+
+
+================================================================================
+SECTION 11: Q&A CHEAT SHEET
+================================================================================
+
+Q: Why not WiFi underwater?
+A: WiFi = 2.4 GHz radio. Seawater conducts electricity and absorbs radio
+   waves within centimetres. Sound travels 1500 m/s through water - much better.
+
+Q: What frequency do the modems use?
+A: 12,000 Hz (12 kHz) - in the audio range, similar to a very high-pitched sound.
+
+Q: What is the communication range?
+A: 1,800 metres (1.8 km) per acoustic modem hop.
+
+Q: What data rate?
+A: 1,000 bits per second (1 kbps). Very slow vs WiFi (1 Gbps) but works!
+
+Q: What routing protocol?
+A: Depth-Based Routing (DBR). Data hops upward toward the surface gateway.
+
+Q: What is SNR and why does it matter?
+A: Signal-to-Noise Ratio in dB. If SNR < 10 dB, the signal is too weak
+   to decode. Background noise (waves, rain, ships) drowns out the signal.
+
+Q: How does monsoon affect the network?
+A: +15 dB rain noise + 9 dB bubble scattering = up to 24 dB more noise.
+   Links that worked fine go dead. Sensor preamble wake-up fails.
+
+Q: What is duty cycling?
+A: Sensors sleep to save battery, waking periodically for an acoustic
+   preamble. In monsoon, rain noise masks preambles = sensors miss wake-up.
+
+Q: What does the ML model do?
+A: Classifies vessel type from acoustic signatures using a PyTorch neural
+   network, retrained live as more detections accumulate.
+
+Q: What do AUVs do?
+A: Mobile relay nodes that fill network coverage gaps, intercept violating
+   vessels, and recharge at surface buoys when battery is low.
+
+Q: What is the network health score?
+A: 0-100% based on gateway reachability, packet loss rate, failed node
+   count, and delays. States: STABLE / DEGRADED / CRITICAL / COLLAPSED.
+
+================================================================================
+END OF DOCUMENT
+================================================================================
