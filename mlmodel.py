@@ -13,8 +13,14 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 import joblib
 from sklearn.model_selection import train_test_split
 
+import prediction_logger as pl
+
 SCRIPT_DIR        = os.path.dirname(os.path.abspath(__file__))
 _TMP              = tempfile.gettempdir()
+
+# Track the last simulation frame written to the validation log so a 60 FPS
+# animation loop produces a time-series rather than 60 duplicate rows/second.
+_last_validated_frame = -1
 
 # The ONE growing file that simulator.py writes to
 COLLECTED_FILE    = os.path.join(SCRIPT_DIR, "collected_data.csv")
@@ -174,26 +180,116 @@ def update_model_from_collected_data():
                 _cached_model.eval()
                 with torch.no_grad():
                     type_logits, weight_preds = _cached_model(X_tensor)
-                    _, type_indices = torch.max(type_logits, 1)
+                    type_probs = torch.softmax(type_logits, dim=1)
+                    confidences, type_indices = torch.max(type_probs, 1)
                 
                 # Move back to CPU
-                type_indices = type_indices.cpu().numpy()
-                weight_preds = weight_preds.cpu().numpy().astype(int)
+                type_indices  = type_indices.cpu().numpy()
+                weight_preds  = weight_preds.cpu().numpy()
+                confidences   = confidences.cpu().numpy()
                 
                 pred_types = _cached_le.inverse_transform(type_indices)
 
                 out = pd.DataFrame({
                     'Ship_ID':       feat['Ship_ID'].values,
                     'Pred_Type':     pred_types,
-                    'Pred_Weight_kg': weight_preds,
+                    'Pred_Weight_kg': weight_preds.astype(int),
                 })
                 _safe_write_csv(out, PREDS_FILE)
+
+                # ── Ground-truth validation log (Phase 5) ─────────────────────
+                # The same rows carry the simulator's authoritative Actual_*
+                # columns, so each prediction is compared against the vessel it
+                # was actually derived from — at the same simulation frame.
+                _log_validation(feat, pred_types, weight_preds, confidences,
+                                type_indices, type_probs)
         except Exception as e:
             print(f"[ML Inference Error] {e}")
             pass
         return f"ML LIVE ({_device.type.upper()}) — {n_rows} detections", True
 
     return f"Collecting ({n_rows}/{MIN_ROWS_TO_TRAIN})", False
+
+
+def _log_validation(feat, pred_types, weight_preds, confidences,
+                    type_indices, type_probs):
+    """
+    Append prediction + ground-truth pairs to the persistent validation log.
+
+    Ground truth comes from the simulator's own ``Actual_*`` columns on the same
+    detection rows (same vessel, same frame), so no value is compared against a
+    later-overwritten simulation state.
+
+    Only class and displacement are logged as predictions because those are the
+    two heads VesselMLP actually has. Speed is *measured* by the simulator and
+    heading is rule-derived, so they are recorded as NOT_PREDICTED rather than
+    being falsely credited to the model.
+    """
+    global _last_validated_frame
+    frame = feat['Timestamp'].max() if 'Timestamp' in feat.columns else 0
+    try:
+        frame = int(frame)
+    except (TypeError, ValueError):
+        frame = 0
+
+    scenario = 'UNKNOWN'
+    try:
+        import simulator as _sim
+        scenario = _sim.get_active_scenario()['key']
+    except Exception:
+        # Circular-import guard: simulator may not be initialised yet.
+        # Scenario stays UNKNOWN so the record is still written and queryable.
+        scenario = 'UNKNOWN'
+
+    # Log each vessel once per simulation frame to keep the log a time-series
+    # rather than 60 duplicate rows per second.
+    if frame == _last_validated_frame:
+        return
+    _last_validated_frame = frame
+
+    has_actual_type   = 'Actual_Type' in feat.columns
+    has_actual_weight = 'Actual_Weight_kg' in feat.columns
+    has_actual_speed  = 'Actual_Speed_knots' in feat.columns
+
+    for i in range(len(feat)):
+        ship_id = feat['Ship_ID'].values[i]
+
+        # ── Task 1: vessel class (ML classification head) ───────────────────
+        if has_actual_type:
+            pl.log_classification(
+                frame=frame,
+                scenario=scenario,
+                vessel_id=ship_id,
+                sensor_id=feat['Sensor_ID'].values[i] if 'Sensor_ID' in feat.columns else None,
+                predicted_type=pred_types[i],
+                actual_type=feat['Actual_Type'].values[i],
+                confidence=float(confidences[i]),
+            )
+
+        # ── Task 2: displacement (ML regression head) ──────────────────────
+        if has_actual_weight:
+            pl.log_regression(
+                frame=frame,
+                scenario=scenario,
+                vessel_id=ship_id,
+                task=pl.TASK_WEIGHT,
+                predicted_value=float(weight_preds[i]),
+                actual_value=float(feat['Actual_Weight_kg'].values[i]),
+                sensor_id=feat['Sensor_ID'].values[i] if 'Sensor_ID' in feat.columns else None,
+            )
+
+        # ── Speed: measured by the simulator, NOT predicted by any model ───
+        if has_actual_speed:
+            pl.log_not_predicted(
+                frame=frame,
+                scenario=scenario,
+                vessel_id=ship_id,
+                task=pl.TASK_SPEED,
+                actual_value=float(feat['Actual_Speed_knots'].values[i]),
+                source_kind='MEASURED',
+                model_name='simulator-speed',
+                unit='kn',
+            )
 
 
 def _retrain(df_all):

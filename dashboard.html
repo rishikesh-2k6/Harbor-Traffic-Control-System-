@@ -9,30 +9,149 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap"
     rel="stylesheet" />
   <style>
+    /* ── Design tokens — dark is the default; light overrides below ────────── */
     :root {
       --bg:         #080d14;
       --panel:      #0d1520;
       --panel2:     #0a1a10;
       --border:     #1a2b40;
       --accent:     #00e5ff;
+      --accent-soft: rgba(0, 229, 255, 0.08);
       --green:      #00ff99;
       --amber:      #ffb300;
-      --red:        #ff3d3d;  
+      --red:        #ff3d3d;
       --orange:     #ff7043;
       --blue:       #42a5f5;
-      --grey:       #5a7a8a;
+      --grey:       #6d8b9b;
       --text:       #cce8f0;
+      --text-strong:#e0f7fa;
+      --text-muted: #8a9ba8;
       --loc:        #ff6b35;
+
+      --header-grad-from: #020a10;
+      --header-grad-to:   #071624;
+      --stats-bg:   #0a1219;
+      --hover-row:  rgba(255, 255, 255, 0.03);
+      --row-divider:rgba(255, 255, 255, 0.04);
+      --card-green-bg: #0a1a12;
+      --card-shadow:  0 6px 22px rgba(0, 0, 255, 0.07);
+      --card-shadow-2:0 4px 12px rgba(0, 0, 0, 0.15);
+      --log-bg:      #04080c;
+      --log-text:    var(--green);
+      --pane-outer-bg: rgba(255, 112, 67, 0.02);
+      --pane-inner-bg: rgba(0, 255, 153, 0.02);
+      --meter-track: rgba(255, 255, 255, 0.05);
+      --meter-border:rgba(255, 255, 255, 0.10);
+      --scroll-track: var(--bg);
+      --scroll-thumb: var(--border);
+
+      --z-green:   #a5d6a7;
+      --z-ferry:   #C39BD3;
+      --z-speed:   #64b5f6;
+      --z-fishing: #76D7C4;
+      --badge-cargo: #E07B39;
+      --badge-tanker: #E74C3C;
+
+      --font-sans: 'Outfit', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      --font-mono: 'Share Tech Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace;
+    }
+
+    /* ── Light theme ────────────────────────────────────────────────────── */
+    html[data-theme="light"] {
+      --bg:         #f2f6fa;
+      --panel:      #ffffff;
+      --panel2:     #eef6f2;
+      --border:     #d3dfe9;
+      --accent:     #00648f;
+      --accent-soft: rgba(0, 119, 182, 0.08);
+      --green:      #0f8a5f;
+      --amber:      #b26a00;
+      --red:        #c62828;
+      --orange:     #d35400;
+      --blue:       #1565c0;
+      --grey:       #5f7382;
+      --text:       #1c2b3a;
+      --text-strong:#0d1b26;
+      --text-muted: #62778a;
+      --loc:        #d84315;
+
+      --header-grad-from: #ffffff;
+      --header-grad-to:   #e8f0f7;
+      --stats-bg:   #ffffff;
+      --hover-row:  rgba(0, 119, 182, 0.05);
+      --row-divider:rgba(0, 0, 0, 0.07);
+      --card-green-bg: #f2f9f5;
+      --card-shadow:  0 6px 22px rgba(0, 119, 182, 0.10);
+      --card-shadow-2:0 4px 12px rgba(15, 40, 60, 0.10);
+      --log-bg:      #0e1b26;
+      --log-text:    #6ee7b7;
+      --pane-outer-bg: rgba(211, 84, 0, 0.03);
+      --pane-inner-bg: rgba(15, 138, 95, 0.03);
+      --meter-track: rgba(0, 0, 0, 0.06);
+      --meter-border:rgba(0, 0, 0, 0.12);
+      --scroll-track: var(--bg);
+      --scroll-thumb: var(--border);
+
+      --z-green:   #1b5e20;
+      --z-ferry:   #6C3483;
+      --z-speed:   #1565c0;
+      --z-fishing: #0E6B5E;
+      --badge-cargo: #a8571f;
+      --badge-tanker: #b33628;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Respect reduced-motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Outfit', sans-serif;
+      font-family: var(--font-sans);
       min-height: 100vh;
+      line-height: 1.5;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
+
+    /* Visible focus states for keyboard navigation */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    /* ── Theme toggle button ────────────────────────────────────────────── */
+    #theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      white-space: nowrap;
+    }
+    #theme-toggle:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    #theme-toggle .theme-icon { font-size: 0.95rem; line-height: 1; }
+    #theme-toggle .theme-label { line-height: 1; }
 
     /* ── Header ─────────────────────────────────────────────────────────── */
     header {
@@ -40,7 +159,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 16px 32px;
-      background: linear-gradient(90deg, #020a10 0%, #071624 100%);
+      background: linear-gradient(90deg, var(--header-grad-from) 0%, var(--header-grad-to) 100%);
       border-bottom: 2px solid var(--loc);
       position: sticky;
       top: 0;
@@ -60,7 +179,7 @@
       gap: 14px;
       font-size: 0.82rem;
       color: var(--grey);
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
     }
     #live-dot {
       width: 10px; height: 10px;
@@ -77,8 +196,8 @@
     /* ── Violation Alert Banner ─────────────────────────────────────────── */
     #violation-banner {
       display: none;
-      background: rgba(255,61,61,0.12);
-      border: 1px solid #c62828;
+      background: color-mix(in srgb, var(--red) 12%, transparent);
+      border: 1px solid var(--red);
       border-left: 4px solid var(--red);
       margin: 14px 32px 0;
       border-radius: 10px;
@@ -100,14 +219,14 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,61,61,0.10);
-      border: 1px solid #c6282855;
+      background: color-mix(in srgb, var(--red) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--red) 35%, transparent);
       border-radius: 20px;
       padding: 3px 12px;
       margin: 3px 4px;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.75rem;
-      color: #ff8888;
+      color: var(--red);
     }
 
     /* ── Stats Bar ──────────────────────────────────────────────────────── */
@@ -115,7 +234,7 @@
       display: flex;
       gap: 12px;
       padding: 14px 32px;
-      background: #0a1219;
+      background: var(--stats-bg);
       border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
       align-items: center;
@@ -141,8 +260,8 @@
       border-radius: 20px;
       align-self: center;
     }
-    .zone-outer { background: rgba(255,112,67,0.18); color: var(--orange); border: 1px solid #ff704355; }
-    .zone-inner { background: rgba(0,255,153,0.10); color: var(--green); border: 1px solid #00ff9955; }
+    .zone-outer { background: color-mix(in srgb, var(--orange) 18%, transparent); color: var(--orange); border: 1px solid color-mix(in srgb, var(--orange) 35%, transparent); }
+    .zone-inner { background: color-mix(in srgb, var(--green) 12%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 35%, transparent); }
     .zone-divider {
       color: var(--loc);
       font-size: 1.1rem;
@@ -155,7 +274,7 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 5px 14px;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 0.72rem;
       color: var(--grey);
       align-self: center;
@@ -193,8 +312,8 @@
     }
     .zone-panel.outer .zone-panel-title { color: var(--orange); }
     .zone-panel.inner .zone-panel-title { color: var(--green); }
-    .zone-panel.outer { background: rgba(255,112,67,0.02); }
-    .zone-panel.inner { background: rgba(0,255,153,0.02); }
+    .zone-panel.outer { background: var(--pane-outer-bg); }
+    .zone-panel.inner { background: var(--pane-inner-bg); }
 
     /* ── Table (Outer Yard) ─────────────────────────────────────────────── */
     .ship-table {
@@ -213,13 +332,13 @@
     }
     .ship-table td {
       padding: 9px 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-family: 'Share Tech Mono', monospace;
-      color: #e0f7fa;
+      border-bottom: 1px solid var(--row-divider);
+      font-family: var(--font-mono);
+      color: var(--text-strong);
       vertical-align: middle;
     }
     .ship-table tr:last-child td { border-bottom: none; }
-    .ship-table tr:hover td { background: rgba(255,255,255,0.03); }
+    .ship-table tr:hover td { background: var(--hover-row); }
 
     /* ── Inner Zone cards ───────────────────────────────────────────────── */
     #inner-grid {
@@ -228,7 +347,7 @@
       gap: 14px;
     }
     .card {
-      background: #0a1a12;
+      background: var(--card-green-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 16px 18px;
@@ -236,7 +355,7 @@
       overflow: hidden;
       transition: transform 0.2s, box-shadow 0.2s;
     }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,255,153,0.07); }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--card-shadow); }
     .card::before {
       content: '';
       position: absolute;
@@ -254,35 +373,35 @@
     .card-title {
       font-size: 0.88rem;
       font-weight: 700;
-      color: #fff;
+      color: var(--text-strong);
       margin-bottom: 2px;
     }
     .card-sub {
       font-size: 0.68rem;
       color: var(--grey);
       margin-bottom: 10px;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
     }
     .card-row {
       display: flex;
       justify-content: space-between;
       padding: 4px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--row-divider);
       font-size: 0.76rem;
     }
     .card-row:last-child { border-bottom: none; }
     .card-lbl { color: var(--grey); }
-    .card-val { font-family: 'Share Tech Mono', monospace; color: #e0f7fa; }
+    .card-val { font-family: var(--font-mono); color: var(--text-strong); }
     .dock-badge {
       display: inline-block;
       padding: 2px 10px;
-      background: rgba(0,229,255,0.12);
-      border: 1px solid #00e5ff44;
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
       border-radius: 20px;
       color: var(--accent);
       font-size: 0.7rem;
       font-weight: 600;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
     }
 
     /* ── Command badges ─────────────────────────────────────────────────── */
@@ -297,12 +416,12 @@
       letter-spacing: 0.04em;
       white-space: nowrap;
     }
-    .cmd-halt    { background: rgba(255,61,61,0.14); color: var(--red);   border: 1px solid #c62828aa; }
-    .cmd-cont    { background: rgba(0,255,153,0.12); color: var(--green); border: 1px solid #00c97455; }
-    .cmd-slow    { background: rgba(255,179,0,0.12); color: var(--amber); border: 1px solid #e65100aa; }
-    .cmd-route   { background: rgba(0,229,255,0.10); color: var(--accent);border: 1px solid #00e5ff44; }
-    .cmd-dock    { background: rgba(66,165,245,0.12);color: var(--blue);  border: 1px solid #1565c0aa; }
-    .cmd-other   { background: rgba(100,100,120,.18); color: #999;        border: 1px solid #3a3a5040; }
+    .cmd-halt    { background: color-mix(in srgb, var(--red) 14%, transparent);   color: var(--red);    border: 1px solid color-mix(in srgb, var(--red) 45%, transparent); }
+    .cmd-cont    { background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--green);  border: 1px solid color-mix(in srgb, var(--green) 35%, transparent); }
+    .cmd-slow    { background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber);  border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent); }
+    .cmd-route   { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
+    .cmd-dock    { background: color-mix(in srgb, var(--blue) 14%, transparent);  color: var(--blue);   border: 1px solid color-mix(in srgb, var(--blue) 45%, transparent); }
+    .cmd-other   { background: color-mix(in srgb, var(--grey) 20%, transparent);  color: var(--grey);   border: 1px solid var(--border); }
 
     /* ── Type badge ─────────────────────────────────────────────────────── */
     .type-badge {
@@ -313,12 +432,12 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
-    .badge-cargo       { background:rgba(224,123,57,.18); color:#E07B39; border:1px solid #8B451355; }
-    .badge-tanker       { background:rgba(192,57,43,.18);  color:#E74C3C; border:1px solid #92190F55; }
-    .badge-cruiser      { background:rgba(76,175,80,.18);  color:#a5d6a7; border:1px solid #2e7d3255; }
-    .badge-ferry        { background:rgba(155,89,182,.18); color:#C39BD3; border:1px solid #6C3A8355; }
-    .badge-speedboat    { background:rgba(33,150,243,.18); color:#64b5f6; border:1px solid #1565c055; }
-    .badge-fishingvessel{ background:rgba(22,160,133,.18); color:#76D7C4; border:1px solid #0E6B5E55; }
+    .badge-cargo       { background: color-mix(in srgb, #E07B39 18%, transparent); color: var(--badge-cargo);       border: 1px solid color-mix(in srgb, #E07B39 35%, transparent); }
+    .badge-tanker       { background: color-mix(in srgb, #C0392B 18%, transparent); color: var(--badge-tanker);       border: 1px solid color-mix(in srgb, #C0392B 35%, transparent); }
+    .badge-cruiser      { background: color-mix(in srgb, var(--green) 18%, transparent); color: var(--z-green);         border: 1px solid color-mix(in srgb, var(--green) 35%, transparent); }
+    .badge-ferry        { background: color-mix(in srgb, #9B59B6 18%, transparent); color: var(--z-ferry);          border: 1px solid color-mix(in srgb, #9B59B6 35%, transparent); }
+    .badge-speedboat    { background: color-mix(in srgb, var(--blue) 18%, transparent);  color: var(--z-speed);         border: 1px solid color-mix(in srgb, var(--blue) 35%, transparent); }
+    .badge-fishingvessel{ background: color-mix(in srgb, #16A085 18%, transparent); color: var(--z-fishing);       border: 1px solid color-mix(in srgb, #16A085 35%, transparent); }
 
     /* ── Direction arrow ────────────────────────────────────────────────── */
     .dir-inbound  { color: var(--green); }
@@ -345,8 +464,8 @@
 
     /* ── Scrollbar ──────────────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-track { background: var(--scroll-track); }
+    ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
 
     /* ── Web UI Dashboard Phase 3 Styling ── */
     .robot-card {
@@ -357,14 +476,14 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: var(--card-shadow-2);
       text-align: left;
     }
     .robot-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid var(--row-divider);
       padding-bottom: 6px;
     }
     .robot-id {
@@ -379,9 +498,9 @@
       border-radius: 20px;
       text-transform: uppercase;
     }
-    .status-patrol { background: rgba(0,255,153,0.1); color: var(--green); border: 1px solid rgba(0,255,153,0.3); }
-    .status-disp { background: rgba(255,61,61,0.1); color: var(--red); border: 1px solid rgba(255,61,61,0.3); }
-    .status-chrg { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+    .status-patrol { background: color-mix(in srgb, var(--green) 12%, transparent); color: var(--green); border: 1px solid color-mix(in srgb, var(--green) 30%, transparent); }
+    .status-disp { background: color-mix(in srgb, var(--red) 12%, transparent); color: var(--red); border: 1px solid color-mix(in srgb, var(--red) 30%, transparent); }
+    .status-chrg { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); }
 
     .battery-container {
       display: flex;
@@ -391,10 +510,10 @@
     .battery-bar-bg {
       flex: 1;
       height: 8px;
-      background: rgba(255,255,255,0.05);
+      background: var(--meter-track);
       border-radius: 4px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--meter-border);
     }
     .battery-bar-fill {
       height: 100%;
@@ -409,13 +528,13 @@
     }
     .robot-info-val {
       color: var(--text);
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--font-mono);
     }
     .link-row {
       display: flex;
       justify-content: space-between;
       padding: 4px 6px;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--row-divider);
       font-size: 0.78rem;
     }
     .link-row:last-child { border-bottom: none; }
@@ -427,8 +546,8 @@
       border-radius: 4px;
       font-size: 0.65rem;
     }
-    .payload-telemetry { background: rgba(0,255,153,0.1); color: var(--green); }
-    .payload-beacon { background: rgba(90,122,138,0.1); color: var(--grey); }
+    .payload-telemetry { background: color-mix(in srgb, var(--green) 12%, transparent); color: var(--green); }
+    .payload-beacon { background: color-mix(in srgb, var(--grey) 14%, transparent); color: var(--grey); }
   </style>
 </head>
 
@@ -438,11 +557,15 @@
   <header>
     <div style="display: flex; align-items: center; gap: 20px;">
       <h1>⚓ Harbor <span>Traffic Control Center</span></h1>
-      <span id="env-badge" style="background: rgba(255,209,102,0.12); color: #FFD166; border: 1px solid rgba(255,209,102,0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">☀️ Normal Season</span>
-      <a href="networking_dashboard.html" style="color: var(--accent); font-size: 0.8rem; text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 6px; background: rgba(0,229,255,0.08); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">📡 Acoustic Network Dashboard</a>
+      <span id="env-badge" style="background: color-mix(in srgb, var(--amber) 14%, transparent); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 32%, transparent); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">☀️ Normal Season</span>
+      <a href="networking_dashboard.html" style="color: var(--accent); font-size: 0.8rem; text-decoration: none; border: 1px solid var(--border); padding: 4px 12px; border-radius: 6px; background: var(--accent-soft); display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">📡 Acoustic Network Dashboard</a>
     </div>
     <div id="status-row">
-      <div id="live-dot"></div>
+      <button id="theme-toggle" type="button" aria-label="Toggle light and dark theme" title="Toggle light / dark theme">
+        <span class="theme-icon" aria-hidden="true">🌙</span>
+        <span class="theme-label">Dark</span>
+      </button>
+      <div id="live-dot" role="status" aria-label="Live telemetry status"></div>
       <span id="frame-lbl">Frame —</span>
       <span id="last-update">—</span>
     </div>
@@ -580,7 +703,7 @@
         </div>
       </div>
       
-      <div id="active-links-list" style="max-height: 200px; overflow-y: auto; font-family: 'Share Tech Mono', monospace; font-size: 0.78rem; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: rgba(0,0,0,0.2);">
+      <div id="active-links-list" style="max-height: 200px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.78rem; border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: var(--panel2);">
         <div style="color: var(--grey);">No active links...</div>
       </div>
     </div>
@@ -589,7 +712,7 @@
     <div class="zone-panel" style="width: 100%;">
       <div class="zone-panel-title">📡 Live Packet Log & Relay Feed</div>
       <div class="zone-panel-sub">Real-time acoustic transmission packets routed through the harbor network</div>
-      <div id="packet-log" style="max-height: 180px; overflow-y: auto; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: #04080c; line-height: 1.5; color: var(--green); margin-top: 12px; text-align: left;">
+      <div id="packet-log" style="max-height: 180px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.75rem; border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: var(--log-bg); line-height: 1.5; color: var(--log-text); margin-top: 12px; text-align: left;">
         <div style="color: var(--grey);">Listening for packets...</div>
       </div>
     </div>
@@ -599,6 +722,51 @@
   <script>
     const DATA_FILE = 'dashboard_data.json';
     const POLL_MS   = 500;
+
+    /* ── Theme toggle (light / dark) ─────────────────────────────────────── */
+    const THEME_KEY = 'harbor-dashboard-theme';
+
+    function applyTheme(theme) {
+      const root = document.documentElement;
+      if (theme === 'light') {
+        root.setAttribute('data-theme', 'light');
+      } else {
+        root.removeAttribute('data-theme');
+      }
+      const btn = document.getElementById('theme-toggle');
+      if (btn) {
+        const isLight = theme === 'light';
+        btn.querySelector('.theme-icon').textContent = isLight ? '☀️' : '🌙';
+        btn.querySelector('.theme-label').textContent = isLight ? 'Light' : 'Dark';
+        btn.setAttribute('aria-pressed', String(isLight));
+      }
+      try { localStorage.setItem(THEME_KEY, theme); } catch (e) { /* storage unavailable */ }
+    }
+
+    function initTheme() {
+      let saved = null;
+      try { saved = localStorage.getItem(THEME_KEY); } catch (e) { /* storage unavailable */ }
+      if (saved !== 'light' && saved !== 'dark') {
+        // Sensible default: follow the OS preference, else dark
+        const prefersLight = window.matchMedia &&
+                             window.matchMedia('(prefers-color-scheme: light)').matches;
+        saved = prefersLight ? 'light' : 'dark';
+      }
+      applyTheme(saved);
+    }
+
+    // Apply immediately to avoid a flash of the wrong theme
+    initTheme();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+          applyTheme(isLight ? 'dark' : 'light');
+        });
+      }
+    });
 
     /* ── Command badge ─────────────────────────────────────────────────── */
     function cmdHtml(cmd) {
@@ -748,13 +916,13 @@
           if (eb) {
             eb.textContent = data.environment.badge;
             if (data.environment.scenario_key === 'MONSOON') {
-              eb.style.color = '#FF6B6B';
-              eb.style.borderColor = 'rgba(255,107,107,0.4)';
-              eb.style.background = 'rgba(255,107,107,0.14)';
+              eb.style.color = 'var(--red)';
+              eb.style.borderColor = 'color-mix(in srgb, var(--red) 40%, transparent)';
+              eb.style.background = 'color-mix(in srgb, var(--red) 14%, transparent)';
             } else {
-              eb.style.color = '#FFD166';
-              eb.style.borderColor = 'rgba(255,209,102,0.4)';
-              eb.style.background = 'rgba(255,209,102,0.12)';
+              eb.style.color = 'var(--amber)';
+              eb.style.borderColor = 'color-mix(in srgb, var(--amber) 40%, transparent)';
+              eb.style.background = 'color-mix(in srgb, var(--amber) 14%, transparent)';
             }
           }
         }
@@ -827,7 +995,7 @@
                   <div class="battery-bar-bg">
                     <div class="battery-bar-fill" style="width:${r.battery_pct}%; background:${batColor}"></div>
                   </div>
-                  <span style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:${batColor}">${Math.round(r.battery_pct)}%</span>
+                  <span style="font-family:var(--font-mono);font-size:0.75rem;color:${batColor}">${Math.round(r.battery_pct)}%</span>
                 </div>
                 <div class="robot-info-row">
                   <span>ZONE</span>

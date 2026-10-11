@@ -11,6 +11,11 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
 import numpy as np
 import json, os, time, webbrowser, http.server, socketserver, threading
+import traceback
+import queue
+import sys
+from datetime import datetime
+from typing import Optional, Dict, Any, List
 
 LAST_DASHBOARD_WRITE_TIME = 0.0
 
@@ -77,6 +82,417 @@ auv.spawn_auvs()
 MAP   = sim.MAP_SIZE        # 10 000 m
 SPEED_MULT = 8              # visual speed multiplier — ships traverse the map at a comfortable pace
 LOC_X = sim.LOC_X          # 5 000 m  — Line of Control
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1a. Typography System
+# ─────────────────────────────────────────────────────────────────────────────
+class Typography:
+    """Consistent typography system for the application."""
+    # Font families (with fallbacks)
+    FONT_MONO = ('Consolas', 'JetBrains Mono', 'Courier New', 'Monospace')
+    FONT_SANS = ('Segoe UI', 'Helvetica Neue', 'Arial', 'Sans-Serif')
+    
+    # Font sizes
+    SIZE_TITLE = 14
+    SIZE_HEADING = 11
+    SIZE_SUBHEADING = 9
+    SIZE_BODY = 9
+    SIZE_TELEMETRY = 10
+    SIZE_SMALL = 8
+    SIZE_TINY = 7
+    
+    # Weights
+    WEIGHT_NORMAL = 'normal'
+    WEIGHT_BOLD = 'bold'
+    WEIGHT_MEDIUM = 'normal'  # Segoe UI doesn't have medium, use normal
+    
+    @classmethod
+    def title(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_TITLE, cls.WEIGHT_BOLD), kwargs
+    
+    @classmethod
+    def heading(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_HEADING, cls.WEIGHT_BOLD), kwargs
+    
+    @classmethod
+    def subheading(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_SUBHEADING, cls.WEIGHT_BOLD), kwargs
+    
+    @classmethod
+    def body(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_BODY, cls.WEIGHT_NORMAL), kwargs
+    
+    @classmethod
+    def telemetry(cls, **kwargs):
+        return (cls.FONT_MONO[0], cls.SIZE_TELEMETRY, cls.WEIGHT_NORMAL), kwargs
+    
+    @classmethod
+    def telemetry_small(cls, **kwargs):
+        return (cls.FONT_MONO[0], cls.SIZE_SMALL, cls.WEIGHT_NORMAL), kwargs
+    
+    @classmethod
+    def button(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_SMALL, cls.WEIGHT_BOLD), kwargs
+    
+    @classmethod
+    def warning(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_SMALL, cls.WEIGHT_BOLD), kwargs
+    
+    @classmethod
+    def error(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_SMALL, cls.WEIGHT_BOLD), kwargs
+    
+    @classmethod
+    def metadata(cls, **kwargs):
+        return (cls.FONT_SANS[0], cls.SIZE_TINY, cls.WEIGHT_NORMAL), kwargs
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1b. Notification System (Phase 2)
+# ─────────────────────────────────────────────────────────────────────────────
+class NotificationLevel:
+    INFO = "INFO"
+    WARNING = "WARNING"
+    RECOVERABLE_ERROR = "RECOVERABLE_ERROR"
+    FATAL_ERROR = "FATAL_ERROR"
+
+
+class Notification:
+    """Represents a single notification with metadata."""
+    _counter = 0
+    
+    def __init__(self, level: str, message: str, details: str = "", source: str = ""):
+        Notification._counter += 1
+        self.id = Notification._counter
+        self.level = level
+        self.message = message
+        self.details = details
+        self.source = source
+        self.timestamp = datetime.now()
+        self.expanded = False
+        self.dismissed = False
+    
+    def get_color(self) -> str:
+        colors = {
+            NotificationLevel.INFO: '#38BDF8',
+            NotificationLevel.WARNING: '#FBBF24',
+            NotificationLevel.RECOVERABLE_ERROR: '#F97316',
+            NotificationLevel.FATAL_ERROR: '#EF4444',
+        }
+        return colors.get(self.level, '#94A3B8')
+    
+    def get_icon(self) -> str:
+        icons = {
+            NotificationLevel.INFO: 'ℹ',
+            NotificationLevel.WARNING: '⚠',
+            NotificationLevel.RECOVERABLE_ERROR: '⚡',
+            NotificationLevel.FATAL_ERROR: '💥',
+        }
+        return icons.get(self.level, '•')
+    
+    def get_level_label(self) -> str:
+        labels = {
+            NotificationLevel.INFO: 'INFO',
+            NotificationLevel.WARNING: 'WARN',
+            NotificationLevel.RECOVERABLE_ERROR: 'ERROR',
+            NotificationLevel.FATAL_ERROR: 'FATAL',
+        }
+        return labels.get(self.level, 'UNK')
+
+
+class NotificationQueue:
+    """Thread-safe queue for notifications from background threads."""
+    def __init__(self):
+        self._queue = queue.Queue()
+        self._lock = threading.Lock()
+    
+    def put(self, notification: Notification):
+        with self._lock:
+            self._queue.put(notification)
+    
+    def get_all(self) -> List[Notification]:
+        notifications = []
+        with self._lock:
+            while not self._queue.empty():
+                try:
+                    notifications.append(self._queue.get_nowait())
+                except queue.Empty:
+                    break
+        return notifications
+
+
+class NotificationSidebar(tk.Frame):
+    """
+    Dedicated sidebar for crash notifications, warnings, and system status messages.
+    Never obscures the central 3D simulation viewport.
+    """
+    def __init__(self, master, **kwargs):
+        super().__init__(master, bg='#0B132B', width=380, bd=1, relief='solid', **kwargs)
+        self.pack_propagate(False)
+        self.notifications: List[Notification] = []
+        self._notification_widgets: Dict[int, tk.Frame] = {}
+        self._seen_signatures = set()  # For deduplication
+        self._max_notifications = 100
+        
+        # Header
+        hdr_frame = tk.Frame(self, bg='#111C38', bd=1, relief='ridge', padx=10, pady=8)
+        hdr_frame.pack(fill='x', padx=8, pady=(8, 4))
+        
+        tk.Label(hdr_frame, text="🔔 NOTIFICATIONS & SYSTEM STATUS", font=('Segoe UI', 10, 'bold'),
+                 bg='#111C38', fg='#64FFDA').pack(anchor='w')
+        
+        # Filter/control row
+        ctrl_frame = tk.Frame(hdr_frame, bg='#111C38')
+        ctrl_frame.pack(fill='x', pady=(4, 0))
+        
+        self.filter_var = tk.StringVar(value="ALL")
+        filter_combo = ttk.Combobox(ctrl_frame, textvariable=self.filter_var, 
+                                     values=["ALL", "INFO", "WARNING", "ERROR", "FATAL"],
+                                     state='readonly', width=10, font=('Segoe UI', 8))
+        filter_combo.pack(side=tk.LEFT)
+        filter_combo.bind('<<ComboboxSelected>>', lambda e: self._refresh_display())
+        
+        tk.Button(ctrl_frame, text="Clear All", font=('Segoe UI', 8), 
+                  bg='#1E293B', fg='#94A3B8', bd=0, padx=8, pady=2,
+                  command=self.clear_all).pack(side=tk.RIGHT, padx=4)
+        
+        # Notification list container with scrollbar
+        list_wrap = tk.Frame(self, bg='#0B132B')
+        list_wrap.pack(fill='both', expand=True, padx=8, pady=(0, 8))
+        
+        self.canvas = tk.Canvas(list_wrap, bg='#060C18', highlightthickness=0)
+        self.scrollbar = ttk.Scrollbar(list_wrap, orient=tk.VERTICAL, command=self.canvas.yview)
+        self.scrollable_frame = tk.Frame(self.canvas, bg='#060C18')
+        
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        )
+        
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw", width=350)
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        
+        self.canvas.pack(side=tk.LEFT, fill='both', expand=True)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # Bind mousewheel
+        self.canvas.bind("<MouseWheel>", self._on_mousewheel)
+        self.scrollable_frame.bind("<MouseWheel>", self._on_mousewheel)
+        
+        # Empty state
+        self.empty_label = tk.Label(self.scrollable_frame, 
+                                     text="No notifications", 
+                                     font=('Segoe UI', 9), bg='#060C18', fg='#475569')
+        self.empty_label.pack(pady=20)
+    
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+    
+    def _make_signature(self, notification: Notification) -> str:
+        """Create a signature for deduplication."""
+        return f"{notification.level}:{notification.message}:{notification.source}"
+    
+    def add_notification(self, level: str, message: str, details: str = "", source: str = "") -> Optional[Notification]:
+        """Add a notification, returns None if duplicate."""
+        # Create temporary notification for signature check
+        temp_notif = Notification(level, message, details, source)
+        sig = self._make_signature(temp_notif)
+        
+        if sig in self._seen_signatures:
+            return None  # Duplicate
+        
+        self._seen_signatures.add(sig)
+        notification = temp_notif
+        self.notifications.append(notification)
+        
+        # Trim old notifications
+        if len(self.notifications) > self._max_notifications:
+            old = self.notifications.pop(0)
+            self._seen_signatures.discard(self._make_signature(old))
+            if old.id in self._notification_widgets:
+                self._notification_widgets[old.id].destroy()
+                del self._notification_widgets[old.id]
+        
+        self._render_notification(notification)
+        self._update_empty_state()
+        self._auto_scroll()
+        return notification
+    
+    def _render_notification(self, notification: Notification):
+        """Render a single notification widget."""
+        color = notification.get_color()
+        icon = notification.get_icon()
+        level_label = notification.get_level_label()
+        time_str = notification.timestamp.strftime("%H:%M:%S")
+        
+        # Main frame
+        frame = tk.Frame(self.scrollable_frame, bg='#0D1528', bd=1, relief='solid')
+        frame.pack(fill='x', pady=2, padx=2)
+        
+        # Header row
+        hdr = tk.Frame(frame, bg='#0D1528')
+        hdr.pack(fill='x', padx=8, pady=(6, 2))
+        
+        tk.Label(hdr, text=f"{icon} {level_label}", font=('Segoe UI', 8, 'bold'),
+                 bg='#0D1528', fg=color).pack(side=tk.LEFT)
+        
+        tk.Label(hdr, text=time_str, font=('Consolas', 7),
+                 bg='#0D1528', fg='#64748B').pack(side=tk.RIGHT)
+        
+        if notification.source:
+            tk.Label(hdr, text=f"[{notification.source}]", font=('Segoe UI', 7),
+                     bg='#0D1528', fg='#64748B').pack(side=tk.RIGHT, padx=(0, 8))
+        
+        # Message
+        msg_label = tk.Label(frame, text=notification.message, font=('Segoe UI', 8),
+                             bg='#0D1528', fg='#E2E8F0', wraplength=320, justify='left')
+        msg_label.pack(fill='x', padx=8, pady=(0, 4))
+        
+        # Expandable details
+        if notification.details:
+            details_frame = tk.Frame(frame, bg='#0D1528')
+            
+            def toggle_details():
+                notification.expanded = not notification.expanded
+                if notification.expanded:
+                    details_frame.pack(fill='x', padx=8, pady=(0, 6))
+                    expand_btn.config(text="▼ Details")
+                else:
+                    details_frame.pack_forget()
+                    expand_btn.config(text="▶ Details")
+            
+            expand_btn = tk.Button(frame, text="▶ Details", font=('Segoe UI', 7),
+                                   bg='#1E293B', fg='#94A3B8', bd=0, padx=6, pady=1,
+                                   command=toggle_details, cursor='hand2')
+            expand_btn.pack(anchor='w', padx=8, pady=(0, 2))
+            
+            # Details text with monospace font
+            details_text = tk.Text(details_frame, height=6, font=('Consolas', 7),
+                                   bg='#060C18', fg='#94A3B8', bd=0, wrap=tk.WORD)
+            details_text.insert('1.0', notification.details)
+            details_text.config(state='disabled')
+            details_text.pack(fill='x')
+            
+            # Copy button
+            def copy_details():
+                self.clipboard_clear()
+                self.clipboard_append(notification.details)
+                expand_btn.config(text="✓ Copied")
+                self.after(1500, lambda: expand_btn.config(text="▼ Details" if notification.expanded else "▶ Details"))
+            
+            tk.Button(details_frame, text="Copy", font=('Segoe UI', 7),
+                      bg='#1E293B', fg='#38BDF8', bd=0, padx=6, pady=1,
+                      command=copy_details, cursor='hand2').pack(anchor='e', pady=(2, 0))
+        
+        # Separator for fatal errors
+        if notification.level == NotificationLevel.FATAL_ERROR:
+            tk.Frame(frame, height=2, bg=color).pack(fill='x', padx=4, pady=(2, 0))
+        
+        self._notification_widgets[notification.id] = frame
+    
+    def _refresh_display(self):
+        """Refresh the display based on current filter."""
+        filter_val = self.filter_var.get()
+        
+        for notif_id, widget in self._notification_widgets.items():
+            notification = next((n for n in self.notifications if n.id == notif_id), None)
+            if notification:
+                if filter_val == "ALL" or notification.level == filter_val or \
+                   (filter_val == "ERROR" and notification.level in (NotificationLevel.RECOVERABLE_ERROR, NotificationLevel.FATAL_ERROR)):
+                    widget.pack(fill='x', pady=2, padx=2, before=self.empty_label)
+                else:
+                    widget.pack_forget()
+        
+        self._update_empty_state()
+    
+    def _update_empty_state(self):
+        filter_val = self.filter_var.get()
+        visible = any(
+            (filter_val == "ALL" or n.level == filter_val or 
+             (filter_val == "ERROR" and n.level in (NotificationLevel.RECOVERABLE_ERROR, NotificationLevel.FATAL_ERROR)))
+            for n in self.notifications
+        )
+        if visible:
+            self.empty_label.pack_forget()
+        else:
+            self.empty_label.pack(pady=20)
+    
+    def _auto_scroll(self):
+        self.after_idle(lambda: self.canvas.yview_moveto(1.0))
+    
+    def clear_all(self):
+        """Clear all notifications."""
+        for widget in self._notification_widgets.values():
+            widget.destroy()
+        self._notification_widgets.clear()
+        self.notifications.clear()
+        self._seen_signatures.clear()
+        self._update_empty_state()
+    
+    def get_notifications(self, level: str = None) -> List[Notification]:
+        """Get notifications, optionally filtered by level."""
+        if level is None:
+            return self.notifications.copy()
+        return [n for n in self.notifications if n.level == level]
+
+
+# Global notification queue for thread-safe access
+_notification_queue = NotificationQueue()
+
+
+def notify(level: str, message: str, details: str = "", source: str = ""):
+    """Thread-safe notification function for background threads."""
+    _notification_queue.put(Notification(level, message, details, source))
+
+
+def notify_info(message: str, details: str = "", source: str = ""):
+    _notification_queue.put(Notification(NotificationLevel.INFO, message, details, source))
+
+
+def notify_warning(message: str, details: str = "", source: str = ""):
+    _notification_queue.put(Notification(NotificationLevel.WARNING, message, details, source))
+
+
+def notify_error(message: str, details: str = "", source: str = "", recoverable: bool = True):
+    level = NotificationLevel.RECOVERABLE_ERROR if recoverable else NotificationLevel.FATAL_ERROR
+    _notification_queue.put(Notification(level, message, details, source))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1c. Exception Handler Integration
+# ─────────────────────────────────────────────────────────────────────────────
+def install_exception_handler(notification_sidebar: NotificationSidebar):
+    """Install a global exception handler that routes to the notification sidebar."""
+    def handle_exception(exc_type, exc_value, exc_tb):
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_tb)
+            return
+        
+        tb_str = ''.join(traceback.format_exception(exc_type, exc_value, exc_tb))
+        notification_sidebar.add_notification(
+            NotificationLevel.FATAL_ERROR,
+            f"{exc_type.__name__}: {exc_value}",
+            tb_str,
+            "Global Exception Handler"
+        )
+        print(f"[FATAL ERROR] {exc_type.__name__}: {exc_value}")
+        traceback.print_exception(exc_type, exc_value, exc_tb)
+    
+    sys.excepthook = handle_exception
+    
+    # Also wrap threading.excepthook for background threads
+    def handle_thread_exception(args):
+        tb_str = ''.join(traceback.format_exception(args.exc_type, args.exc_value, args.exc_traceback))
+        notification_sidebar.add_notification(
+            NotificationLevel.RECOVERABLE_ERROR,
+            f"Thread {args.thread.name}: {args.exc_type.__name__}: {args.exc_value}",
+            tb_str,
+            f"Thread:{args.thread.name}"
+        )
+        print(f"[THREAD ERROR] {args.thread.name}: {args.exc_type.__name__}: {args.exc_value}")
+    
+    threading.excepthook = handle_thread_exception
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 2. Design tokens
@@ -518,6 +934,7 @@ def set_season(scenario_key):
     season_var.set(f"{sc['badge']}")
     status_var.set(f"Switched scenario to: {sc['name']} ({sc['badge']})")
     network.log_network_event(f"Season switched to: {sc['name']}")
+    notify_info(f"Season switched to {sc['name']}", source="Scenario Control")
 
 def toggle_scenario():
     curr = sim.ACTIVE_SCENARIO_KEY
@@ -530,6 +947,8 @@ def trigger_squall_action():
     season_var.set(f"{sc['badge']}")
     surge = sim.trigger_monsoon_squall()
     status_var.set(f"🌪️ Violent Gale Squall injected (+{surge:.2f} m/s)! Harsh currents surging!")
+    notify_warning(f"Monsoon Gale Squall injected — current surge +{surge:.2f} m/s",
+                   source="Monsoon Engine")
 
 def reanchor_action():
     global _net_banner_visible
@@ -541,14 +960,18 @@ def reanchor_action():
         net_broken_banner.place_forget()
         _net_banner_visible = False
     status_var.set("⚓ All 35 sensors re-anchored to seabed moorings. Network restored.")
-
+    notify_info("All 35 sensors re-anchored to seabed moorings — network restored",
+                source="Sensor Recovery")
 
 def reset_simulation():
-    global fleet, is_paused, _net_banner_visible
+    global fleet, is_paused, _net_banner_visible, _net_collapse_notified, _loop_failure_streak
+    _loop_failure_streak = 0       # clear circuit breaker so the loop can restart
+    _net_collapse_notified = False
     sim.reset_all_sensors()
     sim.OCEAN_STATE['network_broken'] = False
     sim.OCEAN_STATE['squall_timer'] = 0.0
     network.reset_network()
+    tms.clear_dock_assignments()
     fleet = sim.generate_fleet()
     auv.init_physics()
     auv.spawn_auvs()
@@ -558,41 +981,16 @@ def reset_simulation():
         net_broken_banner.place_forget()
         _net_banner_visible = False
     status_var.set("Simulation reset to initial state.")
+    notify_info("Simulation reset to initial state", source="System")
     canvas.draw_idle()
 
 def reset_view():
     ax.view_init(elev=28, azim=-55)
     canvas.draw_idle()
 
-_net_dash_visible = True
-def toggle_net_dashboard():
-    global _net_dash_visible
-    if _net_dash_visible:
-        net_dashboard.pack_forget()
-        _net_dash_visible = False
-    else:
-        net_dashboard.pack(side=tk.RIGHT, fill=tk.Y)
-        _net_dash_visible = True
-
-def show_about_dialog():
-    messagebox.showinfo(
-        "About Harbor Traffic Control & UWSN Simulation",
-        "Harbor Traffic Control System with Underwater Sensor Network (UWSN)\n\n"
-        "• Key Capabilities:\n"
-        "  - Multi-hop acoustic depth-based routing (DBR)\n"
-        "  - Mobile autonomous underwater vehicle (AUV) relays\n"
-        "  - Real-time Normal vs Monsoon environmental effects\n"
-        "  - Stochastic wave surge, turbulence, and mooring strain physics\n"
-        "  - Live desktop network topology & telemetry dashboard\n\n"
-        "Status evaluation assesses gateway reachability, packet loss,\n"
-        "hop availability, and mooring integrity:\n"
-        "STABLE (≥75%) | DEGRADED (50–74%) | CRITICAL (20–49%) | COLLAPSED (<20%)."
-    )
-
 # ── Menubar ──────────────────────────────────────────────────────────────────
 menubar = tk.Menu(root)
 
-# 1. Simulation Menu
 sim_menu = tk.Menu(menubar, tearoff=0)
 sim_menu.add_command(label="▶  Start / Resume", command=lambda: set_pause(False), accelerator="Ctrl+S")
 sim_menu.add_command(label="⏸  Pause", command=lambda: set_pause(True), accelerator="Space")
@@ -601,7 +999,6 @@ sim_menu.add_separator()
 sim_menu.add_command(label="Exit", command=lambda: on_closing())
 menubar.add_cascade(label="Simulation", menu=sim_menu)
 
-# 2. Season Menu
 season_menu = tk.Menu(menubar, tearoff=0)
 season_menu.add_command(label="☀️  Normal Season", command=lambda: set_season('NORMAL'))
 season_menu.add_command(label="⛈️  Monsoon Season", command=lambda: set_season('MONSOON'))
@@ -610,126 +1007,208 @@ season_menu.add_command(label="🌪️  Trigger Gale Squall Surge", command=trig
 season_menu.add_command(label="⚓  Re-Anchor Sensors", command=reanchor_action)
 menubar.add_cascade(label="Season", menu=season_menu)
 
-# 3. View Menu
 view_menu = tk.Menu(menubar, tearoff=0)
 view_menu.add_command(label="⟲  Reset 3D View Angle", command=reset_view)
 view_menu.add_command(label="📊  Live Web Dashboard", command=open_dashboard)
 view_menu.add_separator()
-view_menu.add_command(label="Toggle Network Dashboard Panel", command=toggle_net_dashboard)
+view_menu.add_command(label="Toggle Notifications Panel", command=lambda: toggle_side_panel('notifications'))
+view_menu.add_command(label="Toggle Network Dashboard Panel", command=lambda: toggle_side_panel('network'))
 menubar.add_cascade(label="View", menu=view_menu)
 
-# 4. Help Menu
 help_menu = tk.Menu(menubar, tearoff=0)
 help_menu.add_command(label="About UWSN Simulation", command=show_about_dialog)
 menubar.add_cascade(label="Help", menu=help_menu)
 
 root.config(menu=menubar)
 
-# Keyboard shortcuts
 root.bind("<space>", lambda e: toggle_pause())
 root.bind("<Control-s>", lambda e: set_pause(False))
 root.bind("<Control-r>", lambda e: reset_simulation())
 
-# ── Top Toolbar ──────────────────────────────────────────────────────────────
-top_bar = tk.Frame(root, bg='#1A2B4C', height=40)
-top_bar.pack(side=tk.TOP, fill=tk.X)
+# ─────────────────────────────────────────────────────────────────────────────
+# 3a. Grid-based Responsive Layout — Professional Maritime Control Station
+# ─────────────────────────────────────────────────────────────────────────────
+# Row 0: Header (controls)
+# Row 1: Environment HUD bar
+# Row 2: Main content (3D viewport + sidebar)  ← expands to fill
+# Row 3: Footer status bar
+root.grid_rowconfigure(2, weight=1)    # main content expands
+root.grid_columnconfigure(0, weight=1) # viewport expands horizontally
 
-tk.Label(top_bar,
-         text=" ⚓ Harbor Traffic Control System ",
-         font=('Segoe UI', 11, 'bold'),
-         bg='#1A2B4C', fg='#FFFFFF').pack(side=tk.LEFT, padx=(8, 4), pady=6)
+# ── Header Bar (Row 0, spans 2 columns) ────────────────────────────────────
+header_bar = tk.Frame(root, bg='#0E1F3D', height=46, bd=0, relief='flat')
+header_bar.grid(row=0, column=0, columnspan=2, sticky='ew', padx=0, pady=0)
+header_bar.grid_propagate(False)
 
-# Simulation controls
-btn_pause = tk.Button(top_bar, text="⏸ Pause", bg='#2B4C6F', fg='white',
+title_font, _ = Typography.title()
+tk.Label(header_bar, text=" ⚓ HARBOR TRAFFIC CONTROL SYSTEM ",
+         font=title_font, bg='#0E1F3D', fg='#FFFFFF',
+         padx=10).pack(side=tk.LEFT, pady=8)
+
+subtitle_font, _ = Typography.metadata()
+tk.Label(header_bar, text="Underwater Sensor Network Control Station",
+         font=subtitle_font, bg='#0E1F3D', fg='#7BA7D7').pack(side=tk.LEFT, padx=(0, 16))
+
+# Season indicator badge
+season_var = tk.StringVar(value=f"{sim.get_active_scenario()['badge']}")
+season_badge_font, _ = Typography.telemetry_small()
+tk.Label(header_bar, textvariable=season_var,
+         font=(Typography.FONT_SANS[0], Typography.SIZE_SUBHEADING, 'bold'),
+         bg='#0F2847', fg='#FFD166', padx=12, pady=4,
+         relief='solid', bd=1).pack(side=tk.LEFT, padx=4, pady=8)
+
+btn_font, _ = Typography.button()
+
+# Simulation control buttons (centered group)
+ctrl_group = tk.Frame(header_bar, bg='#0E1F3D')
+ctrl_group.pack(side=tk.LEFT, padx=8)
+
+btn_pause = tk.Button(ctrl_group, text="⏸ Pause", bg='#2B4C6F', fg='white',
                       activebackground='#3A608F', activeforeground='white',
-                      font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
+                      font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
                       command=toggle_pause)
 btn_pause.pack(side=tk.LEFT, padx=3)
 
-btn_reset = tk.Button(top_bar, text="↺ Reset", bg='#2B4C6F', fg='white',
+btn_reset = tk.Button(ctrl_group, text="↺ Reset", bg='#2B4C6F', fg='white',
                       activebackground='#3A608F', activeforeground='white',
-                      font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
+                      font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
                       command=reset_simulation)
 btn_reset.pack(side=tk.LEFT, padx=3)
 
-# Season indicator badge & toggle
-season_var = tk.StringVar(value=f"{sim.get_active_scenario()['badge']}")
-tk.Label(top_bar, textvariable=season_var,
-         font=('Segoe UI', 8, 'bold'), bg='#0F2847', fg='#FFD166',
-         padx=8, pady=2, relief='groove', bd=1).pack(side=tk.LEFT, padx=6)
+btn_season = tk.Button(ctrl_group, text="⇄ Season", bg='#2B4C6F', fg='white',
+                       activebackground='#3A608F', activeforeground='white',
+                       font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
+                       command=toggle_scenario)
+btn_season.pack(side=tk.LEFT, padx=3)
 
-tk.Button(top_bar, text="⇄ Switch Season", bg='#2B4C6F', fg='white',
-          activebackground='#3A608F', activeforeground='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=toggle_scenario).pack(side=tk.LEFT, padx=3)
+btn_squall = tk.Button(ctrl_group, text="🌪 Squall", bg='#8B1A1A', fg='white',
+                       activebackground='#B22222', activeforeground='white',
+                       font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
+                       command=trigger_squall_action)
+btn_squall.pack(side=tk.LEFT, padx=3)
 
-tk.Button(top_bar, text="🌪️ Gale Squall", bg='#D62828', fg='white',
-          activebackground='#E63946', activeforeground='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=trigger_squall_action).pack(side=tk.LEFT, padx=3)
-
-tk.Button(top_bar, text="⚓ Re-Anchor Sensors", bg='#0077B6', fg='white',
-          activebackground='#0096C7', activeforeground='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=reanchor_action).pack(side=tk.LEFT, padx=3)
+btn_reanchor = tk.Button(ctrl_group, text="⚓ Re-Anchor", bg='#005F8A', fg='white',
+                         activebackground='#0077B6', activeforeground='white',
+                         font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
+                         command=reanchor_action)
+btn_reanchor.pack(side=tk.LEFT, padx=3)
 
 # Right-aligned buttons and counters
-tk.Button(top_bar, text="📊 Web Dashboard", bg='#0077B6', fg='white',
-          activebackground='#0096C7', activeforeground='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=open_dashboard).pack(side=tk.RIGHT, padx=8)
+btn_web = tk.Button(header_bar, text="📊 Web Dashboard", bg='#005F8A', fg='white',
+                    activebackground='#0077B6', activeforeground='white',
+                    font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
+                    command=open_dashboard)
+btn_web.pack(side=tk.RIGHT, padx=8, pady=8)
 
-tk.Button(top_bar, text="⟲ Reset View", bg='#3A4C6C', fg='white',
-          font=('Segoe UI', 8, 'bold'), bd=0, padx=8, pady=3, cursor='hand2',
-          command=reset_view).pack(side=tk.RIGHT, padx=4)
+btn_view = tk.Button(header_bar, text="⟲ View", bg='#3A4C6C', fg='white',
+                     activebackground='#4A5F85', activeforeground='white',
+                     font=btn_font, bd=0, padx=10, pady=4, cursor='hand2',
+                     command=reset_view)
+btn_view.pack(side=tk.RIGHT, padx=4, pady=8)
 
-frame_var      = tk.StringVar(value="Frame: 0000")
-sensor_var     = tk.StringVar(value="Active Sensors: 0")
-violation_var  = tk.StringVar(value="Violations: 0")
+frame_var      = tk.StringVar(value="0000")
+sensor_var     = tk.StringVar(value="0/35")
+violation_var  = tk.StringVar(value="0")
 
-tk.Label(top_bar, textvariable=violation_var,
-         font=('Segoe UI', 8, 'bold'), bg='#1A2B4C', fg='#FF6B6B').pack(side=tk.RIGHT, padx=6)
-tk.Label(top_bar, textvariable=sensor_var,
-         font=('Segoe UI', 8), bg='#1A2B4C', fg='#90CAF9').pack(side=tk.RIGHT, padx=6)
-tk.Label(top_bar, textvariable=frame_var,
-         font=('Segoe UI', 8), bg='#1A2B4C', fg='#90CAF9').pack(side=tk.RIGHT, padx=4)
+telemetry_font, _ = Typography.telemetry_small()
 
-# ── Dynamic Monsoon Environment & Water Current HUD Bar ─────────────────────
-hud_bar = tk.Frame(root, bg='#0B1B30', height=28)
-hud_bar.pack(side=tk.TOP, fill=tk.X)
+tk.Label(header_bar, text="⚠", font=telemetry_font, bg='#0E1F3D', fg='#FF6B6B').pack(side=tk.RIGHT, padx=(0, 2), pady=8)
+tk.Label(header_bar, textvariable=violation_var,
+         font=telemetry_font, bg='#0E1F3D', fg='#FF6B6B').pack(side=tk.RIGHT, padx=(0, 10), pady=8)
+tk.Label(header_bar, text="Sensors", font=telemetry_font, bg='#0E1F3D', fg='#7BA7D7').pack(side=tk.RIGHT, padx=(0, 2), pady=8)
+tk.Label(header_bar, textvariable=sensor_var,
+         font=telemetry_font, bg='#0E1F3D', fg='#90CAF9').pack(side=tk.RIGHT, padx=(0, 10), pady=8)
+tk.Label(header_bar, text="Frame", font=telemetry_font, bg='#0E1F3D', fg='#7BA7D7').pack(side=tk.RIGHT, padx=(0, 2), pady=8)
+tk.Label(header_bar, textvariable=frame_var,
+         font=telemetry_font, bg='#0E1F3D', fg='#90CAF9').pack(side=tk.RIGHT, padx=(0, 10), pady=8)
 
-water_level_var  = tk.StringVar(value="🌊 Water Level: Normal (0.0 m) | Wave H: 0.3 m")
-current_info_var = tk.StringVar(value="💨 Current: 0.35 m/s [Nominal Tide]")
-drift_status_var = tk.StringVar(value="⚓ Sensors: 35/35 Moored Securely")
-net_health_var   = tk.StringVar(value="📡 Network: STABLE (Health: 100%)")
+# ── Environment HUD Bar (Row 1, spans 2 columns) ───────────────────────────
+hud_bar = tk.Frame(root, bg='#0A1628', height=30, bd=0, relief='flat')
+hud_bar.grid(row=1, column=0, columnspan=2, sticky='ew', padx=0, pady=0)
+hud_bar.grid_propagate(False)
+
+water_level_var  = tk.StringVar(value="🌊 Normal (0.0 m) | Wave H: 0.3 m")
+current_info_var = tk.StringVar(value="💨 0.35 m/s [Nominal Tide]")
+drift_status_var = tk.StringVar(value="⚓ 35/35 Moored")
+net_health_var   = tk.StringVar(value="📡 STABLE (100%)")
+
+hud_font, _ = Typography.telemetry_small()
+
+net_health_label = tk.Label(hud_bar, textvariable=net_health_var,
+                            font=hud_font, bg='#0A1628', fg='#52B788')
+net_health_label.pack(side=tk.RIGHT, padx=12, pady=4)
 
 tk.Label(hud_bar, textvariable=water_level_var,
-         font=('Segoe UI', 8, 'bold'), bg='#0B1B30', fg='#48CAE4').pack(side=tk.LEFT, padx=10, pady=3)
+         font=hud_font, bg='#0A1628', fg='#48CAE4').pack(side=tk.LEFT, padx=12, pady=4)
+tk.Frame(hud_bar, bg='#1A2E4D', width=1, height=14).pack(side=tk.LEFT, pady=8, fill=tk.Y)
 tk.Label(hud_bar, textvariable=current_info_var,
-         font=('Segoe UI', 8, 'bold'), bg='#0B1B30', fg='#FFD166').pack(side=tk.LEFT, padx=14, pady=3)
+         font=hud_font, bg='#0A1628', fg='#FFD166').pack(side=tk.LEFT, padx=12, pady=4)
+tk.Frame(hud_bar, bg='#1A2E4D', width=1, height=14).pack(side=tk.LEFT, pady=8, fill=tk.Y)
 tk.Label(hud_bar, textvariable=drift_status_var,
-         font=('Segoe UI', 8, 'bold'), bg='#0B1B30', fg='#FFAA00').pack(side=tk.LEFT, padx=14, pady=3)
-tk.Label(hud_bar, textvariable=net_health_var,
-         font=('Segoe UI', 8, 'bold'), bg='#0B1B30', fg='#52B788').pack(side=tk.RIGHT, padx=12, pady=3)
+         font=hud_font, bg='#0A1628', fg='#FFAA00').pack(side=tk.LEFT, padx=12, pady=4)
 
-# ── Bottom status bar ─────────────────────────────────────────────────────
-bot_bar = tk.Frame(root, bg='#E2EAF4', height=24)
-bot_bar.pack(side=tk.BOTTOM, fill=tk.X)
+# ── Footer Status Bar (Row 3, spans 2 columns) ─────────────────────────────
+bot_bar = tk.Frame(root, bg='#0E1F3D', height=26, bd=0, relief='flat')
+bot_bar.grid(row=3, column=0, columnspan=2, sticky='ew', padx=0, pady=0)
+bot_bar.grid_propagate(False)
 
 status_var = tk.StringVar(value="Simulation running…")
+
+footer_font, _ = Typography.telemetry_small()
+tk.Label(bot_bar, text="●", font=footer_font, bg='#0E1F3D', fg='#00FF99').pack(side=tk.LEFT, padx=(10, 4))
 tk.Label(bot_bar, textvariable=status_var,
-         font=('Segoe UI', 8), bg='#E2EAF4', fg='#4A6FA5').pack(side=tk.LEFT, padx=10)
-tk.Label(bot_bar, text="LOC @ X=5000 m  |  Outer Yard (X>5000)  |  Inner Patrol Zone (X<5000)",
-         font=('Segoe UI', 8), bg='#E2EAF4', fg='#4A6FA5').pack(side=tk.RIGHT, padx=10)
+         font=footer_font, bg='#0E1F3D', fg='#B8D4E8').pack(side=tk.LEFT)
+tk.Label(bot_bar, text="LOC @ X=5000 m  │  Outer Yard X>5000  │  Inner Zone X<5000",
+         font=footer_font, bg='#0E1F3D', fg='#5A7E9E').pack(side=tk.RIGHT, padx=10)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 4. Main Simulation Container: 3D Viewport (Left) + Network Dashboard (Right)
+# 4. Main Content: 3D Viewport (Row 2, Col 0) + Sidebar (Row 2, Col 1)
 # ─────────────────────────────────────────────────────────────────────────────
-main_container = tk.Frame(root, bg=C_WIN)
-main_container.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+# Grid weights: viewport takes all remaining width; sidebar is sized in px by
+# _apply_sidebar_geometry() so the viewport always keeps >= ~75% of the window.
+# SIDEBAR_TARGET_PCT keeps the 3D viewport at >=75% of the window on wide screens.
+# On narrow screens the sidebar auto-collapses so the viewport is never squeezed.
+SIDEBAR_TARGET_PCT = 0.22
+SIDEBAR_MINSIZE   = 400
+# Below this window width a full sidebar cannot leave the viewport at >=75%,
+# so the sidebar collapses automatically and the viewport takes the full width.
+SIDEBAR_COLLAPSE_W = 1700
 
-canvas_frame = tk.Frame(main_container, bg=C_PANEL)
-canvas_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+def _apply_sidebar_geometry(width_px=None):
+    """
+    Size the sidebar so the 3D viewport always keeps >= ~75% of the window.
+    On narrow windows (< SIDEBAR_COLLAPSE_W) the sidebar collapses entirely so
+    the simulation viewport is never squeezed below the target proportion.
+    """
+    try:
+        w = width_px or root.winfo_width()
+        if w <= 1:
+            return
+        if w < SIDEBAR_COLLAPSE_W:
+            # Too narrow to afford the sidebar — collapse it to a slim rail
+            root.grid_columnconfigure(1, minsize=0, weight=0)
+            if sidebar_container.winfo_ismapped():
+                sidebar_container.grid_remove()
+            return
+        if not sidebar_container.winfo_ismapped():
+            sidebar_container.grid()
+        desired = int(w * SIDEBAR_TARGET_PCT)
+        # Hard cap so the viewport always gets at least 75%
+        max_allowed = int(w * 0.25)
+        desired = min(desired, max_allowed)
+        desired = max(SIDEBAR_MINSIZE, desired)
+        root.grid_columnconfigure(1, minsize=desired, weight=0)
+    except Exception:
+        pass
+
+root.grid_columnconfigure(1, weight=0, minsize=SIDEBAR_MINSIZE)
+root.grid_rowconfigure(2, weight=1)
+
+# ── 3D Simulation Viewport ─────────────────────────────────────────────────
+canvas_frame = tk.Frame(root, bg=C_PANEL, bd=0, relief='flat')
+canvas_frame.grid(row=2, column=0, sticky='nsew', padx=0, pady=0)
+canvas_frame.grid_rowconfigure(0, weight=1)
+canvas_frame.grid_columnconfigure(0, weight=1)
 
 fig = plt.figure(figsize=(16, 10), facecolor=C_PANEL)
 ax  = fig.add_axes([0.0, 0.0, 1.0, 1.0], projection='3d')
@@ -756,11 +1235,159 @@ ax.set_zlabel("Depth (m)",         labelpad=8,  fontsize=9)
 ax.view_init(elev=28, azim=-55)
 
 canvas = FigureCanvasTkAgg(fig, master=canvas_frame)
-canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+canvas.get_tk_widget().grid(row=0, column=0, sticky='nsew')
 
-# Dock dedicated desktop Network Dashboard on the right
-net_dashboard = NetworkDashboard(main_container)
-net_dashboard.pack(side=tk.RIGHT, fill=tk.Y)
+# ── Right Sidebar Container (Tabbed: Notifications | Network | Metrics) ───
+sidebar_container = tk.Frame(root, bg='#060D1A', width=420, bd=1, relief='solid')
+sidebar_container.grid(row=2, column=1, sticky='nsew', padx=(2, 0), pady=0)
+sidebar_container.grid_rowconfigure(2, weight=1)
+sidebar_container.grid_columnconfigure(0, weight=1)
+
+# ── Sidebar tab strip ──────────────────────────────────────────────────────
+tab_strip = tk.Frame(sidebar_container, bg='#0B132B', height=32, bd=0, relief='flat')
+tab_strip.grid(row=0, column=0, sticky='ew')
+tab_strip.grid_propagate(False)
+
+# ── System status strip ────────────────────────────────────────────────────
+sys_status_frame = tk.Frame(sidebar_container, bg='#0B132B', height=30, bd=0, relief='flat')
+sys_status_frame.grid(row=1, column=0, sticky='ew', pady=(1, 0))
+sys_status_frame.grid_propagate(False)
+
+sys_status_var = tk.StringVar(value="SYSTEM: NOMINAL")
+sys_status_label = tk.Label(sys_status_frame, textvariable=sys_status_var,
+                            font=(Typography.FONT_SANS[0], Typography.SIZE_TINY, 'bold'),
+                            bg='#0B132B', fg='#64FFDA', padx=10)
+sys_status_label.pack(side=tk.LEFT, pady=5)
+
+sys_time_var = tk.StringVar(value="")
+tk.Label(sys_status_frame, textvariable=sys_time_var,
+         font=(Typography.FONT_MONO[0], Typography.SIZE_TINY),
+         bg='#0B132B', fg='#475569', padx=10).pack(side=tk.RIGHT, pady=5)
+
+# ── Sidebar panel area (holds Notification + Network dashboards) ───────────
+sidebar_panes = tk.Frame(sidebar_container, bg='#060D1A')
+sidebar_panes.grid(row=2, column=0, sticky='nsew')
+sidebar_panes.grid_rowconfigure(0, weight=1)
+sidebar_panes.grid_columnconfigure(0, weight=1)
+
+# Tab 1: Notification sidebar (Phase 2 — dedicated error/warning region)
+notification_sidebar = NotificationSidebar(sidebar_panes, width=400)
+notification_sidebar.grid(row=0, column=0, sticky='nsew')
+
+# Tab 2: Network dashboard
+net_dashboard = NetworkDashboard(sidebar_panes, width=400)
+net_dashboard.grid(row=1, column=0, sticky='nsew')
+
+# Sidebar tab visibility
+_panel_state = {'notifications': True, 'network': False}
+
+def toggle_side_panel(which):
+    """Toggle visibility of sidebar panels without breaking layout."""
+    if which == 'notifications':
+        showing_notif = _panel_state['notifications']
+        showing_net = _panel_state['network']
+        if showing_notif and showing_net:
+            # Hide network, keep notifications
+            net_dashboard.grid_remove()
+            _panel_state['network'] = False
+            status_var.set("Sidebar: Notifications panel")
+        elif showing_notif and not showing_net:
+            # Hide notifications, show network
+            notification_sidebar.grid_remove()
+            net_dashboard.grid(row=0, column=0, sticky='nsew')
+            _panel_state['notifications'] = False
+            _panel_state['network'] = True
+            status_var.set("Sidebar: Network panel")
+        else:
+            # Show notifications
+            net_dashboard.grid_remove()
+            notification_sidebar.grid(row=0, column=0, sticky='nsew')
+            _panel_state['notifications'] = True
+            _panel_state['network'] = False
+            status_var.set("Sidebar: Notifications panel")
+    elif which == 'network':
+        toggle_side_panel('notifications')  # Single-panel sidebar: same toggle
+
+def show_about_dialog():
+    messagebox.showinfo(
+        "About Harbor Traffic Control & UWSN Simulation",
+        "Harbor Traffic Control System with Underwater Sensor Network (UWSN)\n\n"
+        "• Key Capabilities:\n"
+        "  - Multi-hop acoustic depth-based routing (DBR)\n"
+        "  - Mobile autonomous underwater vehicle (AUV) relays\n"
+        "  - Real-time Normal vs Monsoon environmental effects\n"
+        "  - Stochastic wave surge, turbulence, and mooring strain physics\n"
+        "  - Live desktop network topology & telemetry dashboard\n"
+        "  - Dedicated notification panel (errors never obscure the viewport)\n\n"
+        "Status evaluation assesses gateway reachability, packet loss,\n"
+        "hop availability, and mooring integrity:\n"
+        "STABLE (>=75%) | DEGRADED (50-74%) | CRITICAL (20-49%) | COLLAPSED (<20%)."
+    )
+
+# ── Sidebar tab buttons ────────────────────────────────────────────────────
+_tab_font = (Typography.FONT_SANS[0], Typography.SIZE_TINY, 'bold')
+
+btn_tab_notif = tk.Button(tab_strip, text="🔔 NOTIFICATIONS", font=_tab_font,
+                          bg='#0F2847', fg='#64FFDA', activebackground='#16456E',
+                          activeforeground='#64FFDA', bd=0, padx=8, pady=4,
+                          cursor='hand2', command=lambda: toggle_side_panel('notifications'))
+btn_tab_notif.pack(side=tk.LEFT, padx=(2, 1), pady=2)
+
+btn_tab_net = tk.Button(tab_strip, text="📡 NETWORK", font=_tab_font,
+                        bg='#111C38', fg='#64748B', activebackground='#16456E',
+                        activeforeground='#64FFDA', bd=0, padx=8, pady=4,
+                        cursor='hand2', command=lambda: toggle_side_panel('network'))
+btn_tab_net.pack(side=tk.LEFT, padx=1, pady=2)
+
+tk.Button(tab_strip, text="✕ Clear", font=_tab_font,
+          bg='#111C38', fg='#64748B', activebackground='#16456E',
+          activeforeground='#94A3B8', bd=0, padx=8, pady=4,
+          cursor='hand2', command=notification_sidebar.clear_all).pack(side=tk.RIGHT, padx=2, pady=2)
+
+# ── Install exception handlers routing to the notification sidebar ────────
+install_exception_handler(notification_sidebar)
+
+# ── Background-thread notification poller (Tkinter main-thread safety) ─────
+_poll_after_id = None
+_app_shutting_down = False
+
+def _poll_notification_queue():
+    """Drain the thread-safe notification queue onto the UI thread."""
+    global _poll_after_id
+    if _app_shutting_down:
+        return
+    try:
+        for notif in _notification_queue.get_all():
+            notification_sidebar.add_notification(
+                notif.level, notif.message, notif.details, notif.source
+            )
+        # Clock in the system status strip
+        sys_time_var.set(datetime.now().strftime('%H:%M:%S'))
+    except Exception as exc:
+        print(f"[Poll Error] {exc}")
+    finally:
+        if not _app_shutting_down:
+            _poll_after_id = root.after(400, _poll_notification_queue)
+
+_poll_after_id = root.after(400, _poll_notification_queue)
+
+# ── Initial boot notification ──────────────────────────────────────────────
+notification_sidebar.add_notification(
+    NotificationLevel.INFO,
+    "Harbor Traffic Control System initialised",
+    f"{len(sensors)} seabed sensors deployed | {len(fleet)} vessels spawned | "
+    f"{len(auv.get_auv_states())} AUVs active\n"
+    f"Scenario: {sim.get_active_scenario()['name']}\n"
+    f"Telemetry server: http://127.0.0.1:{DASHBOARD_PORT}",
+    "Boot"
+)
+
+# ── Responsive layout: keep the viewport at >=75% as the window resizes ────
+def _on_window_resize(event=None):
+    _apply_sidebar_geometry()
+
+root.bind('<Configure>', _on_window_resize, add='+')
+root.after(200, _apply_sidebar_geometry)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 5. Seabed & ocean surface
@@ -960,24 +1587,32 @@ rain_scatter = ax.scatter(_rain_x, _rain_y, _rain_z,
                            color='#90E0EF', marker='|', s=14, alpha=0.0, zorder=2)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 9h. Lightning Flash Overlay (Tkinter canvas label, shown on squall)
+# 9h. Squall Flash Overlay — now docked in the HUD bar (never over the viewport)
 # ─────────────────────────────────────────────────────────────────────────────
-lightning_label = tk.Label(canvas_frame, text="⚡ VIOLENT SQUALL SURGE ⚡",
-                            font=('Segoe UI', 16, 'bold'), bg='#1A0020',
-                            fg='#FFD166', bd=3, relief='ridge',
-                            padx=14, pady=8)
-# Hidden initially — placed over canvas when squall fires
+lightning_label = tk.Label(hud_bar, text="⚡ SQUALL",
+                           font=(Typography.FONT_SANS[0], Typography.SIZE_SMALL, 'bold'),
+                           bg='#3B0764', fg='#FFD166', bd=1, relief='solid',
+                           padx=8, pady=2)
+# Hidden initially — packed into the HUD bar when a squall fires
 _lightning_visible = False
 _lightning_frame_count = 0
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 9i. Network-Broken Alert Banner (Tkinter label overlay)
+# 9i. Network-Collapse Alert — routed to the notification sidebar (Phase 2)
+#      No longer an overlay label on the 3D viewport.
 # ─────────────────────────────────────────────────────────────────────────────
-net_broken_banner = tk.Label(canvas_frame,
-    text="🚨  SENSOR NETWORK COLLAPSED  🚨\nHarsh currents drove sensors away — communication links severed!",
-    font=('Segoe UI', 12, 'bold'), bg='#7D0000', fg='#FFD166',
-    bd=3, relief='ridge', padx=16, pady=10, justify='center')
+# Kept as a dormant reference object so existing call sites (place_forget) stay
+# valid; the real alert is emitted into NotificationSidebar instead.
+class _DormantBanner:
+    """No-op stand-in so legacy `place_forget()` call sites remain safe."""
+    def place(self, *a, **k):  pass
+    def place_forget(self):    pass
+    def config(self, *a, **k): pass
+    def forget(self):          pass
+
+net_broken_banner = _DormantBanner()
 _net_banner_visible = False
+_net_collapse_notified = False   # dedup flag — one alert per collapse episode
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 9a. Buoy Gateways Visuals
@@ -1097,9 +1732,17 @@ leg.get_title().set_fontweight('bold')
 # ─────────────────────────────────────────────────────────────────────────────
 # 12. Animation loop
 # ─────────────────────────────────────────────────────────────────────────────
+# Consecutive-failure circuit breaker: if the loop keeps raising, stop cleanly
+# and surface a diagnostic instead of spinning forever or silently "succeeding".
+_loop_failure_streak = 0
+_LOOP_FAILURE_LIMIT = 30
+_dashboard_write_failed = {'notified': False}
+
 def master_loop(frame):
     global fleet, ocean_surf, _lightning_visible, _lightning_frame_count, _net_banner_visible
+    global _net_collapse_notified
     global _rain_x, _rain_y, _rain_z
+    global _loop_failure_streak
 
     if is_paused:
         quiver_artists = [q[2] for q in current_quivers] + [q[3] for q in current_quivers]
@@ -1109,7 +1752,54 @@ def master_loop(frame):
                 auv_cores + auv_rings + auv_labels + comm_lines + quiver_artists +
                 trail_artists + [vortex_markers] + vortex_ring_artists + [rain_scatter])
 
-    frame_var.set(f"Frame: {frame:04d}")
+    # Circuit breaker: surface persistent failures instead of hiding them
+    if _loop_failure_streak >= _LOOP_FAILURE_LIMIT:
+        if _loop_failure_streak == _LOOP_FAILURE_LIMIT:
+            notification_sidebar.add_notification(
+                NotificationLevel.FATAL_ERROR,
+                "Simulation loop stopped after repeated failures",
+                f"Failed {_LOOP_FAILURE_LIMIT} consecutive frames. "
+                "The simulation has been halted to avoid an unstable state.\n"
+                "Use Reset Simulation to restart, or close the application.",
+                "Animation Loop"
+            )
+            status_var.set("Simulation loop halted — see Notifications panel")
+        quiver_artists = [q[2] for q in current_quivers] + [q[3] for q in current_quivers]
+        trail_artists = [seg for pool in drift_trail_lines for seg in pool]
+        return (v_plots + v_texts + sensor_glow + sensor_core + tether_lines +
+                auv_cores + auv_rings + auv_labels + comm_lines + quiver_artists +
+                trail_artists + [vortex_markers] + vortex_rings + [rain_scatter])
+
+    try:
+        return _master_loop_body(frame)
+    except Exception as exc:
+        _loop_failure_streak += 1
+        tb_str = traceback.format_exc()
+        if _loop_failure_streak == 1:
+            notification_sidebar.add_notification(
+                NotificationLevel.RECOVERABLE_ERROR,
+                f"Simulation frame error: {type(exc).__name__}: {exc}",
+                tb_str,
+                f"Animation Loop (frame {frame})"
+            )
+            status_var.set(f"Recoverable simulation error at frame {frame} — see Notifications")
+        elif _loop_failure_streak >= _LOOP_FAILURE_LIMIT:
+            pass  # already reported by the circuit breaker branch above
+        # Always return a valid artist list so FuncAnimation stays alive
+        quiver_artists = [q[2] for q in current_quivers] + [q[3] for q in current_quivers]
+        trail_artists = [seg for pool in drift_trail_lines for seg in pool]
+        return (v_plots + v_texts + sensor_glow + sensor_core + tether_lines +
+                auv_cores + auv_rings + auv_labels + comm_lines + quiver_artists +
+                trail_artists + [vortex_markers] + vortex_rings + [rain_scatter])
+
+
+def _master_loop_body(frame):
+    global fleet, ocean_surf, _lightning_visible, _lightning_frame_count, _net_banner_visible
+    global _net_collapse_notified
+    global _rain_x, _rain_y, _rain_z
+    global _loop_failure_streak
+
+    frame_var.set(f"{frame:04d}")
     dt = 1.0 / 60.0
     t_sec = frame * dt
 
@@ -1203,27 +1893,24 @@ def master_loop(frame):
     else:
         rain_scatter.set_alpha(0.0)
 
-    # 3d. Lightning Flash Effect on Squall Events
+    # 3d. Lightning Flash Effect on Squall Events — indicator lives in the HUD bar,
+    #     NOT over the 3D viewport (Phase 2: notifications must not obstruct the sim).
     if squall_active and is_monsoon:
         _lightning_frame_count += 1
         flash_on = (_lightning_frame_count % 8) < 4  # flicker every 4 frames
         if flash_on:
             if not _lightning_visible:
-                lightning_label.place(relx=0.5, rely=0.08, anchor='center')
+                lightning_label.pack(side=tk.RIGHT, padx=(4, 10), pady=4, before=net_health_label)
                 _lightning_visible = True
         else:
             if _lightning_visible:
-                lightning_label.place_forget()
+                lightning_label.pack_forget()
                 _lightning_visible = False
-        # Optionally change facecolor to flicker
-        if squall_active:
-            fig.patch.set_facecolor('#0D1117' if flash_on else C_PANEL)
-        else:
-            fig.patch.set_facecolor(C_PANEL)
+        fig.patch.set_facecolor('#0D1117' if flash_on else C_PANEL)
     else:
         _lightning_frame_count = 0
         if _lightning_visible:
-            lightning_label.place_forget()
+            lightning_label.pack_forget()
             _lightning_visible = False
         fig.patch.set_facecolor(C_PANEL)
 
@@ -1248,19 +1935,32 @@ def master_loop(frame):
     # Update dedicated Desktop Network Dashboard
     net_dashboard.update_dashboard(network_stats)
 
-    # 3e. Network Collapsed Alert — ONLY shown when network actually reaches COLLAPSED state
+    # 3e. Network-Collapse Alert → notification sidebar (dedup: once per episode).
+    #     The simulation viewport is never obscured.
     net_state = network_stats.get('network_state', 'STABLE')
-    show_net_banner = (net_state == 'COLLAPSED')
-    if show_net_banner:
-        banner_fg = '#FFD166' if (frame % 10) < 5 else '#FF6B6B'
-        net_broken_banner.config(fg=banner_fg)
-        if not _net_banner_visible:
-            net_broken_banner.place(relx=0.5, rely=0.5, anchor='center')
+    if net_state == 'COLLAPSED':
+        if not _net_collapse_notified:
+            _net_collapse_notified = True
             _net_banner_visible = True
+            notification_sidebar.add_notification(
+                NotificationLevel.FATAL_ERROR,
+                "Sensor network COLLAPSED — gateway connectivity severed",
+                f"Health score: {network_stats.get('health_score', 0.0):.1f}%\n"
+                f"Connectivity: {network_stats.get('connectivity_ratio', 0.0):.1f}%\n"
+                f"Failed nodes: {network_stats.get('failed_nodes_count', 0)}\n"
+                f"Recovery: use '⚓ Re-Anchor' or switch back to Normal Season.",
+                "Network Engine"
+            )
     else:
-        if _net_banner_visible:
-            net_broken_banner.place_forget()
+        if _net_collapse_notified:
+            _net_collapse_notified = False
             _net_banner_visible = False
+            notification_sidebar.add_notification(
+                NotificationLevel.INFO,
+                "Sensor network connectivity restored",
+                "Gateway reachability and mooring integrity back within operational limits.",
+                "Network Engine"
+            )
 
     # Sensor blink visuals + per-vessel hit counting + mooring tether dynamics
     ship_xyz           = np.array([[v['pos'][0], v['pos'][1], v['depth']] for v in fleet])
@@ -1355,40 +2055,57 @@ def master_loop(frame):
         sensor_core[i].set_facecolor(fg)
         sensor_core[i].set_edgecolor(edge)
 
-    sensor_var.set(f"Active Sensors: {active_count} / {len(sensors)}")
-    violation_var.set(f"⚠ Violations: {len(violations)}")
+    sensor_var.set(f"{active_count}/{len(sensors)}")
+    violation_var.set(f"{len(violations)}")
+
+    # System status strip reflects worst active notification + network state
+    fatal = len(notification_sidebar.get_notifications(NotificationLevel.FATAL_ERROR))
+    errs  = len(notification_sidebar.get_notifications(NotificationLevel.RECOVERABLE_ERROR))
+    warns = len(notification_sidebar.get_notifications(NotificationLevel.WARNING))
+    if fatal:
+        sys_status_var.set(f"SYSTEM: FATAL ({fatal})")
+        sys_status_label.config(fg='#EF4444')
+    elif errs:
+        sys_status_var.set(f"SYSTEM: ERRORS ({errs})")
+        sys_status_label.config(fg='#F97316')
+    elif warns:
+        sys_status_var.set(f"SYSTEM: WARNINGS ({warns})")
+        sys_status_label.config(fg='#FBBF24')
+    else:
+        sys_status_var.set(f"SYSTEM: NOMINAL  |  NET {net_state}")
+        sys_status_label.config(fg='#64FFDA')
 
     # Update HUD status telemetry
     curr_info = sim.get_monsoon_current_info()
     if is_monsoon:
         surge_txt = f"+{curr_info['surge_level']:.1f} m" if curr_info['surge_level'] >= 0 else f"{curr_info['surge_level']:.1f} m"
-        water_level_var.set(f"🌊 Water Level: {surge_txt} [Storm Surge] | Peak Wave: {curr_info['wave_height']:.1f} m")
-        squall_tag = " [⚡ GALE SQUALL SURGE!]" if curr_info['squall_active'] else ""
-        current_info_var.set(f"💨 Current: {curr_info['intensity_mps']:.2f} m/s{squall_tag}")
+        water_level_var.set(f"🌊 {surge_txt} [Storm Surge] | Wave {curr_info['wave_height']:.1f} m")
+        squall_tag = " [⚡ SQUALL]" if curr_info['squall_active'] else ""
+        current_info_var.set(f"💨 {curr_info['intensity_mps']:.2f} m/s{squall_tag}")
     else:
-        water_level_var.set("🌊 Water Level: Normal (0.0 m) | Wave H: 0.3 m [Calm]")
-        current_info_var.set(f"💨 Current: {curr_info['intensity_mps']:.2f} m/s [Nominal Tide]")
+        water_level_var.set("🌊 Normal (0.0 m) | Wave H: 0.3 m [Calm]")
+        current_info_var.set(f"💨 {curr_info['intensity_mps']:.2f} m/s [Nominal Tide]")
 
     if drifting_count > 0:
-        drift_status_var.set(f"⚠️ Swept Away: {drifting_count}/{len(sensors)} Drifting ({strained_count} strained)")
+        drift_status_var.set(f"⚠ Drifting {drifting_count}/{len(sensors)} ({strained_count} strained)")
     else:
-        drift_status_var.set(f"⚓ Sensors: {len(sensors)}/{len(sensors)} Moored Securely")
+        drift_status_var.set(f"⚓ {len(sensors)}/{len(sensors)} Moored")
 
     pdr_val = network_stats.get('pdr', 100.0)
     health_score = network_stats.get('health_score', 100.0)
     if net_state == 'COLLAPSED':
-        net_health_var.set(f"🚨 NETWORK COLLAPSED (PDR: {pdr_val:.1f}% | Links Severed)")
+        net_health_var.set(f"📡 COLLAPSED (PDR {pdr_val:.0f}%)")
     elif net_state == 'CRITICAL':
-        net_health_var.set(f"⚠️ Network: CRITICAL (PDR: {pdr_val:.1f}% | Health: {health_score:.0f}%)")
+        net_health_var.set(f"📡 CRITICAL ({health_score:.0f}%)")
     elif net_state == 'DEGRADED':
-        net_health_var.set(f"⚡ Network: DEGRADED (PDR: {pdr_val:.1f}% | Health: {health_score:.0f}%)")
+        net_health_var.set(f"📡 DEGRADED ({health_score:.0f}%)")
     else:
-        net_health_var.set(f"📡 Network: STABLE (PDR: {pdr_val:.1f}% | Health: {health_score:.0f}%)")
+        net_health_var.set(f"📡 STABLE ({health_score:.0f}%)")
 
     ml_prefix = "ML LIVE" if ml_is_live else "Collecting"
     status_var.set(
-        f"Frame {frame:04d}  |  {ml_prefix}: {total_detections} detections  |  "
-        f"State: {net_state} ({health_score:.0f}%)  |  PDR: {pdr_val:.1f}%"
+        f"Frame {frame:04d}  │  {ml_prefix}: {total_detections} detections  │  "
+        f"Network {net_state} ({health_score:.0f}%)  │  PDR {pdr_val:.1f}%"
     )
 
     # Vessel movement
@@ -1529,6 +2246,9 @@ def master_loop(frame):
         comm_lines[k].set_3d_properties([])
         comm_lines[k].set_alpha(0.0)
 
+    # A fully successful frame clears the circuit-breaker counter
+    _loop_failure_streak = 0
+
     global LAST_DASHBOARD_WRITE_TIME
     current_time = time.time()
     
@@ -1625,8 +2345,19 @@ def master_loop(frame):
             with open(DASHBOARD_JS, 'w') as _f:
                 _f.write(f"window.DASHBOARD_DATA = {json.dumps(data_dict)};")
             LAST_DASHBOARD_WRITE_TIME = current_time
-        except Exception:
-            pass
+            _dashboard_write_failed['notified'] = False
+        except Exception as _dash_exc:
+            # Dashboard export is non-critical: report once, never crash the loop
+            if not _dashboard_write_failed.get('notified'):
+                _dashboard_write_failed['notified'] = True
+                notification_sidebar.add_notification(
+                    NotificationLevel.WARNING,
+                    "Web dashboard telemetry export failed",
+                    f"{type(_dash_exc).__name__}: {_dash_exc}\n"
+                    "The desktop simulation continues normally; the web "
+                    "dashboard may show stale data.",
+                    "Telemetry Export"
+                )
 
     quiver_artists = [q[2] for q in current_quivers] + [q[3] for q in current_quivers]
     trail_artists = [seg for pool in drift_trail_lines for seg in pool]
@@ -1641,7 +2372,18 @@ def master_loop(frame):
 ani = None
 
 def on_closing():
-    global ani
+    """Clean shutdown: stop animation, cancel pending callbacks, close app."""
+    global ani, _poll_after_id, _app_shutting_down
+    _app_shutting_down = True
+
+    # Cancel the notification poller so no callbacks are scheduled after shutdown
+    if _poll_after_id is not None:
+        try:
+            root.after_cancel(_poll_after_id)
+            _poll_after_id = None
+        except Exception:
+            pass
+
     try:
         if ani and ani.event_source:
             ani.event_source.stop()
