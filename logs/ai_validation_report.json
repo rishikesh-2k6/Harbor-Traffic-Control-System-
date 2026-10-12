@@ -1,0 +1,26 @@
+{
+  "real_world_plausibility_pct": 100.0,
+  "verdict": "HIGHLY_REALISTIC",
+  "category_scores": {
+    "currents_plausibility_pct": 100.0,
+    "vessel_weights_plausibility_pct": 100.0,
+    "acoustics_plausibility_pct": 100.0,
+    "environmental_plausibility_pct": 100.0
+  },
+  "parameters_evaluated_count": 104,
+  "parameters_plausible_count": 104,
+  "critical_violations": [],
+  "synthetic_scaling_observations": [
+    "Vessel true_weight values for Cargo Ship (\u224880\u2011150\u202ft) and Tanker (\u2248340\u202ft) are scaled down from ocean\u2011going equivalents but remain realistic for harbor\u2011size barges and bunker vessels."
+  ],
+  "expert_summary": "The synthetic telemetry batch conforms closely to established oceanographic, naval\u2011architectural, and acoustic physics for a sheltered coastal harbor. Current speeds, wave heights, and vortex magnitudes sit well within the 0.1\u20111.5\u202fm\u202fs\u207b\u00b9 tidal range and the modest sea\u2011state values. Vessel displacement and speed figures, while representing scaled\u2011down versions of large commercial ships, are appropriate for harbor\u2011scale craft and do not violate draft\u2011depth constraints. Acoustic measurements satisfy the passive sonar equation, ambient noise levels, and Doppler shift limits for the reported vessel speeds and frequencies. Overall the dataset exhibits high fidelity to real\u2011world expectations.",
+  "calibration_recommendations": [
+    "Include explicit draft values for each vessel to enable depth\u2011clearance validation and improve completeness of the telemetry."
+  ],
+  "_meta": {
+    "engine": "groq_llm",
+    "model": "openai/gpt-oss-120b",
+    "attempt": 1,
+    "timestamp": "2026-10-12T10:03:24.662326"
+  }
+}

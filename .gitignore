@@ -8,3 +8,4 @@ __pycache__/
 dashboard_data.json
 dashboard_data.js
 collected_data.csv
+.env

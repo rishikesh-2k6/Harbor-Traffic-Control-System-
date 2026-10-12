@@ -344,6 +344,8 @@ def main() -> int:
                     help="Scenario for --collect (default: NORMAL)")
     ap.add_argument("--steps", type=int, default=3, help="Frames to simulate with --collect")
     ap.add_argument("--out", metavar="FILE", help="Also write the report to this path")
+    ap.add_argument("--ai-validate", action="store_true",
+                    help="Run Groq AI physical validation on telemetry data")
     args = ap.parse_args()
 
     if args.collect:
@@ -352,6 +354,22 @@ def main() -> int:
 
     rows = pl.read_log()
     report = build_report(rows)
+
+    if args.ai_validate:
+        try:
+            import ai_data_validator as adv
+            print("\n[AI Validator] Running physical realism validation on generated telemetry...")
+            validator = adv.GroqDataValidator()
+            csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "collected_data.csv")
+            if os.path.exists(csv_path):
+                ai_res = validator.validate_from_collected_csv(csv_path=csv_path, n_samples=5)
+            else:
+                ai_res = validator.validate_live_simulation()
+            ai_md = adv.format_markdown_report(ai_res)
+            report += "\n\n" + "=" * 60 + "\n" + ai_md
+        except Exception as exc:
+            report += f"\n\n[AI Validation Warning] Could not complete AI validation: {exc}\n"
+
     print()
     print(report)
 

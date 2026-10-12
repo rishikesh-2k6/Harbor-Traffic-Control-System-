@@ -26,6 +26,7 @@ sys.path.insert(0, HERE)
 
 SUITES = [
     ("Prediction validation", "test_prediction_validation.py"),
+    ("Groq AI data validation", "test_ai_data_validator.py"),
     ("Integration & regression", "test_integration.py"),
 ]
 

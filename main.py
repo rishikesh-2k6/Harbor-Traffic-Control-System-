@@ -76,6 +76,16 @@ fleet   = sim.generate_fleet()
 print(f"[Boot] {len(sensors)} sensors deployed | {len(fleet)} vessels spawned")
 print("[Boot] All ships spawn on the right - passing Outer Yard -> LOC -> Inner Zone.")
 print("[Boot] ML model will auto-train once 100 detections accumulate.")
+_ai_rep_boot = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs", "ai_validation_report.json")
+if os.path.exists(_ai_rep_boot):
+    try:
+        with open(_ai_rep_boot, "r", encoding="utf-8") as _rf:
+            _ai_boot_data = json.load(_rf)
+            _pct = _ai_boot_data.get("real_world_plausibility_pct", 100.0)
+            _mod = _ai_boot_data.get("_meta", {}).get("model", "openai/gpt-oss-120b")
+            print(f"[Boot] Groq AI Physical Realism: {_pct:.1f}% (Auditor: {_mod})")
+    except Exception:
+        pass
 auv.init_physics()
 auv.spawn_auvs()
 
@@ -1256,6 +1266,12 @@ hud_font, _ = Typography.telemetry_small()
 net_health_label = tk.Label(hud_bar, textvariable=net_health_var,
                             font=hud_font, bg='#0A1628', fg='#52B788')
 net_health_label.pack(side=tk.RIGHT, padx=12, pady=4)
+
+ai_realism_var = tk.StringVar(value="🤖 AI Realism: 100.0%")
+ai_realism_label = tk.Label(hud_bar, textvariable=ai_realism_var,
+                            font=hud_font, bg='#0A1628', fg='#00E5FF', cursor='hand2')
+ai_realism_label.pack(side=tk.RIGHT, padx=8, pady=4)
+ai_realism_label.bind("<Button-1>", lambda e: open_dashboard())
 
 tk.Label(hud_bar, textvariable=water_level_var,
          font=hud_font, bg='#0A1628', fg='#48CAE4').pack(side=tk.LEFT, padx=12, pady=4)
@@ -2465,6 +2481,19 @@ def _master_loop_body(frame):
                     "node_states":       network_stats["node_states"]
                 }
             }
+            # Attach latest Groq AI data validation report if present
+            _ai_val_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs", "ai_validation_report.json")
+            if os.path.exists(_ai_val_path):
+                try:
+                    with open(_ai_val_path, "r", encoding="utf-8") as _rf:
+                        _ai_rep = json.load(_rf)
+                        data_dict["ai_validation"] = _ai_rep
+                        if "ai_realism_var" in globals():
+                            _val_pct = _ai_rep.get("real_world_plausibility_pct", 100.0)
+                            ai_realism_var.set(f"🤖 AI Realism: {_val_pct:.1f}%")
+                except Exception:
+                    pass
+
             with open(DASHBOARD_JSON, 'w') as _f:
                 json.dump(data_dict, _f)
             with open(DASHBOARD_JS, 'w') as _f:
