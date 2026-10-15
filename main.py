@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib.animation import FuncAnimation
 from matplotlib.lines import Line2D
 import numpy as np
-import json, os, time, webbrowser, http.server, socketserver, threading
+import json, os, time, webbrowser, http.server, socketserver, threading, urllib.parse
 import traceback
 import queue
 import sys
@@ -43,6 +43,45 @@ def _run_dashboard_server():
             super().__init__(*args, directory=base_dir, **kwargs)
         def log_message(self, format, *args):
             pass
+        def do_GET(self):
+            parsed = urllib.parse.urlparse(self.path)
+            if parsed.path.startswith('/api/'):
+                query = urllib.parse.parse_qs(parsed.query)
+                action = parsed.path.replace('/api/', '').rstrip('/')
+                res = {"status": "ok", "action": action}
+                
+                def _dispatch(fn, *a):
+                    if 'root' in globals() and root:
+                        try:
+                            root.after(0, lambda: fn(*a))
+                        except Exception:
+                            fn(*a)
+                    else:
+                        fn(*a)
+
+                if action == 'set_season':
+                    season = query.get('season', ['NORMAL'])[0].upper()
+                    if season in ('NORMAL', 'MONSOON'):
+                        _dispatch(set_season, season)
+                        res["season"] = season
+                elif action == 'trigger_squall':
+                    _dispatch(trigger_squall_action)
+                    res["squall"] = True
+                elif action == 'reanchor':
+                    _dispatch(reanchor_action)
+                    res["reanchored"] = True
+                elif action == 'reset':
+                    _dispatch(reset_simulation)
+                    res["reset"] = True
+                
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header('Cache-Control', 'no-cache')
+                self.end_headers()
+                self.wfile.write(json.dumps(res).encode('utf-8'))
+                return
+            return super().do_GET()
 
     for p in range(8000, 8025):
         try:
@@ -950,6 +989,8 @@ def toggle_pause():
     set_pause(not is_paused)
 
 def set_season(scenario_key):
+    global _loop_failure_streak, _lightning_visible
+    _loop_failure_streak = 0
     sim.set_active_scenario(scenario_key)
     sc = sim.get_active_scenario()
     season_var.set(f"{sc['badge']}")
@@ -958,9 +999,24 @@ def set_season(scenario_key):
             btn_season.config(text="⛈ Monsoon: ON", bg='#10B981', activebackground='#059669')
         else:
             btn_season.config(text="⇄ Season", bg='#2B4C6F', activebackground='#3A608F')
+            # Reset squall state if returning to normal
+            sim.OCEAN_STATE['squall_timer'] = 0.0
+            if 'btn_squall' in globals():
+                btn_squall.config(text="🌪 Squall", bg='#8B1A1A', activebackground='#B22222')
+            if _lightning_visible and 'lightning_label' in globals():
+                try:
+                    lightning_label.pack_forget()
+                except Exception:
+                    pass
+                _lightning_visible = False
     status_var.set(f"Switched scenario to: {sc['name']} ({sc['badge']})")
     network.log_network_event(f"Season switched to: {sc['name']}")
     notify_info(f"Season switched to {sc['name']}", source="Scenario Control")
+    if 'canvas' in globals():
+        try:
+            canvas.draw_idle()
+        except Exception:
+            pass
 
 def toggle_scenario():
     curr = sim.ACTIVE_SCENARIO_KEY
@@ -1935,10 +1991,16 @@ def _master_loop_body(frame):
 
     # 2. Dynamic 3D ocean surface update (every 4 frames for smooth 60 FPS animation)
     if frame % 4 == 0:
-        try:
-            ocean_surf.remove()
-        except Exception:
-            pass
+        if ocean_surf is not None:
+            try:
+                ocean_surf.remove()
+            except Exception:
+                pass
+            if 'ax' in globals() and ocean_surf in ax.collections:
+                try:
+                    ax.collections.remove(ocean_surf)
+                except Exception:
+                    pass
         Z_surf = sim.get_water_surface_height(X_surf, Y_surf, t_sec)
         sc_key = sim.ACTIVE_SCENARIO_KEY
         if sc_key == 'MONSOON':
@@ -1981,14 +2043,17 @@ def _master_loop_body(frame):
 
     # 3b. Turbulent Vortex Eye Markers — visible during Monsoon
     if is_monsoon:
-        vx_c = [v[0] for v in ocean_env['vortices']]
-        vy_c = [v[1] for v in ocean_env['vortices']]
-        vz_c = [0.0, 0.0, 0.0]
+        vortices = ocean_env.get('vortices', [])
+        vx_c = [v[0] for v in vortices]
+        vy_c = [v[1] for v in vortices]
+        vz_c = [0.0] * len(vx_c)
         vortex_markers._offsets3d = (vx_c, vy_c, vz_c)
         vortex_markers.set_alpha(0.70)
         theta_v = np.linspace(0, 2 * np.pi, 40)
         vortex_radius = 800.0
-        for vi, (vxc, vyc, vspin) in enumerate(ocean_env['vortices']):
+        for vi, (vxc, vyc, vspin) in enumerate(vortices):
+            if vi >= len(vortex_rings):
+                break
             rx_v = vxc + vortex_radius * np.cos(theta_v)
             ry_v = vyc + vortex_radius * np.sin(theta_v)
             rz_v = np.zeros(40)
@@ -2005,13 +2070,15 @@ def _master_loop_body(frame):
     # 3c. Rain Particle Effect — animated rainfall streaks during Monsoon
     if is_monsoon:
         wave_h = ocean_env.get('wave_height', 0.5)
-        rain_intensity = min(1.0, wave_h / 8.5)
+        rain_intensity = min(1.0, max(0.0, wave_h / 8.5))
         # Animate rain: shift particles downward, wrap at bottom
         _rain_z -= (2.5 + rain_intensity * 4.5)  # fall speed
         wrap_mask = _rain_z < 0
-        _rain_z[wrap_mask] = np.random.uniform(55, 70, wrap_mask.sum())
-        _rain_x[wrap_mask] = np.random.uniform(0, MAP, wrap_mask.sum())
-        _rain_y[wrap_mask] = np.random.uniform(0, MAP, wrap_mask.sum())
+        n_wrap = int(wrap_mask.sum())
+        if n_wrap > 0:
+            _rain_z[wrap_mask] = np.random.uniform(55, 70, n_wrap)
+            _rain_x[wrap_mask] = np.random.uniform(0, MAP, n_wrap)
+            _rain_y[wrap_mask] = np.random.uniform(0, MAP, n_wrap)
         # Horizontal drift from storm current
         _rain_x -= 12.0 * rain_intensity
         _rain_y += 6.0 * rain_intensity
@@ -2258,30 +2325,32 @@ def _master_loop_body(frame):
         # Overspeed ships flash red-orange regardless of type
         color = '#FF2222' if v.get('overspeed') else TYPE_COLORS[v['type']]
 
-        v_plots[idx].set_data_3d([v['pos'][0]], [v['pos'][1]], [v['depth']])
-        v_plots[idx].set_color(color)
-        v_plots[idx].set_marker(cfg['marker'])
-        v_plots[idx].set_markersize(m_size)
+        if idx < len(v_plots):
+            v_plots[idx].set_data_3d([v['pos'][0]], [v['pos'][1]], [v['depth']])
+            v_plots[idx].set_color(color)
+            v_plots[idx].set_marker(cfg['marker'])
+            v_plots[idx].set_markersize(m_size)
 
         # Label: Clean minimal #{id} by default, or Full / Off based on _label_mode
-        if _label_mode == 'off':
-            v_texts[idx].set_text("")
-        elif _label_mode == 'minimal':
-            if v.get('overspeed'):
-                v_texts[idx].set_text(f"⚠ #{v['id']}")
-                v_texts[idx].set_color('#D90429')
-            else:
-                v_texts[idx].set_text(f"#{v['id']}")
-                v_texts[idx].set_color('#111827')
-            v_texts[idx].set_position((v['pos'][0], v['pos'][1]))
-            v_texts[idx].set_3d_properties(18)
-        else:  # 'full'
-            zone_tag = {'outer_yard': 'OY', 'inner_zone': 'IZ', 'harbor': 'H'}.get(
-                v.get('zone', 'outer_yard'), '?')
-            v_texts[idx].set_position((v['pos'][0], v['pos'][1]))
-            v_texts[idx].set_3d_properties(22)
-            v_texts[idx].set_text(f"{v['type'][:4]}-{v['id']} [{zone_tag}]")
-            v_texts[idx].set_color('#111111')
+        if idx < len(v_texts):
+            if _label_mode == 'off':
+                v_texts[idx].set_text("")
+            elif _label_mode == 'minimal':
+                if v.get('overspeed'):
+                    v_texts[idx].set_text(f"⚠ #{v['id']}")
+                    v_texts[idx].set_color('#D90429')
+                else:
+                    v_texts[idx].set_text(f"#{v['id']}")
+                    v_texts[idx].set_color('#111827')
+                v_texts[idx].set_position((v['pos'][0], v['pos'][1]))
+                v_texts[idx].set_3d_properties(18)
+            else:  # 'full'
+                zone_tag = {'outer_yard': 'OY', 'inner_zone': 'IZ', 'harbor': 'H'}.get(
+                    v.get('zone', 'outer_yard'), '?')
+                v_texts[idx].set_position((v['pos'][0], v['pos'][1]))
+                v_texts[idx].set_3d_properties(22)
+                v_texts[idx].set_text(f"{v['type'][:4]}-{v['id']} [{zone_tag}]")
+                v_texts[idx].set_color('#111111')
 
         n_sensors = int(vessel_sensor_hits[idx])
         dashboard_vessels.append({
@@ -2305,6 +2374,8 @@ def _master_loop_body(frame):
 
     # Update AUV visuals
     for idx, a in enumerate(auv_states):
+        if idx >= len(auv_cores) or idx >= len(auv_rings) or idx >= len(auv_labels):
+            continue
         ax_pos = a["pos"]
         auv_cores[idx]._offsets3d = ([ax_pos[0]], [ax_pos[1]], [ax_pos[2]])
         
@@ -2333,8 +2404,8 @@ def _master_loop_body(frame):
     pos_map = {}
     for name, pos in network.BUOYS.items():
         pos_map[name] = np.array(pos)
-    for i, spos in enumerate(sensors):
-        pos_map[f"sensor_{i}"] = np.array(spos)
+    for i, s in enumerate(sensors):
+        pos_map[f"sensor_{i}"] = np.array(s.pos if hasattr(s, 'pos') else s)
     for a in auv_states:
         pos_map[f"auv_{a['id']}"] = np.array(a["pos"])
         
@@ -2350,6 +2421,8 @@ def _master_loop_body(frame):
                 if edge_key not in drawn_active_edges:
                     drawn_active_edges.add(edge_key)
                     if line_idx < len(comm_lines):
+                        if u not in pos_map or w not in pos_map:
+                            continue
                         p_u = pos_map[u]
                         p_v = pos_map[w]
                         comm_lines[line_idx].set_data([p_u[0], p_v[0]], [p_u[1], p_v[1]])
@@ -2369,6 +2442,8 @@ def _master_loop_body(frame):
         edge_key = tuple(sorted([u, w]))
         if edge_key not in drawn_active_edges:
             if line_idx < len(comm_lines):
+                if u not in pos_map or w not in pos_map:
+                    continue
                 p_u = pos_map[u]
                 p_v = pos_map[w]
                 comm_lines[line_idx].set_data([p_u[0], p_v[0]], [p_u[1], p_v[1]])
@@ -2412,6 +2487,8 @@ def _master_loop_body(frame):
 
         dashboard_links = []
         for u, w, data in graph.edges(data=True):
+            if u not in pos_map or w not in pos_map:
+                continue
             p_u = pos_map[u]
             p_w = pos_map[w]
             d_edge = np.linalg.norm(p_u - p_w)

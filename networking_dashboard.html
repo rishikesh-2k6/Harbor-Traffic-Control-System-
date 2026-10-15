@@ -405,6 +405,31 @@
     </div>
   </header>
 
+  <!-- ── SIMULATION CONTROL BAR ─────────────────────────────────────────── -->
+  <div id="sim-control-bar" style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 24px; background:var(--panel); border-bottom:1px solid var(--border); font-family:var(--font-sans); flex-wrap:wrap; margin-bottom:16px;">
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+      <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em;">Mission Controls:</span>
+      <button id="btn-web-normal" type="button" onclick="triggerApi('set_season?season=NORMAL')" style="background:rgba(255,179,0,0.15); color:var(--amber); border:1px solid rgba(255,179,0,0.4); padding:6px 14px; border-radius:6px; font-weight:700; font-size:0.82rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;" title="Switch to Normal Season (calm waters, baseline currents)">
+        ☀️ Normal Season
+      </button>
+      <button id="btn-web-monsoon" type="button" onclick="triggerApi('set_season?season=MONSOON')" style="background:rgba(0,229,255,0.15); color:var(--accent); border:1px solid rgba(0,229,255,0.4); padding:6px 14px; border-radius:6px; font-weight:700; font-size:0.82rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;" title="Switch to Monsoon Season (violent currents, rainfall noise, high sea state)">
+        ⛈️ Monsoon Season
+      </button>
+      <button id="btn-web-squall" type="button" onclick="triggerApi('trigger_squall')" style="background:rgba(255,61,61,0.18); color:var(--red); border:1px solid rgba(255,61,61,0.4); padding:6px 14px; border-radius:6px; font-weight:700; font-size:0.82rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;" title="Inject severe gale squall surge into ocean">
+        🌪️ Trigger Squall
+      </button>
+      <button id="btn-web-reanchor" type="button" onclick="triggerApi('reanchor')" style="background:rgba(0,255,153,0.15); color:var(--green); border:1px solid rgba(0,255,153,0.4); padding:6px 14px; border-radius:6px; font-weight:700; font-size:0.82rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;" title="Re-anchor all 35 acoustic sensors to seabed">
+        ⚓ Re-Anchor Sensors
+      </button>
+      <button id="btn-web-reset" type="button" onclick="triggerApi('reset')" style="background:rgba(255,255,255,0.06); color:var(--text); border:1px solid var(--border); padding:6px 14px; border-radius:6px; font-weight:600; font-size:0.82rem; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;" title="Reset fleet and sensors to initial layout">
+        ↺ Reset Simulation
+      </button>
+    </div>
+    <div id="sim-api-feedback" style="font-size:0.75rem; font-family:var(--font-mono); color:var(--green); font-weight:bold;">
+      ● Simulation Engine Connected
+    </div>
+  </div>
+
   <div class="warning-banner" id="err-banner">
     ⚠️ Simulation offline. Please run the backend simulation.
   </div>
@@ -668,6 +693,32 @@
 
       } catch (err) {
         console.error("Rendering error:", err);
+      }
+    }
+
+    /* ── Simulation API Trigger ────────────────────────────────────────── */
+    async function triggerApi(action) {
+      const fb = document.getElementById('sim-api-feedback');
+      try {
+        if (fb) {
+          fb.style.color = 'var(--amber)';
+          fb.textContent = `⏳ Sending command: ${action}...`;
+        }
+        const res = await fetch(`/api/${action}`);
+        const data = await res.json();
+        if (fb) {
+          fb.style.color = 'var(--green)';
+          fb.textContent = `✓ Command Executed: ${action}`;
+          setTimeout(() => {
+            fb.textContent = '● Simulation Engine Connected';
+          }, 3500);
+        }
+        fetchAndRender();
+      } catch (err) {
+        if (fb) {
+          fb.style.color = 'var(--red)';
+          fb.textContent = `✖ Command error: ${err.message}`;
+        }
       }
     }
 
