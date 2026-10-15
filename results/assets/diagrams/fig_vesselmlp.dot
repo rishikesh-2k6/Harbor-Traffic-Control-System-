@@ -1,0 +1,12 @@
+digraph G {
+rankdir=TB; nodesep=0.45; ranksep=0.45; newrank=true;
+node [shape=box, style="rounded,filled", fillcolor="#f1f5f9", color="#0f172a", penwidth=1.3, fontsize=11, fontname="DejaVu Sans"];
+edge [fontname="DejaVu Sans", fontsize=9.5, color="#334155"];
+x [label="Input x in R^21: 7 acoustic + 3 propagation + 5 environmental + 6 engineered features\n(StandardScaler fitted on the training split only)", fillcolor="#e0f2fe", color="#2563eb"];
+subgraph cluster_t { label="shared trunk (13,383 trainable parameters in total)"; style="rounded,dashed"; color="#94a3b8";
+  l1 [label="Linear 21 -> 128\nReLU"]; l2 [label="Linear 128 -> 64\nReLU"]; l3 [label="Linear 64 -> 32\nReLU"]; {rank=same; l1; l2; l3} }
+c [label="Class head: Linear 32 -> 6\nsoftmax, CrossEntropy", fillcolor="#dcfce7", color="#16a34a"];
+w [label="Displacement head: Linear 32 -> 1 (kg)\nMSE x 1e-8", fillcolor="#fee2e2", color="#dc2626"];
+L [label="L = CE + 1e-8 * MSE | Adam lr 0.005, 100 full-batch steps | validation-loss gate", shape=note, fillcolor="#fef9c3", color="#d97706"];
+x -> l1; l1 -> l2 -> l3; l3 -> c; l3 -> w; c -> L [style=dashed]; w -> L [style=dashed];
+}

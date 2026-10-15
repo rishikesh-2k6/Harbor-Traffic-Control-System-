@@ -1,0 +1,37 @@
+{
+  "vessel_classification": {
+    "normal_accuracy_pct": 100.0,
+    "normal_validated_count": "23/23",
+    "monsoon_accuracy_pct": 100.0,
+    "classes": [
+      "Cargo Ship",
+      "Cruiser",
+      "Ferry",
+      "Fishing Vessel",
+      "Speedboat",
+      "Tanker"
+    ]
+  },
+  "displacement_regression_error": {
+    "mae_kg": 22713.0,
+    "rmse_kg": 36121.0,
+    "mape_pct": 97.7,
+    "monsoon_mae_kg": 22703.0,
+    "diagnosis": "Weight head receives only 0.6% of gradient signal (0.817 vs 135) due to 1e-8 factor with unnormalized kg targets"
+  },
+  "model_architecture": {
+    "features_count": 21,
+    "feature_groups": {
+      "acoustic": 7,
+      "propagation": 3,
+      "environmental": 5,
+      "engineered": 6
+    },
+    "trunk": "Linear(21, 128) -> ReLU -> Linear(128, 64) -> ReLU -> Linear(64, 32) -> ReLU",
+    "heads": [
+      "Classification (32 -> 6)",
+      "Regression (32 -> 1)"
+    ],
+    "optimizer": "Adam(lr=0.005)"
+  }
+}

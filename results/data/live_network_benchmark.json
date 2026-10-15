@@ -1,0 +1,36 @@
+{
+  "normal_season": {
+    "ambient_noise_db": 66.1,
+    "active_links_mean": 91.0,
+    "active_links_min": 90,
+    "active_links_max": 92,
+    "pdr_mean_pct": 99.8,
+    "pdr_min_pct": 98.0,
+    "pdr_max_pct": 100.0,
+    "avg_hop_count": 1.4,
+    "sensor_availability_pct": 91.4,
+    "sensor_active_ratio": "32/35"
+  },
+  "monsoon_season": {
+    "ambient_noise_db": 91.9,
+    "active_links_mean": 69.5,
+    "active_links_min": 68,
+    "active_links_max": 72,
+    "pdr_swarm_assisted_pct": 92.4,
+    "pdr_unassisted_mass_severance_pct": 0.0,
+    "avg_hop_count": 2.3,
+    "sensor_availability_pct": 71.4,
+    "sensor_active_ratio": "25/35"
+  },
+  "compression_gains": {
+    "default_frame_bytes": 256,
+    "compressed_frame_bytes": 16,
+    "size_ratio": "16x smaller",
+    "tx_delay_default_s": 2.048,
+    "tx_delay_compressed_s": 0.128,
+    "delay_savings_pct": 93.75,
+    "energy_default_j": 20.48,
+    "energy_compressed_j": 1.28,
+    "energy_savings_pct": 93.75
+  }
+}

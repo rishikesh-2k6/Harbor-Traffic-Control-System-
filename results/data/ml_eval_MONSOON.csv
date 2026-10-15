@@ -1,0 +1,4055 @@
+actual_kg,pred_kg,type,pred_type
+81607.0,1617.257,Cargo Ship,Speedboat
+26934.0,850.7057,Fishing Vessel,Fishing Vessel
+66893.0,1161.8313,Cruiser,Speedboat
+32975.0,838.33307,Ferry,Speedboat
+56129.0,919.49316,Ferry,Speedboat
+6385.0,1402.0522,Speedboat,Speedboat
+26934.0,1015.0371,Fishing Vessel,Speedboat
+41666.0,1127.6238,Cruiser,Speedboat
+27521.0,1087.032,Fishing Vessel,Speedboat
+41666.0,1169.182,Cruiser,Speedboat
+16000.0,880.4585,Fishing Vessel,Fishing Vessel
+27521.0,849.7043,Fishing Vessel,Fishing Vessel
+5144.0,1135.4619,Speedboat,Speedboat
+81607.0,1548.2152,Cargo Ship,Cargo Ship
+66042.0,883.42444,Cruiser,Speedboat
+7317.0,1220.4816,Speedboat,Speedboat
+16000.0,797.70215,Fishing Vessel,Fishing Vessel
+81607.0,1480.0135,Cargo Ship,Cargo Ship
+26934.0,880.3368,Fishing Vessel,Fishing Vessel
+112466.0,1378.0817,Cargo Ship,Ferry
+66893.0,956.81946,Cruiser,Speedboat
+56129.0,1076.3757,Ferry,Speedboat
+6385.0,1226.1888,Speedboat,Speedboat
+26934.0,800.28064,Fishing Vessel,Fishing Vessel
+112466.0,1401.4774,Cargo Ship,Ferry
+8176.0,1347.8209,Speedboat,Speedboat
+182803.0,1004.43176,Tanker,Fishing Vessel
+7317.0,1370.1305,Speedboat,Speedboat
+23003.0,1014.35767,Fishing Vessel,Speedboat
+112466.0,1748.0612,Cargo Ship,Speedboat
+66893.0,878.9822,Cruiser,Speedboat
+8176.0,1398.7202,Speedboat,Speedboat
+26934.0,954.56006,Fishing Vessel,Fishing Vessel
+41666.0,1242.3868,Cruiser,Speedboat
+7317.0,1338.4086,Speedboat,Speedboat
+16000.0,705.45984,Fishing Vessel,Fishing Vessel
+27521.0,758.0591,Fishing Vessel,Fishing Vessel
+217573.0,1340.1373,Tanker,Speedboat
+7317.0,1180.5222,Speedboat,Speedboat
+16000.0,732.9625,Fishing Vessel,Fishing Vessel
+5144.0,977.4932,Speedboat,Speedboat
+81607.0,1598.9203,Cargo Ship,Cruiser
+217573.0,1462.6201,Tanker,Speedboat
+66042.0,1172.4222,Cruiser,Speedboat
+23003.0,1008.98517,Fishing Vessel,Speedboat
+66042.0,1180.7164,Cruiser,Speedboat
+66893.0,797.6198,Cruiser,Speedboat
+32975.0,1141.5375,Ferry,Speedboat
+6385.0,1303.5925,Speedboat,Speedboat
+26934.0,930.4007,Fishing Vessel,Speedboat
+81607.0,1359.3645,Cargo Ship,Ferry
+66042.0,1137.3264,Cruiser,Speedboat
+39508.0,956.1954,Cruiser,Speedboat
+54997.0,1256.9972,Ferry,Speedboat
+32975.0,1032.0532,Ferry,Speedboat
+26934.0,948.193,Fishing Vessel,Speedboat
+81607.0,1561.3165,Cargo Ship,Cargo Ship
+182803.0,1193.8799,Tanker,Speedboat
+23003.0,994.63684,Fishing Vessel,Speedboat
+112466.0,1507.5875,Cargo Ship,Cargo Ship
+66893.0,1047.1448,Cruiser,Speedboat
+32975.0,994.74066,Ferry,Speedboat
+56129.0,1182.5558,Ferry,Speedboat
+6385.0,1337.4218,Speedboat,Speedboat
+26934.0,1012.8717,Fishing Vessel,Speedboat
+66042.0,1047.3947,Cruiser,Speedboat
+66893.0,1028.551,Cruiser,Speedboat
+32975.0,1015.49023,Ferry,Speedboat
+6385.0,1238.2699,Speedboat,Speedboat
+26934.0,834.4861,Fishing Vessel,Fishing Vessel
+186102.0,1156.1842,Cargo Ship,Ferry
+217573.0,1082.2031,Tanker,Ferry
+66042.0,1058.7661,Cruiser,Speedboat
+39508.0,1149.1008,Cruiser,Speedboat
+54997.0,1197.4171,Ferry,Speedboat
+9098.0,849.1813,Speedboat,Speedboat
+5399.0,1241.2415,Speedboat,Speedboat
+182803.0,1113.9125,Tanker,Fishing Vessel
+23003.0,1099.237,Fishing Vessel,Speedboat
+7317.0,1018.00024,Speedboat,Speedboat
+7317.0,1158.0021,Speedboat,Speedboat
+16000.0,938.9449,Fishing Vessel,Fishing Vessel
+182803.0,1035.5483,Tanker,Fishing Vessel
+23003.0,842.5674,Fishing Vessel,Fishing Vessel
+5144.0,1046.0077,Speedboat,Speedboat
+41666.0,1242.2386,Cruiser,Speedboat
+16000.0,810.5067,Fishing Vessel,Fishing Vessel
+27521.0,869.40234,Fishing Vessel,Fishing Vessel
+39508.0,1080.3026,Cruiser,Speedboat
+32975.0,928.74884,Ferry,Speedboat
+81607.0,1760.3212,Cargo Ship,Cargo Ship
+66042.0,1027.8209,Cruiser,Speedboat
+26934.0,937.0741,Fishing Vessel,Fishing Vessel
+7317.0,1250.756,Speedboat,Speedboat
+112466.0,1468.4254,Cargo Ship,Cargo Ship
+66893.0,981.55164,Cruiser,Speedboat
+56129.0,958.6754,Ferry,Speedboat
+8176.0,1311.8048,Speedboat,Speedboat
+6385.0,1334.2786,Speedboat,Speedboat
+26934.0,922.8662,Fishing Vessel,Speedboat
+228506.0,1734.3922,Tanker,Cargo Ship
+37753.0,1187.3314,Ferry,Speedboat
+43826.0,954.2585,Ferry,Speedboat
+2827.0,1130.1122,Speedboat,Speedboat
+385463.0,1050.695,Tanker,Ferry
+63480.0,1489.1027,Cruiser,Speedboat
+42643.0,1132.7524,Cruiser,Speedboat
+37753.0,1153.7213,Ferry,Speedboat
+43826.0,994.04285,Ferry,Speedboat
+14205.0,810.53516,Fishing Vessel,Fishing Vessel
+385463.0,1283.0575,Tanker,Ferry
+63480.0,1424.0463,Cruiser,Speedboat
+42643.0,893.97314,Cruiser,Speedboat
+37753.0,1247.2716,Ferry,Speedboat
+43826.0,1146.6307,Ferry,Speedboat
+14205.0,1026.3363,Fishing Vessel,Speedboat
+63480.0,1512.0488,Cruiser,Speedboat
+8395.0,1302.3157,Speedboat,Speedboat
+14205.0,863.18774,Fishing Vessel,Fishing Vessel
+48800.0,1105.5742,Cruiser,Speedboat
+13576.0,933.0216,Fishing Vessel,Fishing Vessel
+385463.0,1080.4049,Tanker,Cargo Ship
+63480.0,1695.392,Cruiser,Speedboat
+42643.0,945.73083,Cruiser,Speedboat
+37753.0,1156.2504,Ferry,Speedboat
+14205.0,1006.1499,Fishing Vessel,Speedboat
+63480.0,1189.9061,Cruiser,Speedboat
+8395.0,1241.305,Speedboat,Speedboat
+228506.0,1586.8341,Tanker,Cargo Ship
+43196.0,1212.1129,Cruiser,Speedboat
+9883.0,1150.6414,Speedboat,Speedboat
+43196.0,1361.5013,Cruiser,Speedboat
+4046.0,1269.0299,Speedboat,Speedboat
+2005.0,1221.4264,Speedboat,Speedboat
+20167.0,1089.1212,Ferry,Speedboat
+26110.0,756.2954,Fishing Vessel,Fishing Vessel
+140456.0,1064.3619,Cargo Ship,Ferry
+8480.0,906.048,Fishing Vessel,Fishing Vessel
+37753.0,1005.60583,Ferry,Speedboat
+43826.0,896.24316,Ferry,Speedboat
+8395.0,1432.0005,Speedboat,Speedboat
+2827.0,1260.2706,Speedboat,Speedboat
+3301.0,1101.6986,Speedboat,Speedboat
+228506.0,1936.8345,Tanker,Cargo Ship
+43196.0,1228.8289,Cruiser,Speedboat
+3301.0,1247.6006,Speedboat,Speedboat
+140456.0,1253.9989,Cargo Ship,Ferry
+8480.0,927.3865,Fishing Vessel,Fishing Vessel
+43826.0,1146.1962,Ferry,Speedboat
+2827.0,1177.1006,Speedboat,Speedboat
+129694.0,1588.7651,Cargo Ship,Speedboat
+8480.0,868.98303,Fishing Vessel,Fishing Vessel
+2827.0,1050.2659,Speedboat,Speedboat
+8395.0,1326.503,Speedboat,Speedboat
+228506.0,1390.361,Tanker,Cargo Ship
+8395.0,1438.8734,Speedboat,Speedboat
+2827.0,1195.3623,Speedboat,Speedboat
+3301.0,1310.9215,Speedboat,Speedboat
+4046.0,1319.2804,Speedboat,Speedboat
+2827.0,1178.3231,Speedboat,Speedboat
+2005.0,1241.6768,Speedboat,Speedboat
+140456.0,1172.4694,Cargo Ship,Speedboat
+48800.0,1217.8656,Cruiser,Speedboat
+48800.0,1371.4501,Cruiser,Speedboat
+385463.0,1398.9238,Tanker,Speedboat
+63480.0,1520.3411,Cruiser,Speedboat
+42643.0,1193.2751,Cruiser,Speedboat
+37753.0,1022.67334,Ferry,Speedboat
+43826.0,1019.8334,Ferry,Speedboat
+14205.0,1072.3927,Fishing Vessel,Speedboat
+26110.0,848.36523,Fishing Vessel,Fishing Vessel
+385463.0,1292.3202,Tanker,Ferry
+63480.0,1544.67,Cruiser,Speedboat
+42643.0,1174.4805,Cruiser,Speedboat
+37753.0,1222.5759,Ferry,Speedboat
+43826.0,919.46436,Ferry,Speedboat
+8395.0,1268.0731,Speedboat,Speedboat
+3301.0,1346.4855,Speedboat,Speedboat
+37753.0,1057.7261,Ferry,Speedboat
+43826.0,1234.0555,Ferry,Speedboat
+8395.0,1454.3904,Speedboat,Speedboat
+2827.0,996.96423,Speedboat,Speedboat
+3301.0,1135.8467,Speedboat,Speedboat
+385463.0,1268.9117,Tanker,Ferry
+20167.0,1068.0183,Ferry,Speedboat
+37753.0,931.5536,Ferry,Speedboat
+43826.0,997.5441,Ferry,Speedboat
+140456.0,1376.4689,Cargo Ship,Speedboat
+8480.0,856.6848,Fishing Vessel,Fishing Vessel
+63480.0,1227.4464,Cruiser,Speedboat
+8395.0,1378.6279,Speedboat,Speedboat
+3301.0,958.24994,Speedboat,Speedboat
+14205.0,937.65125,Fishing Vessel,Fishing Vessel
+187411.0,1477.3942,Cargo Ship,Ferry
+49106.0,1273.5084,Ferry,Speedboat
+23853.0,791.34,Fishing Vessel,Fishing Vessel
+27028.0,1015.1699,Fishing Vessel,Fishing Vessel
+7808.0,1228.5763,Speedboat,Speedboat
+6339.0,1068.6887,Speedboat,Speedboat
+21585.0,960.1907,Fishing Vessel,Fishing Vessel
+164524.0,1603.239,Cargo Ship,Cargo Ship
+240880.0,1107.1217,Tanker,Ferry
+46323.0,1078.0721,Cruiser,Speedboat
+86998.0,1255.3171,Cargo Ship,Ferry
+166480.0,1293.4723,Tanker,Cargo Ship
+48257.0,1049.5558,Cruiser,Speedboat
+52383.0,1021.77545,Ferry,Speedboat
+86998.0,1350.6243,Cargo Ship,Speedboat
+166480.0,1503.1093,Tanker,Cargo Ship
+240880.0,1298.0399,Tanker,Speedboat
+48257.0,1124.5864,Cruiser,Speedboat
+52383.0,1232.086,Ferry,Speedboat
+166480.0,1354.8285,Tanker,Cargo Ship
+240880.0,980.5481,Tanker,Fishing Vessel
+48257.0,1049.5535,Cruiser,Speedboat
+46323.0,1076.545,Cruiser,Speedboat
+52383.0,1070.7954,Ferry,Speedboat
+2529.0,1062.3234,Speedboat,Speedboat
+86998.0,1376.657,Cargo Ship,Speedboat
+75019.0,1166.1122,Cruiser,Speedboat
+9863.0,1135.8888,Speedboat,Speedboat
+2529.0,1160.1196,Speedboat,Speedboat
+164524.0,1155.5995,Cargo Ship,Ferry
+240880.0,1032.4957,Tanker,Ferry
+46323.0,1125.6709,Cruiser,Speedboat
+52383.0,1266.0175,Ferry,Speedboat
+86998.0,1105.8389,Cargo Ship,Ferry
+166480.0,1358.11,Tanker,Cargo Ship
+48257.0,1136.1638,Cruiser,Speedboat
+52383.0,1230.7972,Ferry,Speedboat
+86998.0,1202.879,Cargo Ship,Speedboat
+48257.0,960.38354,Cruiser,Speedboat
+166480.0,1355.7177,Tanker,Cargo Ship
+240880.0,1199.2037,Tanker,Ferry
+48257.0,925.5736,Cruiser,Speedboat
+46323.0,1039.697,Cruiser,Speedboat
+52383.0,1305.5082,Ferry,Speedboat
+86998.0,1386.8522,Cargo Ship,Speedboat
+166480.0,1192.9661,Tanker,Cargo Ship
+48257.0,789.55444,Cruiser,Fishing Vessel
+187411.0,1460.3297,Cargo Ship,Cargo Ship
+49106.0,1014.2186,Ferry,Speedboat
+23853.0,835.4448,Fishing Vessel,Fishing Vessel
+27028.0,990.37885,Fishing Vessel,Fishing Vessel
+34307.0,896.3666,Ferry,Speedboat
+75019.0,850.2091,Cruiser,Speedboat
+9863.0,1338.3751,Speedboat,Speedboat
+2529.0,980.95746,Speedboat,Speedboat
+49106.0,1243.1471,Ferry,Speedboat
+49106.0,983.4724,Ferry,Speedboat
+21585.0,807.9496,Fishing Vessel,Fishing Vessel
+2529.0,1265.536,Speedboat,Speedboat
+86998.0,1145.0109,Cargo Ship,Ferry
+34307.0,1068.6957,Ferry,Speedboat
+57771.0,1364.7897,Cruiser,Speedboat
+7808.0,945.82886,Speedboat,Speedboat
+6339.0,1090.9742,Speedboat,Speedboat
+21585.0,1019.1919,Fishing Vessel,Speedboat
+7808.0,1262.0359,Speedboat,Speedboat
+21585.0,829.7296,Fishing Vessel,Fishing Vessel
+164524.0,1274.7218,Cargo Ship,Speedboat
+240880.0,999.463,Tanker,Fishing Vessel
+46323.0,910.674,Cruiser,Speedboat
+52383.0,962.1643,Ferry,Speedboat
+166480.0,1449.2029,Tanker,Cargo Ship
+75019.0,1168.1903,Cruiser,Speedboat
+9863.0,1170.3547,Speedboat,Speedboat
+2529.0,1041.2823,Speedboat,Speedboat
+7808.0,1129.7543,Speedboat,Speedboat
+5265.0,799.12573,Fishing Vessel,Fishing Vessel
+21585.0,965.56744,Fishing Vessel,Speedboat
+75019.0,1071.2642,Cruiser,Speedboat
+9863.0,1337.5326,Speedboat,Speedboat
+2529.0,1144.0846,Speedboat,Speedboat
+164524.0,1279.6361,Cargo Ship,Ferry
+240880.0,1077.6868,Tanker,Fishing Vessel
+46323.0,971.82825,Cruiser,Speedboat
+187411.0,1384.2684,Cargo Ship,Speedboat
+49106.0,1141.1359,Ferry,Speedboat
+23853.0,933.0933,Fishing Vessel,Fishing Vessel
+27028.0,851.1576,Fishing Vessel,Fishing Vessel
+57771.0,971.1345,Cruiser,Speedboat
+3903.0,1157.839,Speedboat,Speedboat
+1707.0,1155.3441,Speedboat,Speedboat
+187411.0,1506.2865,Cargo Ship,Cargo Ship
+49106.0,1023.5383,Ferry,Speedboat
+23853.0,1028.1979,Fishing Vessel,Speedboat
+27028.0,835.87823,Fishing Vessel,Fishing Vessel
+34307.0,954.133,Ferry,Speedboat
+339460.0,1234.175,Tanker,Cargo Ship
+129787.0,1775.4694,Cargo Ship,Cargo Ship
+24486.0,1088.6744,Ferry,Speedboat
+18187.0,863.1754,Fishing Vessel,Fishing Vessel
+33638.0,1040.219,Cruiser,Speedboat
+4347.0,832.7457,Speedboat,Speedboat
+8847.0,1237.1562,Speedboat,Speedboat
+7667.0,928.57056,Fishing Vessel,Fishing Vessel
+57425.0,1128.5656,Cruiser,Speedboat
+22750.0,732.4982,Fishing Vessel,Fishing Vessel
+6450.0,1238.2163,Speedboat,Speedboat
+5266.0,1023.46484,Speedboat,Speedboat
+136044.0,1534.5836,Cargo Ship,Cargo Ship
+5266.0,971.84424,Speedboat,Speedboat
+136044.0,1558.4834,Cargo Ship,Cargo Ship
+37741.0,1148.6299,Ferry,Speedboat
+4305.0,1037.953,Speedboat,Speedboat
+6450.0,1279.4148,Speedboat,Speedboat
+5266.0,1084.0947,Speedboat,Speedboat
+129787.0,1769.742,Cargo Ship,Cargo Ship
+8847.0,1382.3876,Speedboat,Speedboat
+6450.0,1098.3054,Speedboat,Speedboat
+5266.0,1080.3822,Speedboat,Speedboat
+24486.0,1175.3258,Ferry,Speedboat
+38677.0,1166.6674,Cruiser,Speedboat
+8847.0,1280.6788,Speedboat,Speedboat
+7667.0,905.10126,Fishing Vessel,Fishing Vessel
+133700.0,1467.1896,Cargo Ship,Cargo Ship
+51918.0,1149.1205,Ferry,Speedboat
+4347.0,1174.2406,Speedboat,Speedboat
+136044.0,1616.7504,Cargo Ship,Cargo Ship
+5266.0,923.1172,Speedboat,Speedboat
+57425.0,1044.4481,Cruiser,Speedboat
+5023.0,1509.6359,Speedboat,Speedboat
+22750.0,1034.3645,Fishing Vessel,Fishing Vessel
+133700.0,1243.5194,Cargo Ship,Cargo Ship
+51918.0,1077.9916,Ferry,Speedboat
+4347.0,929.39014,Speedboat,Speedboat
+33638.0,1077.7128,Cruiser,Speedboat
+51918.0,1144.1935,Ferry,Speedboat
+4347.0,1168.0394,Speedboat,Speedboat
+8847.0,1369.3063,Speedboat,Speedboat
+7667.0,914.9967,Fishing Vessel,Fishing Vessel
+136044.0,1549.5531,Cargo Ship,Cargo Ship
+5266.0,1042.9054,Speedboat,Speedboat
+57425.0,1089.7605,Cruiser,Speedboat
+5023.0,1235.8848,Speedboat,Speedboat
+136044.0,1710.5011,Cargo Ship,Cargo Ship
+5266.0,987.0593,Speedboat,Speedboat
+8847.0,1005.6007,Speedboat,Speedboat
+7667.0,786.89905,Fishing Vessel,Fishing Vessel
+38677.0,1160.6874,Cruiser,Speedboat
+47082.0,1107.228,Cruiser,Speedboat
+6504.0,1080.2125,Fishing Vessel,Speedboat
+37741.0,964.5259,Ferry,Speedboat
+4305.0,1334.0939,Speedboat,Speedboat
+6450.0,1383.0856,Speedboat,Speedboat
+47082.0,1034.0848,Cruiser,Speedboat
+33638.0,955.79535,Cruiser,Speedboat
+51918.0,1332.6024,Ferry,Speedboat
+4347.0,965.43005,Speedboat,Speedboat
+8847.0,1134.3691,Speedboat,Speedboat
+7667.0,880.1167,Fishing Vessel,Fishing Vessel
+33638.0,1012.94385,Cruiser,Speedboat
+51918.0,1011.91095,Ferry,Speedboat
+4347.0,1079.5366,Speedboat,Speedboat
+8847.0,1415.3666,Speedboat,Speedboat
+7667.0,771.3003,Fishing Vessel,Fishing Vessel
+57425.0,1322.2245,Cruiser,Speedboat
+22750.0,975.9398,Fishing Vessel,Fishing Vessel
+38677.0,1333.9025,Cruiser,Speedboat
+47082.0,891.369,Cruiser,Fishing Vessel
+33638.0,920.6964,Cruiser,Speedboat
+6504.0,1040.0458,Fishing Vessel,Speedboat
+7667.0,789.18567,Fishing Vessel,Fishing Vessel
+339460.0,1240.3717,Tanker,Cargo Ship
+57425.0,1127.4996,Cruiser,Speedboat
+5023.0,1428.4897,Speedboat,Speedboat
+22750.0,826.5115,Fishing Vessel,Fishing Vessel
+136044.0,1607.9545,Cargo Ship,Cargo Ship
+133700.0,1326.5531,Cargo Ship,Ferry
+57425.0,1001.48364,Cruiser,Speedboat
+5023.0,1124.277,Speedboat,Speedboat
+22750.0,906.48755,Fishing Vessel,Fishing Vessel
+129787.0,1518.7565,Cargo Ship,Cargo Ship
+8847.0,1107.4218,Speedboat,Speedboat
+7667.0,777.8816,Fishing Vessel,Fishing Vessel
+138315.0,1345.2418,Cargo Ship,Cargo Ship
+28322.0,1061.9976,Ferry,Speedboat
+30763.0,937.848,Cruiser,Speedboat
+9066.0,1201.3275,Speedboat,Speedboat
+12596.0,973.11804,Fishing Vessel,Speedboat
+138315.0,1581.0851,Cargo Ship,Cargo Ship
+31149.0,1048.9523,Cruiser,Speedboat
+30763.0,1212.7623,Cruiser,Speedboat
+9066.0,1136.3281,Speedboat,Speedboat
+8124.0,933.22174,Speedboat,Speedboat
+12596.0,915.8684,Fishing Vessel,Fishing Vessel
+94379.0,1479.0878,Cargo Ship,Speedboat
+32918.0,1123.3563,Cruiser,Speedboat
+1953.0,1280.0934,Speedboat,Speedboat
+4080.0,1224.479,Speedboat,Speedboat
+9014.0,1192.8582,Speedboat,Speedboat
+190755.0,1561.2346,Tanker,Cargo Ship
+209349.0,1545.7118,Tanker,Ferry
+54493.0,1038.7388,Cruiser,Speedboat
+31149.0,1164.614,Cruiser,Speedboat
+9091.0,1054.5984,Fishing Vessel,Speedboat
+138315.0,1717.2155,Cargo Ship,Cargo Ship
+190755.0,1626.1927,Tanker,Speedboat
+209349.0,1234.9396,Tanker,Cargo Ship
+31149.0,1219.4845,Cruiser,Speedboat
+34440.0,1107.2634,Ferry,Speedboat
+94379.0,1633.9277,Cargo Ship,Speedboat
+54493.0,840.97314,Cruiser,Speedboat
+32918.0,1106.036,Cruiser,Speedboat
+9014.0,1052.4935,Speedboat,Speedboat
+9091.0,971.4723,Fishing Vessel,Speedboat
+32576.0,878.2102,Ferry,Speedboat
+31149.0,1156.3242,Cruiser,Speedboat
+9066.0,1240.7181,Speedboat,Speedboat
+8124.0,1138.1399,Speedboat,Speedboat
+138315.0,1448.0946,Cargo Ship,Cargo Ship
+209349.0,1447.7284,Tanker,Speedboat
+31149.0,1253.1786,Cruiser,Speedboat
+32576.0,1099.7909,Ferry,Speedboat
+190755.0,1565.1719,Tanker,Cargo Ship
+209349.0,1291.6511,Tanker,Ferry
+54493.0,923.23724,Cruiser,Speedboat
+34440.0,1161.0675,Ferry,Speedboat
+4286.0,1053.8856,Speedboat,Speedboat
+94379.0,1155.5985,Cargo Ship,Ferry
+9091.0,1023.0625,Fishing Vessel,Speedboat
+30763.0,1284.0997,Cruiser,Speedboat
+9066.0,1140.8722,Speedboat,Speedboat
+12596.0,897.8885,Fishing Vessel,Fishing Vessel
+190755.0,1659.3119,Tanker,Ferry
+209349.0,1237.483,Tanker,Ferry
+54493.0,1087.4603,Cruiser,Speedboat
+34440.0,1124.4719,Ferry,Speedboat
+4286.0,1098.8196,Speedboat,Speedboat
+138315.0,1425.047,Cargo Ship,Cargo Ship
+209349.0,1258.7211,Tanker,Cargo Ship
+34440.0,1185.1171,Ferry,Speedboat
+32918.0,1285.919,Cruiser,Speedboat
+1953.0,1318.3102,Speedboat,Speedboat
+4080.0,1066.8351,Speedboat,Speedboat
+9014.0,1138.1016,Speedboat,Speedboat
+5487.0,947.60486,Fishing Vessel,Fishing Vessel
+32576.0,951.426,Ferry,Speedboat
+94379.0,1417.0441,Cargo Ship,Speedboat
+32918.0,1156.1008,Cruiser,Speedboat
+1953.0,1380.7921,Speedboat,Speedboat
+4080.0,1207.6144,Speedboat,Speedboat
+9014.0,1375.8837,Speedboat,Speedboat
+31149.0,1255.1031,Cruiser,Speedboat
+28322.0,1089.932,Ferry,Speedboat
+189681.0,1130.3092,Cargo Ship,Ferry
+30763.0,1010.1565,Cruiser,Speedboat
+12596.0,777.344,Fishing Vessel,Fishing Vessel
+32576.0,1010.5373,Ferry,Speedboat
+8124.0,903.4628,Speedboat,Speedboat
+94379.0,1310.3914,Cargo Ship,Cruiser
+9091.0,1099.5826,Fishing Vessel,Speedboat
+209349.0,1376.181,Tanker,Cargo Ship
+31149.0,1204.048,Cruiser,Speedboat
+8124.0,1036.4528,Speedboat,Speedboat
+9091.0,800.8847,Fishing Vessel,Fishing Vessel
+17209.0,731.67236,Fishing Vessel,Fishing Vessel
+94379.0,1358.1349,Cargo Ship,Speedboat
+190755.0,1443.0468,Tanker,Cargo Ship
+209349.0,1323.7288,Tanker,Speedboat
+54493.0,1115.9657,Cruiser,Speedboat
+9091.0,871.7693,Fishing Vessel,Fishing Vessel
+4080.0,939.05676,Speedboat,Speedboat
+9014.0,1112.5094,Speedboat,Speedboat
+17209.0,1083.7902,Fishing Vessel,Speedboat
+94379.0,1297.1346,Cargo Ship,Cargo Ship
+32918.0,1175.6991,Cruiser,Speedboat
+1953.0,1527.2435,Speedboat,Speedboat
+9014.0,938.1526,Speedboat,Speedboat
+5487.0,754.4319,Fishing Vessel,Fishing Vessel
+31149.0,1276.0945,Cruiser,Speedboat
+9066.0,1060.8746,Speedboat,Speedboat
+8124.0,1227.8207,Speedboat,Speedboat
+94379.0,1586.6815,Cargo Ship,Speedboat
+32918.0,1120.7458,Cruiser,Speedboat
+4080.0,1098.5402,Speedboat,Speedboat
+9014.0,1109.838,Speedboat,Speedboat
+71534.0,1106.4995,Cruiser,Speedboat
+8217.0,757.7101,Fishing Vessel,Fishing Vessel
+10684.0,790.5602,Fishing Vessel,Fishing Vessel
+7998.0,1003.772,Speedboat,Speedboat
+37533.0,1242.6743,Ferry,Speedboat
+7998.0,1246.5438,Speedboat,Speedboat
+350096.0,1413.1053,Tanker,Cargo Ship
+43010.0,1221.5599,Cruiser,Speedboat
+30558.0,1309.1893,Ferry,Speedboat
+320017.0,1255.729,Tanker,Ferry
+350096.0,1232.1389,Tanker,Ferry
+14945.0,943.5099,Fishing Vessel,Fishing Vessel
+22808.0,989.8959,Ferry,Speedboat
+4114.0,1151.7981,Speedboat,Speedboat
+67183.0,1305.2655,Cruiser,Speedboat
+4384.0,1193.349,Speedboat,Speedboat
+4114.0,1265.632,Speedboat,Speedboat
+67183.0,1263.277,Cruiser,Speedboat
+4384.0,1152.4686,Speedboat,Speedboat
+4114.0,1038.7504,Speedboat,Speedboat
+67183.0,1314.0009,Cruiser,Speedboat
+4384.0,1374.7013,Speedboat,Speedboat
+4114.0,1004.57263,Speedboat,Speedboat
+137499.0,1273.6722,Cargo Ship,Speedboat
+67183.0,1208.1606,Cruiser,Speedboat
+9259.0,1097.3546,Speedboat,Speedboat
+4384.0,1128.0406,Speedboat,Speedboat
+137499.0,1134.1451,Cargo Ship,Ferry
+116263.0,1522.2448,Cargo Ship,Cargo Ship
+30558.0,1423.664,Ferry,Speedboat
+9259.0,1164.6648,Speedboat,Speedboat
+71534.0,1234.4856,Cruiser,Speedboat
+8217.0,818.45984,Fishing Vessel,Fishing Vessel
+10684.0,800.23224,Fishing Vessel,Fishing Vessel
+137499.0,1324.5062,Cargo Ship,Speedboat
+67183.0,1097.4448,Cruiser,Speedboat
+9259.0,1572.0167,Speedboat,Speedboat
+55705.0,1004.9524,Cruiser,Speedboat
+22808.0,965.7049,Ferry,Speedboat
+4114.0,1291.0872,Speedboat,Speedboat
+6983.0,1209.9557,Speedboat,Speedboat
+116263.0,1590.0233,Cargo Ship,Cruiser
+350096.0,1202.0022,Tanker,Cargo Ship
+43010.0,1355.1063,Cruiser,Speedboat
+30558.0,1257.3851,Ferry,Speedboat
+55705.0,1096.4095,Cruiser,Speedboat
+22808.0,1026.5868,Ferry,Speedboat
+6983.0,1221.2579,Speedboat,Speedboat
+129779.0,1593.636,Cargo Ship,Ferry
+116263.0,1515.1815,Cargo Ship,Cargo Ship
+350096.0,1337.2286,Tanker,Cargo Ship
+43010.0,1299.3954,Cruiser,Speedboat
+8217.0,1043.8755,Fishing Vessel,Speedboat
+10684.0,760.55945,Fishing Vessel,Fishing Vessel
+55705.0,1242.3602,Cruiser,Speedboat
+6983.0,1044.8557,Speedboat,Speedboat
+7433.0,910.78,Speedboat,Speedboat
+71534.0,1125.9628,Cruiser,Speedboat
+8217.0,811.1262,Fishing Vessel,Fishing Vessel
+10684.0,1127.3732,Fishing Vessel,Speedboat
+55705.0,1102.501,Cruiser,Speedboat
+71534.0,998.6356,Cruiser,Speedboat
+8217.0,940.3198,Fishing Vessel,Fishing Vessel
+10684.0,1115.4393,Fishing Vessel,Speedboat
+129779.0,1274.5577,Cargo Ship,Cargo Ship
+22808.0,1206.2286,Ferry,Speedboat
+4384.0,1113.7726,Speedboat,Speedboat
+4114.0,1037.9668,Speedboat,Speedboat
+6983.0,1321.6719,Speedboat,Speedboat
+22966.0,995.3042,Fishing Vessel,Fishing Vessel
+350096.0,1218.0255,Tanker,Cargo Ship
+43010.0,1184.3545,Cruiser,Speedboat
+30558.0,1339.4731,Ferry,Speedboat
+10684.0,992.59186,Fishing Vessel,Fishing Vessel
+67183.0,1492.318,Cruiser,Speedboat
+4384.0,1415.978,Speedboat,Speedboat
+4114.0,1146.5231,Speedboat,Speedboat
+55705.0,1153.5217,Cruiser,Speedboat
+7433.0,1110.2181,Speedboat,Speedboat
+6983.0,1330.1254,Speedboat,Speedboat
+37533.0,1006.588,Ferry,Speedboat
+8217.0,1090.7081,Fishing Vessel,Speedboat
+10684.0,995.949,Fishing Vessel,Fishing Vessel
+137499.0,1172.0901,Cargo Ship,Ferry
+129779.0,1381.4587,Cargo Ship,Cargo Ship
+116263.0,1651.2926,Cargo Ship,Cargo Ship
+30558.0,1313.5829,Ferry,Speedboat
+22966.0,769.4802,Fishing Vessel,Fishing Vessel
+55705.0,1243.8629,Cruiser,Speedboat
+6983.0,1040.7762,Speedboat,Speedboat
+129779.0,1506.8785,Cargo Ship,Cargo Ship
+116263.0,1450.6713,Cargo Ship,Cargo Ship
+22808.0,1017.69745,Ferry,Speedboat
+6983.0,1330.8035,Speedboat,Speedboat
+22966.0,835.28876,Fishing Vessel,Fishing Vessel
+67183.0,1452.3812,Cruiser,Speedboat
+4384.0,1438.1019,Speedboat,Speedboat
+4114.0,1072.2946,Speedboat,Speedboat
+55705.0,1277.8068,Cruiser,Speedboat
+7433.0,1211.8895,Speedboat,Speedboat
+304876.0,1600.7035,Tanker,Ferry
+28490.0,1032.0116,Ferry,Speedboat
+4501.0,1403.1826,Speedboat,Speedboat
+27022.0,991.0255,Fishing Vessel,Fishing Vessel
+16585.0,845.19995,Fishing Vessel,Fishing Vessel
+79422.0,1093.2548,Cruiser,Speedboat
+79422.0,1275.2113,Cruiser,Speedboat
+50298.0,1049.1145,Ferry,Speedboat
+48349.0,1345.4117,Ferry,Speedboat
+16585.0,781.7876,Fishing Vessel,Fishing Vessel
+173195.0,1185.6643,Cargo Ship,Ferry
+71035.0,1037.3785,Cruiser,Speedboat
+37128.0,1043.7843,Cruiser,Speedboat
+1211.0,1305.8711,Speedboat,Speedboat
+8845.0,1265.1346,Speedboat,Speedboat
+3430.0,855.97595,Speedboat,Speedboat
+11679.0,779.98083,Fishing Vessel,Fishing Vessel
+304876.0,1434.8932,Tanker,Cargo Ship
+48349.0,1306.181,Ferry,Speedboat
+28490.0,972.6509,Ferry,Speedboat
+27022.0,744.5348,Fishing Vessel,Fishing Vessel
+16585.0,997.9894,Fishing Vessel,Fishing Vessel
+173195.0,1065.8749,Cargo Ship,Ferry
+71035.0,994.6485,Cruiser,Speedboat
+1211.0,998.5933,Speedboat,Speedboat
+3430.0,973.1162,Speedboat,Speedboat
+1049.0,1340.1368,Speedboat,Speedboat
+8733.0,1124.47,Speedboat,Speedboat
+152678.0,1580.2705,Cargo Ship,Cargo Ship
+57448.0,1339.212,Cruiser,Speedboat
+50298.0,820.92773,Ferry,Fishing Vessel
+8845.0,1198.9194,Speedboat,Speedboat
+15172.0,1091.0441,Fishing Vessel,Speedboat
+11679.0,872.6808,Fishing Vessel,Fishing Vessel
+11679.0,948.39355,Fishing Vessel,Fishing Vessel
+152678.0,1548.8539,Cargo Ship,Cargo Ship
+57448.0,980.5572,Cruiser,Speedboat
+8845.0,1300.8215,Speedboat,Speedboat
+3430.0,1084.4119,Speedboat,Speedboat
+15172.0,1042.3782,Fishing Vessel,Speedboat
+322714.0,1147.1012,Tanker,Speedboat
+1049.0,1237.924,Speedboat,Speedboat
+4501.0,1216.7145,Speedboat,Speedboat
+8733.0,1154.3019,Speedboat,Speedboat
+173195.0,1213.3177,Cargo Ship,Speedboat
+71035.0,917.78735,Cruiser,Speedboat
+1211.0,1125.808,Speedboat,Speedboat
+1049.0,1168.8408,Speedboat,Speedboat
+4501.0,1176.0726,Speedboat,Speedboat
+8733.0,1126.253,Speedboat,Speedboat
+152678.0,1490.3319,Cargo Ship,Cruiser
+57448.0,1113.0516,Cruiser,Speedboat
+8845.0,1083.519,Speedboat,Speedboat
+15172.0,852.5808,Fishing Vessel,Fishing Vessel
+152678.0,2013.8636,Cargo Ship,Cargo Ship
+57448.0,1273.6151,Cruiser,Speedboat
+50298.0,1027.9786,Ferry,Speedboat
+48349.0,1265.8405,Ferry,Speedboat
+15172.0,793.31366,Fishing Vessel,Fishing Vessel
+27022.0,1039.5181,Fishing Vessel,Fishing Vessel
+16585.0,859.63403,Fishing Vessel,Fishing Vessel
+173195.0,1101.1903,Cargo Ship,Speedboat
+71035.0,1089.7421,Cruiser,Speedboat
+1211.0,970.1281,Speedboat,Speedboat
+11679.0,783.3364,Fishing Vessel,Fishing Vessel
+173195.0,1208.7642,Cargo Ship,Speedboat
+71035.0,1004.02496,Cruiser,Speedboat
+1211.0,1118.5293,Speedboat,Speedboat
+1049.0,1200.3088,Speedboat,Speedboat
+79422.0,1047.4089,Cruiser,Speedboat
+50298.0,870.10095,Ferry,Fishing Vessel
+16585.0,912.4136,Fishing Vessel,Fishing Vessel
+322714.0,1153.919,Tanker,Speedboat
+15172.0,842.1855,Fishing Vessel,Fishing Vessel
+11679.0,1004.2196,Fishing Vessel,Speedboat
+173195.0,1012.1659,Cargo Ship,Fishing Vessel
+71035.0,858.0829,Cruiser,Speedboat
+3430.0,1073.0009,Speedboat,Speedboat
+15172.0,942.97534,Fishing Vessel,Fishing Vessel
+1049.0,1229.9911,Speedboat,Speedboat
+8733.0,1220.6273,Speedboat,Speedboat
+145706.0,1555.6821,Cargo Ship,Speedboat
+1049.0,1287.8253,Speedboat,Speedboat
+4501.0,1091.1826,Speedboat,Speedboat
+8733.0,1114.9009,Speedboat,Speedboat
+79422.0,996.4199,Cruiser,Speedboat
+152678.0,1436.091,Cargo Ship,Cargo Ship
+57448.0,1122.1135,Cruiser,Speedboat
+79422.0,1136.7012,Cruiser,Speedboat
+50298.0,1041.5717,Ferry,Speedboat
+48349.0,1198.7528,Ferry,Speedboat
+16585.0,829.4153,Fishing Vessel,Fishing Vessel
+173195.0,1015.978,Cargo Ship,Ferry
+71035.0,887.6073,Cruiser,Speedboat
+1211.0,923.0781,Speedboat,Speedboat
+11679.0,808.1609,Fishing Vessel,Fishing Vessel
+173195.0,1132.8605,Cargo Ship,Speedboat
+37128.0,994.29626,Cruiser,Speedboat
+1211.0,1034.5466,Speedboat,Speedboat
+179358.0,1503.1855,Cargo Ship,Cruiser
+32254.0,816.1427,Ferry,Speedboat
+12897.0,985.92004,Fishing Vessel,Fishing Vessel
+10061.0,918.24976,Fishing Vessel,Fishing Vessel
+179358.0,1516.3495,Cargo Ship,Speedboat
+32254.0,1075.021,Ferry,Speedboat
+10061.0,987.5825,Fishing Vessel,Fishing Vessel
+108295.0,1549.0054,Cargo Ship,Cargo Ship
+59454.0,1271.6334,Cruiser,Speedboat
+179358.0,1371.034,Cargo Ship,Ferry
+61484.0,1089.1906,Cruiser,Speedboat
+69852.0,905.1344,Cruiser,Speedboat
+2625.0,985.46857,Speedboat,Speedboat
+6430.0,1117.014,Speedboat,Speedboat
+154906.0,1465.0321,Cargo Ship,Ferry
+288981.0,1142.0186,Tanker,Ferry
+52656.0,1142.2401,Ferry,Speedboat
+2625.0,1234.0177,Speedboat,Speedboat
+179358.0,1340.8413,Cargo Ship,Cruiser
+69852.0,983.8182,Cruiser,Speedboat
+32254.0,970.208,Ferry,Speedboat
+2625.0,952.6652,Speedboat,Speedboat
+6430.0,914.1907,Speedboat,Speedboat
+108295.0,1342.8214,Cargo Ship,Ferry
+74256.0,1005.1129,Cruiser,Speedboat
+69852.0,1176.7936,Cruiser,Speedboat
+8917.0,966.3709,Speedboat,Speedboat
+108295.0,1468.689,Cargo Ship,Cargo Ship
+59454.0,1053.1654,Cruiser,Speedboat
+74256.0,933.7362,Cruiser,Speedboat
+170549.0,1181.4987,Tanker,Ferry
+4615.0,919.9883,Speedboat,Speedboat
+9363.0,1288.5718,Speedboat,Speedboat
+8714.0,769.1088,Fishing Vessel,Fishing Vessel
+108295.0,1426.3507,Cargo Ship,Speedboat
+59454.0,1138.3325,Cruiser,Speedboat
+74256.0,848.9922,Cruiser,Speedboat
+8917.0,1147.6246,Speedboat,Speedboat
+61484.0,920.3072,Cruiser,Speedboat
+69852.0,1237.1185,Cruiser,Speedboat
+8917.0,1191.1505,Speedboat,Speedboat
+10061.0,1064.8209,Fishing Vessel,Fishing Vessel
+108295.0,1448.8436,Cargo Ship,Ferry
+59454.0,1271.9222,Cruiser,Speedboat
+288981.0,1040.9425,Tanker,Ferry
+26524.0,842.839,Ferry,Speedboat
+61484.0,888.16833,Cruiser,Speedboat
+26524.0,1114.3896,Ferry,Speedboat
+74256.0,910.0703,Cruiser,Speedboat
+4615.0,992.25494,Speedboat,Speedboat
+9363.0,1194.349,Speedboat,Speedboat
+8714.0,844.7783,Fishing Vessel,Fishing Vessel
+288981.0,1287.3143,Tanker,Speedboat
+61484.0,1148.104,Cruiser,Speedboat
+69852.0,1090.4814,Cruiser,Speedboat
+26524.0,1033.5698,Ferry,Speedboat
+6430.0,1042.0045,Speedboat,Speedboat
+108295.0,1512.8854,Cargo Ship,Speedboat
+74256.0,1107.1598,Cruiser,Speedboat
+69852.0,1185.774,Cruiser,Speedboat
+8917.0,1116.696,Speedboat,Speedboat
+74256.0,1057.1823,Cruiser,Speedboat
+8917.0,1143.5602,Speedboat,Speedboat
+8714.0,969.9298,Fishing Vessel,Fishing Vessel
+108295.0,1529.7877,Cargo Ship,Speedboat
+59454.0,1198.0978,Cruiser,Speedboat
+179358.0,1483.8632,Cargo Ship,Ferry
+32254.0,897.5546,Ferry,Speedboat
+12897.0,1066.6495,Fishing Vessel,Speedboat
+10061.0,973.27637,Fishing Vessel,Fishing Vessel
+4615.0,857.0309,Speedboat,Speedboat
+8714.0,884.8652,Fishing Vessel,Fishing Vessel
+108295.0,1547.4357,Cargo Ship,Cruiser
+59454.0,1288.5106,Cruiser,Speedboat
+74256.0,1140.4565,Cruiser,Speedboat
+8917.0,912.57556,Speedboat,Speedboat
+288981.0,1369.1595,Tanker,Speedboat
+52656.0,1145.2921,Ferry,Speedboat
+61484.0,908.7999,Cruiser,Speedboat
+69852.0,1047.6024,Cruiser,Speedboat
+26524.0,1130.3633,Ferry,Speedboat
+6430.0,1025.0807,Speedboat,Speedboat
+61484.0,942.1279,Cruiser,Speedboat
+69852.0,1034.6727,Cruiser,Speedboat
+26524.0,910.45593,Ferry,Speedboat
+6430.0,994.55945,Speedboat,Speedboat
+288981.0,1320.889,Tanker,Ferry
+52656.0,997.9289,Ferry,Speedboat
+288981.0,1327.4174,Tanker,Cargo Ship
+61484.0,863.3744,Cruiser,Speedboat
+26524.0,908.02167,Ferry,Speedboat
+6430.0,894.9436,Speedboat,Speedboat
+179358.0,1531.6581,Cargo Ship,Speedboat
+154906.0,1366.4248,Cargo Ship,Cruiser
+2625.0,1178.1184,Speedboat,Speedboat
+12897.0,805.86816,Fishing Vessel,Fishing Vessel
+170549.0,1252.2241,Tanker,Speedboat
+4615.0,1179.0314,Speedboat,Speedboat
+9363.0,1309.5361,Speedboat,Speedboat
+8714.0,888.0543,Fishing Vessel,Fishing Vessel
+55802.0,1120.8284,Ferry,Speedboat
+3494.0,1109.8904,Speedboat,Speedboat
+7326.0,801.3313,Speedboat,Speedboat
+7620.0,1087.4685,Speedboat,Speedboat
+193960.0,1491.7833,Cargo Ship,Speedboat
+33993.0,1226.202,Ferry,Speedboat
+1865.0,1149.5808,Speedboat,Speedboat
+10868.0,924.0719,Fishing Vessel,Fishing Vessel
+99213.0,1568.495,Cargo Ship,Cruiser
+162944.0,1378.2496,Tanker,Cruiser
+69407.0,1128.6104,Cruiser,Speedboat
+99213.0,1515.348,Cargo Ship,Cargo Ship
+162944.0,1364.5542,Tanker,Cruiser
+49963.0,1028.11,Cruiser,Fishing Vessel
+69407.0,989.5727,Cruiser,Speedboat
+1514.0,1453.3265,Speedboat,Speedboat
+7173.0,916.9014,Fishing Vessel,Fishing Vessel
+3494.0,1101.3096,Speedboat,Speedboat
+7326.0,891.6256,Speedboat,Speedboat
+7620.0,1083.8612,Speedboat,Speedboat
+99213.0,1645.1705,Cargo Ship,Cruiser
+162944.0,1446.1632,Tanker,Cargo Ship
+69407.0,1066.9353,Cruiser,Speedboat
+55802.0,1305.5314,Ferry,Speedboat
+1865.0,1074.3463,Speedboat,Speedboat
+28971.0,964.15137,Fishing Vessel,Fishing Vessel
+10868.0,976.7743,Fishing Vessel,Fishing Vessel
+193960.0,1632.1945,Cargo Ship,Cargo Ship
+33993.0,843.0465,Ferry,Speedboat
+1865.0,1159.3794,Speedboat,Speedboat
+28971.0,869.2605,Fishing Vessel,Fishing Vessel
+10868.0,1065.2982,Fishing Vessel,Speedboat
+193960.0,1571.7927,Cargo Ship,Cruiser
+93687.0,1305.893,Cargo Ship,Cargo Ship
+214804.0,1104.3702,Tanker,Cargo Ship
+33993.0,1153.682,Ferry,Speedboat
+28971.0,992.2151,Fishing Vessel,Fishing Vessel
+10868.0,849.72174,Fishing Vessel,Fishing Vessel
+55802.0,1052.3148,Ferry,Speedboat
+7326.0,992.19446,Speedboat,Speedboat
+7620.0,1207.8075,Speedboat,Speedboat
+193960.0,1421.2506,Cargo Ship,Ferry
+93687.0,1035.1498,Cargo Ship,Ferry
+214804.0,1336.1135,Tanker,Ferry
+33993.0,1126.2721,Ferry,Speedboat
+1865.0,1239.0361,Speedboat,Speedboat
+28971.0,811.5685,Fishing Vessel,Fishing Vessel
+10868.0,787.1707,Fishing Vessel,Fishing Vessel
+193960.0,1492.3146,Cargo Ship,Ferry
+33993.0,986.1377,Ferry,Speedboat
+1865.0,1119.8152,Speedboat,Speedboat
+28971.0,729.9881,Fishing Vessel,Fishing Vessel
+10868.0,1117.715,Fishing Vessel,Speedboat
+99213.0,1203.5292,Cargo Ship,Ferry
+162944.0,1350.1516,Tanker,Cargo Ship
+69407.0,1133.6902,Cruiser,Speedboat
+5278.0,1219.306,Speedboat,Speedboat
+1514.0,1255.0765,Speedboat,Speedboat
+7173.0,783.3149,Fishing Vessel,Fishing Vessel
+43019.0,1127.7986,Ferry,Speedboat
+3494.0,1091.5328,Speedboat,Speedboat
+7620.0,1012.24854,Speedboat,Speedboat
+99213.0,1628.2335,Cargo Ship,Speedboat
+1514.0,1277.8671,Speedboat,Speedboat
+7173.0,798.17865,Fishing Vessel,Fishing Vessel
+58043.0,1009.61,Cruiser,Speedboat
+3494.0,1100.2726,Speedboat,Speedboat
+7620.0,948.1105,Speedboat,Speedboat
+55802.0,1387.3715,Ferry,Speedboat
+1865.0,940.0518,Speedboat,Speedboat
+7326.0,922.1235,Speedboat,Speedboat
+28971.0,876.96173,Fishing Vessel,Fishing Vessel
+10868.0,972.20294,Fishing Vessel,Speedboat
+43019.0,1405.284,Ferry,Speedboat
+3494.0,1115.7878,Speedboat,Speedboat
+7326.0,889.083,Speedboat,Speedboat
+7620.0,1081.4047,Speedboat,Speedboat
+162944.0,1265.6129,Tanker,Cargo Ship
+49963.0,934.62054,Cruiser,Speedboat
+29902.0,867.202,Fishing Vessel,Fishing Vessel
+58043.0,891.4148,Cruiser,Speedboat
+193960.0,1431.9357,Cargo Ship,Ferry
+93687.0,1337.7428,Cargo Ship,Speedboat
+33993.0,1205.3556,Ferry,Speedboat
+10868.0,943.435,Fishing Vessel,Fishing Vessel
+58043.0,1064.441,Cruiser,Speedboat
+1865.0,1109.577,Speedboat,Speedboat
+7326.0,781.5923,Speedboat,Speedboat
+10868.0,1116.6875,Fishing Vessel,Speedboat
+55802.0,1376.6171,Ferry,Speedboat
+3494.0,934.0823,Speedboat,Speedboat
+7326.0,952.86096,Speedboat,Speedboat
+7620.0,1159.9448,Speedboat,Speedboat
+7620.0,1237.1696,Speedboat,Speedboat
+99213.0,1379.7056,Cargo Ship,Cargo Ship
+5278.0,1195.1846,Speedboat,Speedboat
+1514.0,1401.9073,Speedboat,Speedboat
+7173.0,885.97925,Fishing Vessel,Fishing Vessel
+99213.0,1442.339,Cargo Ship,Cruiser
+162944.0,1472.6322,Tanker,Cargo Ship
+69407.0,1164.4498,Cruiser,Speedboat
+69407.0,1152.429,Cruiser,Speedboat
+55802.0,1165.1847,Ferry,Speedboat
+7326.0,1015.4284,Speedboat,Speedboat
+7620.0,1108.5507,Speedboat,Speedboat
+3494.0,1038.5979,Speedboat,Speedboat
+7620.0,1230.7692,Speedboat,Speedboat
+58043.0,784.34204,Cruiser,Fishing Vessel
+3494.0,1103.7728,Speedboat,Speedboat
+7620.0,1127.0881,Speedboat,Speedboat
+55802.0,1082.8145,Ferry,Speedboat
+3494.0,1022.8439,Speedboat,Speedboat
+7326.0,1176.6205,Speedboat,Speedboat
+7620.0,1203.7495,Speedboat,Speedboat
+99213.0,1565.8534,Cargo Ship,Cargo Ship
+1514.0,1257.4252,Speedboat,Speedboat
+7173.0,913.4429,Fishing Vessel,Fishing Vessel
+58043.0,837.68555,Cruiser,Speedboat
+3494.0,1154.2806,Speedboat,Speedboat
+7326.0,941.4388,Speedboat,Speedboat
+7620.0,1159.421,Speedboat,Speedboat
+335839.0,1347.3695,Tanker,Ferry
+27029.0,1291.3322,Ferry,Speedboat
+7700.0,1520.208,Speedboat,Speedboat
+6130.0,857.9591,Speedboat,Speedboat
+13569.0,1057.5314,Fishing Vessel,Speedboat
+22349.0,1172.6469,Fishing Vessel,Speedboat
+60890.0,888.72943,Cruiser,Speedboat
+3950.0,1263.9601,Speedboat,Speedboat
+97014.0,1748.9734,Cargo Ship,Cruiser
+21669.0,1162.7805,Ferry,Speedboat
+9862.0,842.2617,Fishing Vessel,Fishing Vessel
+335839.0,1485.4445,Tanker,Cargo Ship
+27029.0,1289.176,Ferry,Speedboat
+1128.0,1107.3196,Speedboat,Speedboat
+7700.0,1129.4807,Speedboat,Speedboat
+6130.0,1047.5707,Speedboat,Speedboat
+13569.0,930.9346,Fishing Vessel,Fishing Vessel
+22349.0,1015.75684,Fishing Vessel,Speedboat
+3950.0,1272.1666,Speedboat,Speedboat
+244446.0,1126.5438,Tanker,Ferry
+33853.0,1006.41187,Cruiser,Speedboat
+22087.0,1221.3419,Ferry,Speedboat
+9862.0,1009.6543,Fishing Vessel,Speedboat
+3950.0,1239.5726,Speedboat,Speedboat
+9862.0,1046.3075,Fishing Vessel,Fishing Vessel
+21669.0,1110.2402,Ferry,Speedboat
+6103.0,1055.6477,Speedboat,Speedboat
+111237.0,1452.3203,Cargo Ship,Ferry
+130949.0,1237.7748,Cargo Ship,Speedboat
+74659.0,1010.244,Cruiser,Speedboat
+33853.0,1089.5604,Cruiser,Speedboat
+244446.0,1160.1598,Tanker,Ferry
+23060.0,908.85846,Fishing Vessel,Fishing Vessel
+27029.0,934.30505,Ferry,Speedboat
+1128.0,1112.9454,Speedboat,Speedboat
+6130.0,1005.9481,Speedboat,Speedboat
+7700.0,1463.8344,Speedboat,Speedboat
+23060.0,938.588,Fishing Vessel,Fishing Vessel
+13569.0,1118.8828,Fishing Vessel,Speedboat
+22349.0,831.6103,Fishing Vessel,Fishing Vessel
+111237.0,1413.3077,Cargo Ship,Speedboat
+130949.0,1422.4867,Cargo Ship,Speedboat
+74659.0,812.0207,Cruiser,Fishing Vessel
+33853.0,1334.4166,Cruiser,Speedboat
+22087.0,1173.1487,Ferry,Speedboat
+21669.0,959.21704,Ferry,Speedboat
+6103.0,1241.9625,Speedboat,Speedboat
+97014.0,1677.6559,Cargo Ship,Cargo Ship
+97014.0,1632.5676,Cargo Ship,Cargo Ship
+335839.0,1614.5571,Tanker,Speedboat
+7700.0,1188.4727,Speedboat,Speedboat
+244446.0,1242.7096,Tanker,Ferry
+7700.0,1398.3676,Speedboat,Speedboat
+23060.0,1011.5711,Fishing Vessel,Speedboat
+21669.0,1060.217,Ferry,Speedboat
+6103.0,993.11206,Speedboat,Speedboat
+97014.0,1607.9293,Cargo Ship,Cruiser
+9862.0,871.24365,Fishing Vessel,Fishing Vessel
+244446.0,1001.34546,Tanker,Ferry
+3950.0,1121.4895,Speedboat,Speedboat
+9862.0,800.1688,Fishing Vessel,Fishing Vessel
+3950.0,1034.0687,Speedboat,Speedboat
+9862.0,835.5671,Fishing Vessel,Fishing Vessel
+244446.0,1312.8746,Tanker,Speedboat
+7700.0,1233.6816,Speedboat,Speedboat
+23060.0,1075.5594,Fishing Vessel,Speedboat
+9862.0,814.2684,Fishing Vessel,Fishing Vessel
+244446.0,1173.4647,Tanker,Ferry
+244446.0,1293.2963,Tanker,Speedboat
+97014.0,1730.899,Cargo Ship,Cruiser
+97014.0,1749.4254,Cargo Ship,Cruiser
+335839.0,1550.0759,Tanker,Ferry
+27029.0,1024.6686,Ferry,Speedboat
+60890.0,1170.3995,Cruiser,Speedboat
+3950.0,1297.4508,Speedboat,Speedboat
+244446.0,1221.4994,Tanker,Cargo Ship
+23060.0,747.1332,Fishing Vessel,Fishing Vessel
+244446.0,1351.1843,Tanker,Speedboat
+23060.0,1076.736,Fishing Vessel,Speedboat
+97014.0,1764.1747,Cargo Ship,Cruiser
+335839.0,1245.0952,Tanker,Ferry
+21669.0,1195.1127,Ferry,Speedboat
+8937.0,958.00354,Speedboat,Speedboat
+102129.0,1405.3004,Cargo Ship,Cargo Ship
+46775.0,1011.6542,Cruiser,Speedboat
+70216.0,1217.2708,Cruiser,Speedboat
+55745.0,1143.9326,Cruiser,Speedboat
+8178.0,1283.9464,Speedboat,Speedboat
+102129.0,1535.5182,Cargo Ship,Cargo Ship
+4056.0,1144.6715,Speedboat,Speedboat
+5801.0,1183.8274,Speedboat,Speedboat
+4056.0,1334.9877,Speedboat,Speedboat
+58686.0,984.354,Ferry,Speedboat
+9276.0,1007.35046,Speedboat,Speedboat
+102129.0,1388.2804,Cargo Ship,Ferry
+4056.0,1052.1278,Speedboat,Speedboat
+8178.0,1068.6265,Speedboat,Speedboat
+18311.0,1008.7617,Fishing Vessel,Speedboat
+15454.0,974.40247,Fishing Vessel,Fishing Vessel
+102129.0,1429.7163,Cargo Ship,Cargo Ship
+382378.0,1284.2943,Tanker,Cargo Ship
+46775.0,1339.8429,Cruiser,Speedboat
+70216.0,1075.7554,Cruiser,Speedboat
+55745.0,1003.6714,Cruiser,Speedboat
+18311.0,804.2458,Fishing Vessel,Fishing Vessel
+4056.0,1261.7572,Speedboat,Speedboat
+8178.0,825.8296,Speedboat,Speedboat
+15454.0,875.10254,Fishing Vessel,Fishing Vessel
+9182.0,710.74335,Fishing Vessel,Fishing Vessel
+6731.0,1040.0911,Fishing Vessel,Fishing Vessel
+180606.0,1726.9916,Cargo Ship,Cargo Ship
+367076.0,1434.9581,Tanker,Ferry
+8178.0,1020.5248,Speedboat,Speedboat
+2487.0,1228.7491,Speedboat,Speedboat
+58686.0,974.4245,Ferry,Speedboat
+382378.0,1313.2369,Tanker,Ferry
+18311.0,935.2754,Fishing Vessel,Speedboat
+4056.0,1369.7848,Speedboat,Speedboat
+8178.0,918.5155,Speedboat,Speedboat
+18311.0,1043.7242,Fishing Vessel,Fishing Vessel
+15454.0,828.1958,Fishing Vessel,Fishing Vessel
+58686.0,1111.8876,Ferry,Speedboat
+88400.0,1101.1005,Cargo Ship,Ferry
+54192.0,1164.4358,Cruiser,Speedboat
+46315.0,904.9697,Ferry,Speedboat
+4056.0,1508.4889,Speedboat,Speedboat
+58686.0,1104.4064,Ferry,Speedboat
+9276.0,910.971,Speedboat,Speedboat
+180606.0,1554.4226,Cargo Ship,Cargo Ship
+367076.0,1238.6896,Tanker,Cargo Ship
+88400.0,1280.5272,Cargo Ship,Ferry
+54192.0,1091.2859,Cruiser,Speedboat
+46315.0,1162.4325,Ferry,Speedboat
+5801.0,1007.8885,Speedboat,Speedboat
+88400.0,1371.0009,Cargo Ship,Speedboat
+180606.0,1633.2625,Cargo Ship,Cruiser
+367076.0,1336.3678,Tanker,Ferry
+46315.0,1022.4689,Ferry,Speedboat
+8178.0,1228.9855,Speedboat,Speedboat
+2487.0,988.91833,Speedboat,Speedboat
+58686.0,999.5167,Ferry,Speedboat
+9276.0,951.1745,Speedboat,Speedboat
+88400.0,1222.1715,Cargo Ship,Ferry
+54192.0,1244.0441,Cruiser,Speedboat
+46315.0,959.7124,Ferry,Speedboat
+102129.0,1624.4542,Cargo Ship,Speedboat
+46775.0,874.8269,Cruiser,Speedboat
+55745.0,872.6116,Cruiser,Speedboat
+8178.0,1236.8453,Speedboat,Speedboat
+5801.0,1176.0627,Speedboat,Speedboat
+2487.0,1307.5568,Speedboat,Speedboat
+180606.0,1692.9723,Cargo Ship,Cargo Ship
+367076.0,1466.4937,Tanker,Speedboat
+8178.0,1086.1594,Speedboat,Speedboat
+2487.0,1020.0271,Speedboat,Speedboat
+70216.0,1172.1687,Cruiser,Speedboat
+9276.0,1133.1855,Speedboat,Speedboat
+180606.0,1728.067,Cargo Ship,Cargo Ship
+367076.0,1421.8517,Tanker,Speedboat
+8178.0,1180.1587,Speedboat,Speedboat
+2487.0,1157.0372,Speedboat,Speedboat
+55745.0,1162.8911,Cruiser,Speedboat
+8178.0,1040.0541,Speedboat,Speedboat
+5801.0,1054.1886,Speedboat,Speedboat
+2487.0,911.04785,Speedboat,Speedboat
+102129.0,1415.5206,Cargo Ship,Cargo Ship
+4056.0,1279.0109,Speedboat,Speedboat
+88400.0,1181.782,Cargo Ship,Ferry
+54192.0,938.395,Cruiser,Speedboat
+46315.0,1027.9637,Ferry,Speedboat
+5801.0,979.68335,Speedboat,Speedboat
+58686.0,1014.2654,Ferry,Speedboat
+9276.0,965.7223,Speedboat,Speedboat
+102129.0,1575.33,Cargo Ship,Speedboat
+46775.0,1190.5765,Cruiser,Speedboat
+70216.0,1305.2504,Cruiser,Speedboat
+55745.0,1352.1313,Cruiser,Speedboat
+8178.0,1214.6613,Speedboat,Speedboat
+5801.0,1012.3105,Speedboat,Speedboat
+102129.0,1375.5316,Cargo Ship,Cargo Ship
+382378.0,1526.4397,Tanker,Ferry
+46775.0,1271.3817,Cruiser,Speedboat
+70216.0,1054.2867,Cruiser,Speedboat
+55745.0,1052.5977,Cruiser,Speedboat
+18311.0,821.8213,Fishing Vessel,Fishing Vessel
+102129.0,1653.152,Cargo Ship,Cargo Ship
+382378.0,1165.3478,Tanker,Ferry
+46775.0,1382.1857,Cruiser,Speedboat
+70216.0,946.8892,Cruiser,Speedboat
+55745.0,1036.3136,Cruiser,Speedboat
+26396.0,784.61743,Ferry,Fishing Vessel
+4056.0,1201.2552,Speedboat,Speedboat
+8178.0,978.64294,Speedboat,Speedboat
+15454.0,900.6272,Fishing Vessel,Fishing Vessel
+9182.0,918.92737,Fishing Vessel,Fishing Vessel
+102129.0,1442.2142,Cargo Ship,Ferry
+46775.0,1152.7885,Cruiser,Speedboat
+55745.0,1050.7662,Cruiser,Speedboat
+8178.0,1207.3257,Speedboat,Speedboat
+5801.0,933.9142,Speedboat,Speedboat
+361332.0,1045.1995,Tanker,Fishing Vessel
+22811.0,1073.527,Ferry,Speedboat
+13810.0,990.1798,Fishing Vessel,Fishing Vessel
+53285.0,998.8662,Ferry,Speedboat
+3055.0,1106.7242,Speedboat,Speedboat
+4145.0,1068.1005,Speedboat,Speedboat
+15633.0,1058.498,Fishing Vessel,Speedboat
+49502.0,879.1639,Cruiser,Fishing Vessel
+22811.0,1163.2632,Ferry,Speedboat
+13810.0,1042.9924,Fishing Vessel,Speedboat
+361332.0,1008.70483,Tanker,Fishing Vessel
+56536.0,1372.1617,Cruiser,Speedboat
+22811.0,962.25433,Ferry,Speedboat
+13810.0,890.5397,Fishing Vessel,Fishing Vessel
+56536.0,1570.1975,Cruiser,Speedboat
+4145.0,1124.3981,Speedboat,Speedboat
+56536.0,1423.0748,Cruiser,Speedboat
+13810.0,845.8801,Fishing Vessel,Fishing Vessel
+51231.0,1223.1996,Ferry,Speedboat
+9039.0,1164.3519,Speedboat,Speedboat
+3508.0,886.21893,Speedboat,Speedboat
+128888.0,1429.2529,Cargo Ship,Speedboat
+132472.0,1662.1859,Cargo Ship,Cargo Ship
+100454.0,1174.6766,Cargo Ship,Ferry
+34615.0,1122.3373,Cruiser,Speedboat
+128888.0,1095.71,Cargo Ship,Ferry
+132472.0,1556.3358,Cargo Ship,Cargo Ship
+100454.0,946.50867,Cargo Ship,Fishing Vessel
+3055.0,1056.9226,Speedboat,Speedboat
+4145.0,1101.2247,Speedboat,Speedboat
+56536.0,1338.965,Cruiser,Speedboat
+56536.0,1296.399,Cruiser,Speedboat
+22811.0,1001.8449,Ferry,Speedboat
+13810.0,938.47437,Fishing Vessel,Speedboat
+364735.0,1672.7084,Tanker,Cargo Ship
+70025.0,1117.7388,Cruiser,Speedboat
+13915.0,1004.96875,Fishing Vessel,Fishing Vessel
+51231.0,899.2976,Ferry,Speedboat
+9039.0,1104.82,Speedboat,Speedboat
+3508.0,1045.9974,Speedboat,Speedboat
+22436.0,780.8706,Fishing Vessel,Fishing Vessel
+56536.0,1570.0863,Cruiser,Speedboat
+4145.0,1174.4471,Speedboat,Speedboat
+13810.0,970.1622,Fishing Vessel,Speedboat
+51231.0,1014.9475,Ferry,Speedboat
+4560.0,1334.2954,Speedboat,Speedboat
+2075.0,1026.8693,Speedboat,Speedboat
+9039.0,1263.8821,Speedboat,Speedboat
+3508.0,1100.9631,Speedboat,Speedboat
+22436.0,990.1367,Fishing Vessel,Fishing Vessel
+100454.0,1381.9723,Cargo Ship,Speedboat
+56536.0,1290.1079,Cruiser,Speedboat
+4145.0,1232.2719,Speedboat,Speedboat
+13915.0,811.7831,Fishing Vessel,Fishing Vessel
+128888.0,1319.5024,Cargo Ship,Ferry
+132472.0,1484.7015,Cargo Ship,Cargo Ship
+100454.0,1233.735,Cargo Ship,Ferry
+4145.0,1165.4814,Speedboat,Speedboat
+13915.0,899.0028,Fishing Vessel,Fishing Vessel
+100454.0,1108.5499,Cargo Ship,Ferry
+13915.0,955.79266,Fishing Vessel,Fishing Vessel
+361332.0,1242.9901,Tanker,Speedboat
+361332.0,1066.3087,Tanker,Ferry
+56536.0,1282.3652,Cruiser,Speedboat
+4145.0,1111.9799,Speedboat,Speedboat
+15633.0,820.79004,Fishing Vessel,Fishing Vessel
+361332.0,1146.2623,Tanker,Speedboat
+53285.0,959.688,Ferry,Speedboat
+3055.0,976.3508,Speedboat,Speedboat
+15633.0,780.68414,Fishing Vessel,Fishing Vessel
+49502.0,856.18286,Cruiser,Speedboat
+56536.0,1574.6023,Cruiser,Speedboat
+22811.0,1115.725,Ferry,Speedboat
+13810.0,1068.3662,Fishing Vessel,Speedboat
+22436.0,1072.1584,Fishing Vessel,Speedboat
+2075.0,1065.1317,Speedboat,Speedboat
+22436.0,796.301,Fishing Vessel,Fishing Vessel
+56536.0,1588.9379,Cruiser,Speedboat
+13810.0,1125.0042,Fishing Vessel,Speedboat
+34615.0,1207.5441,Cruiser,Speedboat
+361332.0,1285.1136,Tanker,Speedboat
+364735.0,1578.7257,Tanker,Cargo Ship
+4560.0,1156.3276,Speedboat,Speedboat
+2075.0,1208.4337,Speedboat,Speedboat
+49502.0,858.38574,Cruiser,Fishing Vessel
+9039.0,1203.1274,Speedboat,Speedboat
+3508.0,1135.5881,Speedboat,Speedboat
+22436.0,1056.9744,Fishing Vessel,Speedboat
+100454.0,1037.631,Cargo Ship,Ferry
+56536.0,1388.4493,Cruiser,Speedboat
+4145.0,1264.7574,Speedboat,Speedboat
+132472.0,1638.9666,Cargo Ship,Ferry
+3055.0,1101.4938,Speedboat,Speedboat
+128888.0,1144.724,Cargo Ship,Ferry
+132472.0,1361.8873,Cargo Ship,Cargo Ship
+100454.0,1232.3785,Cargo Ship,Cargo Ship
+51231.0,986.6174,Ferry,Speedboat
+4560.0,1035.598,Speedboat,Speedboat
+9039.0,983.7263,Speedboat,Speedboat
+3508.0,1054.6022,Speedboat,Speedboat
+134333.0,1722.0995,Cargo Ship,Cargo Ship
+72468.0,937.0604,Cruiser,Speedboat
+45992.0,1058.0708,Cruiser,Speedboat
+22538.0,981.46686,Ferry,Speedboat
+25094.0,957.6798,Fishing Vessel,Fishing Vessel
+34432.0,1346.4001,Cruiser,Speedboat
+25429.0,1115.7036,Ferry,Speedboat
+1067.0,1010.4472,Speedboat,Speedboat
+26000.0,1042.9156,Fishing Vessel,Speedboat
+17771.0,894.72925,Fishing Vessel,Fishing Vessel
+117760.0,1260.5111,Cargo Ship,Speedboat
+310477.0,1370.7338,Tanker,Ferry
+34432.0,1250.4042,Cruiser,Speedboat
+1067.0,1048.8556,Speedboat,Speedboat
+7882.0,1318.4454,Speedboat,Speedboat
+26000.0,820.8729,Fishing Vessel,Fishing Vessel
+70346.0,935.90076,Cruiser,Speedboat
+2658.0,869.76953,Speedboat,Speedboat
+117760.0,1145.4808,Cargo Ship,Speedboat
+34432.0,1166.8634,Cruiser,Speedboat
+70346.0,1088.15,Cruiser,Speedboat
+25429.0,894.5095,Ferry,Fishing Vessel
+1067.0,840.1406,Speedboat,Speedboat
+2658.0,1064.0164,Speedboat,Speedboat
+7882.0,1161.2532,Speedboat,Speedboat
+139514.0,1076.2839,Cargo Ship,Ferry
+42826.0,1306.4548,Ferry,Speedboat
+9748.0,1176.5045,Speedboat,Speedboat
+117760.0,950.8486,Cargo Ship,Ferry
+310477.0,1652.6139,Tanker,Speedboat
+7882.0,964.4078,Speedboat,Speedboat
+22708.0,791.4917,Fishing Vessel,Fishing Vessel
+310477.0,1438.7135,Tanker,Ferry
+7882.0,1334.5507,Speedboat,Speedboat
+22708.0,856.54407,Fishing Vessel,Fishing Vessel
+117760.0,1297.995,Cargo Ship,Ferry
+310477.0,1221.8833,Tanker,Cargo Ship
+1067.0,1076.8405,Speedboat,Speedboat
+4471.0,1190.9546,Speedboat,Speedboat
+134333.0,1799.5616,Cargo Ship,Cargo Ship
+70346.0,1126.7247,Cruiser,Speedboat
+22538.0,1068.8015,Ferry,Speedboat
+2658.0,981.1628,Speedboat,Speedboat
+25094.0,847.3104,Fishing Vessel,Fishing Vessel
+42826.0,1158.3441,Ferry,Speedboat
+9748.0,1038.4403,Speedboat,Speedboat
+26000.0,854.86664,Fishing Vessel,Fishing Vessel
+290310.0,1449.3385,Tanker,Cargo Ship
+42826.0,998.5351,Ferry,Speedboat
+9748.0,1132.6324,Speedboat,Speedboat
+72468.0,1231.227,Cruiser,Speedboat
+45992.0,1181.3031,Cruiser,Speedboat
+34432.0,1190.7074,Cruiser,Speedboat
+70346.0,981.6598,Cruiser,Speedboat
+25429.0,878.8904,Ferry,Fishing Vessel
+22538.0,962.4076,Ferry,Speedboat
+2658.0,1201.6704,Speedboat,Speedboat
+25094.0,787.85266,Fishing Vessel,Fishing Vessel
+72468.0,1292.9161,Cruiser,Speedboat
+45992.0,1141.6068,Cruiser,Speedboat
+25094.0,810.53754,Fishing Vessel,Fishing Vessel
+117760.0,1243.1312,Cargo Ship,Speedboat
+310477.0,1541.7316,Tanker,Ferry
+1067.0,852.39197,Speedboat,Speedboat
+4471.0,1267.114,Speedboat,Speedboat
+7882.0,1251.285,Speedboat,Speedboat
+310477.0,1399.5193,Tanker,Ferry
+7882.0,1118.1593,Speedboat,Speedboat
+22708.0,769.53845,Fishing Vessel,Fishing Vessel
+290310.0,1396.9791,Tanker,Cruiser
+139514.0,1203.1295,Cargo Ship,Ferry
+42826.0,1235.2484,Ferry,Speedboat
+9748.0,1245.6566,Speedboat,Speedboat
+139514.0,1117.996,Cargo Ship,Ferry
+42826.0,1223.6271,Ferry,Speedboat
+9748.0,1060.711,Speedboat,Speedboat
+1652.0,1160.1906,Speedboat,Speedboat
+34432.0,1369.5984,Cruiser,Speedboat
+70346.0,1006.90344,Cruiser,Speedboat
+25429.0,1112.8245,Ferry,Speedboat
+2658.0,1117.775,Speedboat,Speedboat
+117760.0,978.3285,Cargo Ship,Fishing Vessel
+34432.0,1011.3291,Cruiser,Speedboat
+25429.0,957.63904,Ferry,Speedboat
+1067.0,926.6178,Speedboat,Speedboat
+26000.0,905.30896,Fishing Vessel,Fishing Vessel
+17771.0,754.1259,Fishing Vessel,Fishing Vessel
+134333.0,1759.7028,Cargo Ship,Cargo Ship
+72468.0,982.78,Cruiser,Speedboat
+45992.0,897.1782,Cruiser,Speedboat
+310477.0,1416.4901,Tanker,Cruiser
+7882.0,985.96564,Speedboat,Speedboat
+22708.0,1061.8049,Fishing Vessel,Speedboat
+117760.0,1076.2802,Cargo Ship,Speedboat
+34432.0,1263.673,Cruiser,Speedboat
+1067.0,932.51013,Speedboat,Speedboat
+26000.0,1051.6024,Fishing Vessel,Speedboat
+17771.0,855.8314,Fishing Vessel,Fishing Vessel
+134333.0,1618.3319,Cargo Ship,Cargo Ship
+72468.0,1009.42114,Cruiser,Speedboat
+70346.0,919.3823,Cruiser,Speedboat
+22538.0,1028.2789,Ferry,Speedboat
+25094.0,1046.2473,Fishing Vessel,Fishing Vessel
+134333.0,1590.9869,Cargo Ship,Cargo Ship
+72468.0,1117.0936,Cruiser,Speedboat
+45992.0,875.7576,Cruiser,Speedboat
+22538.0,1084.7755,Ferry,Speedboat
+25094.0,828.93274,Fishing Vessel,Fishing Vessel
+134333.0,1555.6478,Cargo Ship,Cargo Ship
+22538.0,904.3053,Ferry,Speedboat
+25094.0,970.8948,Fishing Vessel,Fishing Vessel
+96873.0,1512.3877,Cargo Ship,Cruiser
+50471.0,1285.9933,Cruiser,Speedboat
+33193.0,891.671,Ferry,Fishing Vessel
+1397.0,1251.9366,Speedboat,Speedboat
+11810.0,876.26184,Fishing Vessel,Fishing Vessel
+96873.0,1560.7059,Cargo Ship,Cargo Ship
+50471.0,1029.0583,Cruiser,Speedboat
+1793.0,1456.7118,Speedboat,Speedboat
+7317.0,1077.133,Speedboat,Speedboat
+162962.0,1566.8441,Cargo Ship,Speedboat
+342606.0,1303.4794,Tanker,Speedboat
+96873.0,1623.9911,Cargo Ship,Cargo Ship
+50471.0,931.37115,Cruiser,Speedboat
+33193.0,775.118,Ferry,Fishing Vessel
+11810.0,872.8781,Fishing Vessel,Fishing Vessel
+342606.0,1039.3654,Tanker,Fishing Vessel
+33839.0,1359.6583,Cruiser,Speedboat
+59480.0,1078.8236,Ferry,Speedboat
+342606.0,1015.7737,Tanker,Fishing Vessel
+33839.0,991.8625,Cruiser,Speedboat
+4437.0,1054.7041,Speedboat,Speedboat
+158944.0,1248.2463,Cargo Ship,Cargo Ship
+59480.0,1220.3989,Ferry,Speedboat
+6372.0,921.7768,Speedboat,Speedboat
+96873.0,1662.7186,Cargo Ship,Cruiser
+38151.0,1091.3617,Cruiser,Speedboat
+50471.0,1179.9502,Cruiser,Speedboat
+1793.0,1219.4532,Speedboat,Speedboat
+7317.0,1205.2677,Speedboat,Speedboat
+96873.0,1680.3903,Cargo Ship,Cruiser
+50471.0,1181.1512,Cruiser,Speedboat
+33193.0,918.683,Ferry,Speedboat
+1397.0,1801.9105,Speedboat,Speedboat
+11810.0,859.979,Fishing Vessel,Fishing Vessel
+162962.0,1256.3081,Cargo Ship,Ferry
+342606.0,1070.7682,Tanker,Ferry
+33839.0,1097.9432,Cruiser,Speedboat
+281880.0,1357.6482,Tanker,Ferry
+49590.0,936.9372,Cruiser,Speedboat
+10416.0,917.12177,Fishing Vessel,Fishing Vessel
+9063.0,1020.5874,Fishing Vessel,Speedboat
+158944.0,1676.8038,Cargo Ship,Speedboat
+33839.0,1140.4135,Cruiser,Speedboat
+59480.0,1226.1573,Ferry,Speedboat
+162962.0,1569.0121,Cargo Ship,Speedboat
+342606.0,1107.4508,Tanker,Ferry
+96873.0,1614.5729,Cargo Ship,Cargo Ship
+38151.0,885.3474,Cruiser,Speedboat
+50471.0,1218.5675,Cruiser,Speedboat
+1793.0,1320.6293,Speedboat,Speedboat
+7317.0,1407.8007,Speedboat,Speedboat
+158944.0,1320.8923,Cargo Ship,Ferry
+33839.0,1213.9688,Cruiser,Speedboat
+59480.0,1167.7323,Ferry,Speedboat
+29350.0,986.9166,Fishing Vessel,Fishing Vessel
+9983.0,977.3798,Speedboat,Speedboat
+1397.0,1381.7914,Speedboat,Speedboat
+38151.0,904.24786,Cruiser,Speedboat
+162962.0,1350.7876,Cargo Ship,Cruiser
+342606.0,1060.8842,Tanker,Ferry
+29350.0,940.6593,Fishing Vessel,Fishing Vessel
+342606.0,1126.1545,Tanker,Ferry
+33839.0,1053.1229,Cruiser,Speedboat
+9983.0,1087.3011,Speedboat,Speedboat
+29350.0,843.03406,Fishing Vessel,Fishing Vessel
+281880.0,1245.83,Tanker,Cargo Ship
+49590.0,1018.2865,Cruiser,Speedboat
+38151.0,964.0552,Cruiser,Speedboat
+1793.0,1371.8749,Speedboat,Speedboat
+7317.0,1170.0803,Speedboat,Speedboat
+9063.0,876.3594,Fishing Vessel,Fishing Vessel
+281880.0,1066.5662,Tanker,Ferry
+49590.0,1020.0647,Cruiser,Speedboat
+38151.0,1095.1573,Cruiser,Speedboat
+10416.0,849.47565,Fishing Vessel,Fishing Vessel
+9063.0,951.5375,Fishing Vessel,Fishing Vessel
+33193.0,995.36475,Ferry,Speedboat
+47880.0,987.18896,Ferry,Speedboat
+11810.0,800.1981,Fishing Vessel,Fishing Vessel
+162962.0,1610.5763,Cargo Ship,Speedboat
+4437.0,1103.463,Speedboat,Speedboat
+29350.0,754.52216,Fishing Vessel,Fishing Vessel
+162962.0,1505.2072,Cargo Ship,Speedboat
+4437.0,995.75134,Speedboat,Speedboat
+29350.0,783.4323,Fishing Vessel,Fishing Vessel
+281880.0,1234.5759,Tanker,Cargo Ship
+49590.0,1056.857,Cruiser,Speedboat
+38151.0,868.9741,Cruiser,Speedboat
+1793.0,1176.5286,Speedboat,Speedboat
+7317.0,1158.8728,Speedboat,Speedboat
+10416.0,951.4448,Fishing Vessel,Fishing Vessel
+9063.0,760.7501,Fishing Vessel,Fishing Vessel
+33193.0,885.8634,Ferry,Fishing Vessel
+9983.0,1091.3448,Speedboat,Speedboat
+1397.0,1245.1606,Speedboat,Speedboat
+158944.0,1248.6625,Cargo Ship,Cargo Ship
+33839.0,1096.5774,Cruiser,Speedboat
+59480.0,1160.9208,Ferry,Speedboat
+6372.0,1097.2109,Speedboat,Speedboat
+4437.0,1016.4608,Speedboat,Speedboat
+158944.0,1269.1616,Cargo Ship,Cargo Ship
+9983.0,988.1787,Speedboat,Speedboat
+13319.0,783.2278,Fishing Vessel,Fishing Vessel
+139881.0,1714.1785,Cargo Ship,Speedboat
+7811.0,1122.6564,Speedboat,Speedboat
+347070.0,1356.6747,Tanker,Ferry
+74709.0,947.01953,Cruiser,Speedboat
+2391.0,1469.7128,Speedboat,Speedboat
+7379.0,735.58105,Fishing Vessel,Fishing Vessel
+13319.0,817.69434,Fishing Vessel,Fishing Vessel
+1823.0,1050.8665,Speedboat,Speedboat
+347070.0,1530.3802,Tanker,Ferry
+74709.0,1063.8792,Cruiser,Speedboat
+68713.0,1160.6534,Cruiser,Speedboat
+43662.0,1111.6285,Ferry,Speedboat
+1340.0,922.2185,Speedboat,Speedboat
+13319.0,794.85645,Fishing Vessel,Fishing Vessel
+40021.0,904.8918,Ferry,Speedboat
+5530.0,1735.8763,Speedboat,Speedboat
+139881.0,1536.4237,Cargo Ship,Cruiser
+7811.0,1237.985,Speedboat,Speedboat
+13319.0,961.0384,Fishing Vessel,Fishing Vessel
+122619.0,1244.7562,Cargo Ship,Cargo Ship
+68713.0,1068.3119,Cruiser,Speedboat
+1340.0,1055.7556,Speedboat,Speedboat
+11933.0,1049.7416,Fishing Vessel,Speedboat
+56867.0,1032.7812,Cruiser,Speedboat
+54604.0,1225.6464,Cruiser,Speedboat
+40021.0,948.2377,Ferry,Speedboat
+32235.0,1117.8458,Ferry,Speedboat
+5530.0,1336.4867,Speedboat,Speedboat
+40021.0,1142.5468,Ferry,Speedboat
+5530.0,1713.0281,Speedboat,Speedboat
+347070.0,1697.304,Tanker,Speedboat
+74709.0,1104.1454,Cruiser,Speedboat
+68713.0,1268.6527,Cruiser,Speedboat
+43662.0,1158.5013,Ferry,Speedboat
+2391.0,1009.3395,Speedboat,Speedboat
+7379.0,849.57495,Fishing Vessel,Fishing Vessel
+347070.0,1653.2559,Tanker,Cargo Ship
+74709.0,1073.2798,Cruiser,Speedboat
+68713.0,1178.5884,Cruiser,Speedboat
+43662.0,1082.3328,Ferry,Speedboat
+1823.0,1140.494,Speedboat,Speedboat
+2391.0,1380.7448,Speedboat,Speedboat
+7379.0,840.33997,Fishing Vessel,Fishing Vessel
+355609.0,1376.4877,Tanker,Cargo Ship
+56867.0,945.12585,Cruiser,Speedboat
+54604.0,1263.2211,Cruiser,Speedboat
+5850.0,1031.2491,Speedboat,Speedboat
+122619.0,1934.3339,Cargo Ship,Cargo Ship
+1340.0,1118.8395,Speedboat,Speedboat
+11933.0,1050.5972,Fishing Vessel,Speedboat
+68713.0,1093.3839,Cruiser,Speedboat
+1340.0,907.077,Speedboat,Speedboat
+11933.0,876.4622,Fishing Vessel,Fishing Vessel
+139881.0,1686.4169,Cargo Ship,Cruiser
+355609.0,1439.8956,Tanker,Ferry
+56867.0,1198.9314,Cruiser,Speedboat
+54604.0,1278.2472,Cruiser,Speedboat
+32235.0,1153.3428,Ferry,Speedboat
+5850.0,1075.5613,Speedboat,Speedboat
+7811.0,1328.5365,Speedboat,Speedboat
+15102.0,863.2676,Fishing Vessel,Fishing Vessel
+32235.0,1255.4912,Ferry,Speedboat
+15102.0,1014.4834,Fishing Vessel,Fishing Vessel
+56867.0,924.33545,Cruiser,Speedboat
+54604.0,1177.8938,Cruiser,Speedboat
+32235.0,1119.1554,Ferry,Speedboat
+7811.0,1235.0629,Speedboat,Speedboat
+15102.0,947.25494,Fishing Vessel,Fishing Vessel
+139881.0,1481.994,Cargo Ship,Cargo Ship
+7811.0,1225.2904,Speedboat,Speedboat
+1823.0,1141.7738,Speedboat,Speedboat
+2391.0,1295.1864,Speedboat,Speedboat
+7379.0,753.2208,Fishing Vessel,Fishing Vessel
+122619.0,1574.0302,Cargo Ship,Cargo Ship
+68713.0,1325.2863,Cruiser,Speedboat
+1340.0,1311.809,Speedboat,Speedboat
+11933.0,741.8915,Fishing Vessel,Fishing Vessel
+86142.0,1641.9506,Cargo Ship,Cruiser
+347070.0,1484.2555,Tanker,Ferry
+74709.0,860.01404,Cruiser,Speedboat
+43662.0,1113.144,Ferry,Speedboat
+40021.0,1157.6731,Ferry,Speedboat
+5530.0,1609.3534,Speedboat,Speedboat
+347070.0,1739.4056,Tanker,Cruiser
+74709.0,968.2505,Cruiser,Speedboat
+43662.0,934.4807,Ferry,Speedboat
+2391.0,1089.0347,Speedboat,Speedboat
+347070.0,1448.6891,Tanker,Speedboat
+2391.0,1492.7137,Speedboat,Speedboat
+7379.0,888.8752,Fishing Vessel,Fishing Vessel
+122619.0,1544.8826,Cargo Ship,Speedboat
+68713.0,949.79297,Cruiser,Speedboat
+43662.0,1160.1598,Ferry,Speedboat
+1340.0,1055.8762,Speedboat,Speedboat
+11933.0,779.68787,Fishing Vessel,Fishing Vessel
+13319.0,1032.4315,Fishing Vessel,Fishing Vessel
+347070.0,1499.1686,Tanker,Cargo Ship
+74709.0,907.13293,Cruiser,Speedboat
+2391.0,1141.2096,Speedboat,Speedboat
+86142.0,1701.6593,Cargo Ship,Cruiser
+347070.0,1709.4205,Tanker,Cargo Ship
+74709.0,1173.6996,Cruiser,Speedboat
+43662.0,940.73804,Ferry,Speedboat
+13319.0,897.3165,Fishing Vessel,Fishing Vessel
+352672.0,1070.7559,Tanker,Ferry
+74776.0,1728.3741,Cruiser,Speedboat
+1914.0,1012.0078,Speedboat,Speedboat
+13964.0,872.9765,Fishing Vessel,Fishing Vessel
+28763.0,738.6544,Fishing Vessel,Fishing Vessel
+126423.0,1486.9175,Cargo Ship,Cargo Ship
+20181.0,1029.7242,Ferry,Speedboat
+2429.0,1200.2272,Speedboat,Speedboat
+7584.0,1444.9994,Speedboat,Speedboat
+92712.0,1725.3776,Cargo Ship,Cruiser
+74776.0,1507.4279,Cruiser,Speedboat
+8243.0,1127.0808,Speedboat,Speedboat
+13964.0,1099.9357,Fishing Vessel,Speedboat
+28763.0,807.5618,Fishing Vessel,Fishing Vessel
+4642.0,890.6378,Speedboat,Speedboat
+352672.0,1303.1031,Tanker,Cargo Ship
+1914.0,997.5512,Speedboat,Speedboat
+4642.0,1265.6901,Speedboat,Speedboat
+57438.0,1123.3004,Ferry,Speedboat
+1914.0,1041.0157,Speedboat,Speedboat
+4642.0,1124.9244,Speedboat,Speedboat
+26783.0,949.08936,Fishing Vessel,Fishing Vessel
+386272.0,1395.9865,Tanker,Ferry
+30085.0,979.98755,Cruiser,Speedboat
+57438.0,989.8176,Ferry,Speedboat
+26783.0,771.4916,Fishing Vessel,Fishing Vessel
+1914.0,1018.60675,Speedboat,Speedboat
+4642.0,1170.3795,Speedboat,Speedboat
+26783.0,775.80444,Fishing Vessel,Fishing Vessel
+8243.0,1109.651,Speedboat,Speedboat
+65898.0,843.2665,Cruiser,Fishing Vessel
+52700.0,1237.1744,Ferry,Speedboat
+6907.0,1176.9857,Speedboat,Speedboat
+54832.0,915.55646,Cruiser,Speedboat
+13964.0,804.05066,Fishing Vessel,Fishing Vessel
+92712.0,1751.3765,Cargo Ship,Cargo Ship
+74776.0,1327.4841,Cruiser,Speedboat
+8243.0,1146.7762,Speedboat,Speedboat
+28763.0,945.36414,Fishing Vessel,Fishing Vessel
+92712.0,1940.2079,Cargo Ship,Cruiser
+74776.0,1446.2972,Cruiser,Speedboat
+65898.0,960.10614,Cruiser,Speedboat
+28763.0,894.43506,Fishing Vessel,Fishing Vessel
+57438.0,1043.021,Ferry,Speedboat
+26783.0,821.4722,Fishing Vessel,Fishing Vessel
+352672.0,1346.9528,Tanker,Cargo Ship
+74776.0,1455.6718,Cruiser,Speedboat
+1914.0,1044.9467,Speedboat,Speedboat
+28763.0,1049.2454,Fishing Vessel,Fishing Vessel
+178139.0,1711.3907,Cargo Ship,Cargo Ship
+54832.0,920.14905,Cruiser,Speedboat
+74776.0,1199.3046,Cruiser,Speedboat
+6907.0,1300.8333,Speedboat,Speedboat
+28763.0,756.9882,Fishing Vessel,Fishing Vessel
+352672.0,1274.5349,Tanker,Speedboat
+74776.0,1451.1796,Cruiser,Speedboat
+1914.0,818.89276,Speedboat,Speedboat
+4642.0,1261.567,Speedboat,Speedboat
+92712.0,1659.9694,Cargo Ship,Cruiser
+65898.0,826.04956,Cruiser,Speedboat
+52700.0,1035.3495,Ferry,Speedboat
+2429.0,1008.5848,Speedboat,Speedboat
+7584.0,1172.3706,Speedboat,Speedboat
+92712.0,1770.909,Cargo Ship,Cruiser
+65898.0,966.1898,Cruiser,Speedboat
+20181.0,1007.1898,Ferry,Speedboat
+52700.0,1080.5502,Ferry,Speedboat
+2429.0,1242.075,Speedboat,Speedboat
+7584.0,1183.9396,Speedboat,Speedboat
+92712.0,1732.0968,Cargo Ship,Cargo Ship
+65898.0,1089.8097,Cruiser,Speedboat
+52700.0,1334.9489,Ferry,Speedboat
+2429.0,1106.5762,Speedboat,Speedboat
+178139.0,1497.4313,Cargo Ship,Cargo Ship
+386272.0,1006.5074,Tanker,Cargo Ship
+54832.0,930.52856,Cruiser,Speedboat
+30085.0,981.7562,Cruiser,Speedboat
+74776.0,1254.1439,Cruiser,Speedboat
+8243.0,1188.0753,Speedboat,Speedboat
+13964.0,943.36584,Fishing Vessel,Fishing Vessel
+28763.0,906.89453,Fishing Vessel,Fishing Vessel
+74776.0,1334.5238,Cruiser,Speedboat
+6907.0,1213.0082,Speedboat,Speedboat
+28763.0,834.503,Fishing Vessel,Fishing Vessel
+8243.0,1363.7554,Speedboat,Speedboat
+13964.0,931.75757,Fishing Vessel,Fishing Vessel
+352672.0,1204.2306,Tanker,Cargo Ship
+1914.0,1165.2611,Speedboat,Speedboat
+4642.0,1178.6715,Speedboat,Speedboat
+6907.0,1217.193,Speedboat,Speedboat
+352672.0,1031.8076,Tanker,Ferry
+1914.0,964.8358,Speedboat,Speedboat
+4642.0,1273.349,Speedboat,Speedboat
+126423.0,1460.5477,Cargo Ship,Speedboat
+92712.0,1772.0197,Cargo Ship,Cruiser
+65898.0,791.43634,Cruiser,Fishing Vessel
+20181.0,883.5592,Ferry,Ferry
+52700.0,1151.5944,Ferry,Speedboat
+2429.0,1414.3905,Speedboat,Speedboat
+7584.0,1192.892,Speedboat,Speedboat
+6907.0,1222.9105,Speedboat,Speedboat
+26830.0,747.2015,Fishing Vessel,Fishing Vessel
+65898.0,1014.1155,Cruiser,Speedboat
+52700.0,1040.8143,Ferry,Speedboat
+2429.0,1192.8517,Speedboat,Speedboat
+352672.0,1267.7677,Tanker,Ferry
+4642.0,1212.6434,Speedboat,Speedboat
+182646.0,1030.122,Tanker,Speedboat
+70118.0,808.91766,Cruiser,Fishing Vessel
+3026.0,1044.3519,Speedboat,Speedboat
+19862.0,872.6892,Fishing Vessel,Fishing Vessel
+81535.0,1282.0283,Cargo Ship,Ferry
+55106.0,1432.628,Cruiser,Speedboat
+15307.0,808.5287,Fishing Vessel,Fishing Vessel
+19410.0,941.3808,Fishing Vessel,Fishing Vessel
+3026.0,884.746,Speedboat,Speedboat
+4879.0,987.9752,Speedboat,Speedboat
+19862.0,808.85016,Fishing Vessel,Fishing Vessel
+163103.0,1461.7125,Tanker,Cruiser
+39123.0,1022.4629,Ferry,Speedboat
+6840.0,1048.2816,Speedboat,Speedboat
+67330.0,1192.5818,Cruiser,Speedboat
+42789.0,1197.1102,Cruiser,Speedboat
+24872.0,906.86017,Ferry,Speedboat
+9577.0,1229.8463,Speedboat,Speedboat
+25237.0,925.3032,Fishing Vessel,Speedboat
+70118.0,944.3433,Cruiser,Speedboat
+33807.0,1073.3757,Ferry,Speedboat
+4879.0,1228.2618,Speedboat,Speedboat
+3026.0,877.763,Speedboat,Speedboat
+19862.0,755.9523,Fishing Vessel,Fishing Vessel
+70118.0,929.71704,Cruiser,Speedboat
+4879.0,1020.1028,Speedboat,Speedboat
+163103.0,1692.57,Tanker,Speedboat
+67330.0,1147.6691,Cruiser,Speedboat
+25237.0,890.792,Fishing Vessel,Fishing Vessel
+70118.0,1192.7726,Cruiser,Speedboat
+4879.0,951.43445,Speedboat,Speedboat
+39123.0,1055.5682,Ferry,Speedboat
+5825.0,1296.7833,Speedboat,Speedboat
+3026.0,1059.7081,Speedboat,Speedboat
+2166.0,1364.6171,Speedboat,Speedboat
+81535.0,1152.7997,Cargo Ship,Ferry
+19862.0,1081.1207,Fishing Vessel,Fishing Vessel
+15307.0,920.31866,Fishing Vessel,Fishing Vessel
+42789.0,791.0959,Cruiser,Fishing Vessel
+24872.0,999.26575,Ferry,Speedboat
+9577.0,1340.0839,Speedboat,Speedboat
+25237.0,803.81335,Fishing Vessel,Fishing Vessel
+67330.0,896.6631,Cruiser,Speedboat
+70118.0,1078.0538,Cruiser,Speedboat
+33807.0,1105.6467,Ferry,Speedboat
+4879.0,1104.08,Speedboat,Speedboat
+67330.0,885.5207,Cruiser,Speedboat
+70118.0,876.7145,Cruiser,Speedboat
+4879.0,1105.0636,Speedboat,Speedboat
+19862.0,1120.1163,Fishing Vessel,Speedboat
+15307.0,860.4834,Fishing Vessel,Fishing Vessel
+55106.0,1281.9576,Cruiser,Speedboat
+33807.0,1218.3517,Ferry,Speedboat
+4879.0,1157.2511,Speedboat,Speedboat
+19862.0,1010.53516,Fishing Vessel,Speedboat
+67330.0,1187.5565,Cruiser,Speedboat
+5825.0,1389.2269,Speedboat,Speedboat
+3026.0,926.7605,Speedboat,Speedboat
+19862.0,960.9886,Fishing Vessel,Fishing Vessel
+55106.0,1494.4266,Cruiser,Speedboat
+70118.0,1242.0941,Cruiser,Speedboat
+33807.0,1326.4479,Ferry,Speedboat
+4879.0,950.63794,Speedboat,Speedboat
+67330.0,992.7672,Cruiser,Speedboat
+118953.0,1370.6832,Cargo Ship,Speedboat
+163103.0,1380.7212,Tanker,Cargo Ship
+39123.0,1256.7008,Ferry,Speedboat
+6840.0,905.5749,Speedboat,Speedboat
+2166.0,1410.1156,Speedboat,Speedboat
+5825.0,1076.3712,Speedboat,Speedboat
+3026.0,1047.837,Speedboat,Speedboat
+2166.0,1301.7114,Speedboat,Speedboat
+19862.0,892.8992,Fishing Vessel,Fishing Vessel
+33807.0,1141.3477,Ferry,Speedboat
+4879.0,1093.0713,Speedboat,Speedboat
+19862.0,818.27466,Fishing Vessel,Fishing Vessel
+182646.0,1171.149,Tanker,Ferry
+5825.0,1074.9215,Speedboat,Speedboat
+2166.0,1209.2806,Speedboat,Speedboat
+55106.0,1279.3099,Cruiser,Speedboat
+33807.0,1149.4761,Ferry,Speedboat
+4879.0,1027.8584,Speedboat,Speedboat
+163103.0,1370.9945,Tanker,Cargo Ship
+163103.0,1625.6007,Tanker,Cargo Ship
+39123.0,1012.01917,Ferry,Speedboat
+6840.0,1099.0361,Speedboat,Speedboat
+182646.0,1074.034,Tanker,Ferry
+5825.0,1289.5616,Speedboat,Speedboat
+9577.0,1386.3441,Speedboat,Speedboat
+383506.0,1212.7723,Tanker,Ferry
+31905.0,952.91785,Ferry,Speedboat
+3717.0,1018.6315,Speedboat,Speedboat
+7436.0,944.9916,Speedboat,Speedboat
+164514.0,1785.703,Cargo Ship,Speedboat
+40156.0,1096.0205,Ferry,Speedboat
+5638.0,942.3634,Fishing Vessel,Fishing Vessel
+6907.0,954.0609,Speedboat,Speedboat
+4986.0,1029.6661,Speedboat,Speedboat
+6018.0,1203.9739,Speedboat,Speedboat
+23456.0,1024.3143,Fishing Vessel,Fishing Vessel
+353841.0,1342.3807,Tanker,Cargo Ship
+36672.0,912.66284,Cruiser,Speedboat
+7739.0,976.9114,Fishing Vessel,Fishing Vessel
+164514.0,1657.316,Cargo Ship,Cargo Ship
+5638.0,1085.547,Fishing Vessel,Speedboat
+36337.0,882.1605,Cruiser,Speedboat
+41134.0,977.5488,Cruiser,Speedboat
+7436.0,1053.3499,Speedboat,Speedboat
+164514.0,1872.047,Cargo Ship,Cruiser
+7436.0,962.81714,Speedboat,Speedboat
+5638.0,846.80566,Fishing Vessel,Fishing Vessel
+383506.0,1313.2562,Tanker,Speedboat
+353841.0,1263.6754,Tanker,Ferry
+31905.0,947.81555,Ferry,Speedboat
+7436.0,883.8066,Speedboat,Speedboat
+26338.0,1318.3412,Ferry,Speedboat
+7739.0,1043.6786,Fishing Vessel,Fishing Vessel
+353841.0,1131.4683,Tanker,Ferry
+31905.0,955.26886,Ferry,Speedboat
+5937.0,684.4938,Fishing Vessel,Fishing Vessel
+31905.0,1238.3481,Ferry,Speedboat
+4986.0,1065.2822,Speedboat,Speedboat
+64402.0,1321.7062,Cruiser,Speedboat
+26338.0,1308.216,Ferry,Speedboat
+7739.0,939.44366,Fishing Vessel,Fishing Vessel
+152517.0,1203.6201,Cargo Ship,Speedboat
+383506.0,895.37463,Tanker,Fishing Vessel
+3717.0,1031.9443,Speedboat,Speedboat
+36337.0,948.8557,Cruiser,Speedboat
+41134.0,1177.1244,Cruiser,Speedboat
+36672.0,1311.6698,Cruiser,Speedboat
+36337.0,1011.3306,Cruiser,Speedboat
+1793.0,1013.94525,Speedboat,Speedboat
+6018.0,1039.9454,Speedboat,Speedboat
+353841.0,1458.9044,Tanker,Cargo Ship
+36337.0,931.959,Cruiser,Speedboat
+31905.0,934.4778,Ferry,Speedboat
+7436.0,1028.7533,Speedboat,Speedboat
+6907.0,1222.4749,Speedboat,Speedboat
+4986.0,915.3036,Speedboat,Speedboat
+6018.0,1148.1653,Speedboat,Speedboat
+353841.0,1086.2161,Tanker,Ferry
+36672.0,1181.6227,Cruiser,Speedboat
+36337.0,885.07654,Cruiser,Speedboat
+7739.0,916.2888,Fishing Vessel,Fishing Vessel
+41134.0,981.828,Cruiser,Speedboat
+135263.0,1130.4257,Cargo Ship,Ferry
+36672.0,1083.6088,Cruiser,Speedboat
+1793.0,1187.1582,Speedboat,Speedboat
+5937.0,982.5206,Fishing Vessel,Fishing Vessel
+152517.0,1212.7303,Cargo Ship,Speedboat
+164514.0,1453.8772,Cargo Ship,Cargo Ship
+383506.0,1146.5588,Tanker,Ferry
+3717.0,1124.4022,Speedboat,Speedboat
+64402.0,1389.441,Cruiser,Speedboat
+26338.0,1033.6124,Ferry,Speedboat
+7739.0,836.92645,Fishing Vessel,Fishing Vessel
+6018.0,1111.8047,Speedboat,Speedboat
+1793.0,1322.7687,Speedboat,Speedboat
+5937.0,902.60474,Fishing Vessel,Fishing Vessel
+135263.0,1222.3805,Cargo Ship,Cargo Ship
+64402.0,1017.6387,Cruiser,Speedboat
+353841.0,1349.4304,Tanker,Cargo Ship
+36337.0,1094.911,Cruiser,Speedboat
+135263.0,1594.1941,Cargo Ship,Cargo Ship
+64402.0,1228.5707,Cruiser,Speedboat
+7739.0,756.1068,Fishing Vessel,Fishing Vessel
+383506.0,1197.3663,Tanker,Speedboat
+353841.0,1334.652,Tanker,Cargo Ship
+31905.0,1195.7396,Ferry,Speedboat
+6018.0,1080.4027,Speedboat,Speedboat
+135263.0,1411.7465,Cargo Ship,Cargo Ship
+135263.0,1391.6322,Cargo Ship,Cargo Ship
+127674.0,1308.0886,Cargo Ship,Ferry
+32728.0,1100.4269,Cruiser,Speedboat
+30291.0,1069.3871,Cruiser,Speedboat
+145441.0,1632.3859,Cargo Ship,Cruiser
+59965.0,978.8722,Cruiser,Speedboat
+1952.0,1107.6595,Speedboat,Speedboat
+1332.0,1165.3317,Speedboat,Speedboat
+170929.0,1592.3209,Tanker,Cargo Ship
+48494.0,1110.7874,Cruiser,Speedboat
+39308.0,990.6461,Ferry,Speedboat
+21353.0,933.41394,Fishing Vessel,Fishing Vessel
+178774.0,1121.0898,Cargo Ship,Cargo Ship
+1952.0,1000.39954,Speedboat,Speedboat
+6898.0,1281.966,Speedboat,Speedboat
+8805.0,1181.2628,Speedboat,Speedboat
+178774.0,1067.7292,Cargo Ship,Ferry
+1952.0,949.6261,Speedboat,Speedboat
+1332.0,1312.9637,Speedboat,Speedboat
+127674.0,1313.9149,Cargo Ship,Speedboat
+376487.0,1555.2861,Tanker,Cruiser
+48494.0,1158.0435,Cruiser,Speedboat
+48582.0,968.0154,Ferry,Speedboat
+24090.0,1082.631,Ferry,Speedboat
+12300.0,870.90784,Fishing Vessel,Fishing Vessel
+127674.0,1169.9772,Cargo Ship,Ferry
+376487.0,1473.1646,Tanker,Ferry
+12300.0,792.0879,Fishing Vessel,Fishing Vessel
+170929.0,1659.4803,Tanker,Speedboat
+39308.0,1042.0287,Ferry,Speedboat
+21353.0,1008.2737,Fishing Vessel,Speedboat
+9112.0,1067.379,Fishing Vessel,Speedboat
+170929.0,1923.7296,Tanker,Cargo Ship
+39308.0,1116.3722,Ferry,Speedboat
+21353.0,993.61633,Fishing Vessel,Speedboat
+48494.0,1232.2372,Cruiser,Speedboat
+9112.0,802.7195,Fishing Vessel,Fishing Vessel
+21353.0,962.26556,Fishing Vessel,Fishing Vessel
+127674.0,1186.3175,Cargo Ship,Ferry
+376487.0,1387.7045,Tanker,Cargo Ship
+12300.0,885.46436,Fishing Vessel,Fishing Vessel
+30291.0,1243.9164,Cruiser,Speedboat
+7915.0,1191.6052,Speedboat,Speedboat
+24090.0,830.6498,Ferry,Fishing Vessel
+17242.0,838.9519,Fishing Vessel,Fishing Vessel
+7915.0,1039.7026,Speedboat,Speedboat
+12300.0,1073.0414,Fishing Vessel,Speedboat
+48494.0,1187.3121,Cruiser,Speedboat
+127674.0,1268.8458,Cargo Ship,Cargo Ship
+376487.0,1527.3104,Tanker,Speedboat
+32728.0,1123.0497,Cruiser,Speedboat
+30291.0,964.7046,Cruiser,Speedboat
+32728.0,866.8682,Cruiser,Speedboat
+30291.0,909.71387,Cruiser,Speedboat
+376487.0,1144.3541,Tanker,Ferry
+12300.0,918.0951,Fishing Vessel,Fishing Vessel
+127674.0,1396.7787,Cargo Ship,Speedboat
+376487.0,1265.8215,Tanker,Cargo Ship
+12300.0,968.02136,Fishing Vessel,Fishing Vessel
+30291.0,1004.5605,Cruiser,Speedboat
+127674.0,1134.5433,Cargo Ship,Ferry
+376487.0,1517.4174,Tanker,Speedboat
+48494.0,1176.0709,Cruiser,Speedboat
+48582.0,925.83673,Ferry,Speedboat
+7915.0,990.4011,Speedboat,Speedboat
+12300.0,939.0308,Fishing Vessel,Fishing Vessel
+127674.0,1406.7303,Cargo Ship,Speedboat
+48494.0,1153.4159,Cruiser,Speedboat
+48582.0,995.9069,Ferry,Speedboat
+24090.0,1052.7587,Ferry,Speedboat
+48494.0,1371.0953,Cruiser,Speedboat
+48582.0,1208.7268,Ferry,Speedboat
+24090.0,1209.0497,Ferry,Speedboat
+9112.0,868.49664,Fishing Vessel,Fishing Vessel
+17242.0,987.74133,Fishing Vessel,Fishing Vessel
+178774.0,1125.694,Cargo Ship,Ferry
+1952.0,1044.5731,Speedboat,Speedboat
+6898.0,1081.4327,Speedboat,Speedboat
+8805.0,1033.0624,Speedboat,Speedboat
+1332.0,1116.3578,Speedboat,Speedboat
+145441.0,1595.4661,Cargo Ship,Cargo Ship
+59965.0,1163.41,Cruiser,Speedboat
+1952.0,1310.7366,Speedboat,Speedboat
+1332.0,881.1205,Speedboat,Speedboat
+376487.0,1266.9596,Tanker,Ferry
+48582.0,1127.3904,Ferry,Speedboat
+24090.0,935.59125,Ferry,Speedboat
+17242.0,1036.1708,Fishing Vessel,Fishing Vessel
+12300.0,932.5574,Fishing Vessel,Fishing Vessel
+32728.0,936.7515,Cruiser,Speedboat
+30291.0,924.1535,Cruiser,Speedboat
+376487.0,1497.7372,Tanker,Speedboat
+12300.0,763.78546,Fishing Vessel,Fishing Vessel
+376487.0,1248.0878,Tanker,Ferry
+48582.0,1235.806,Ferry,Speedboat
+24090.0,936.9876,Ferry,Speedboat
+12300.0,989.52185,Fishing Vessel,Fishing Vessel
+32728.0,1157.757,Cruiser,Speedboat
+30291.0,1129.1974,Cruiser,Speedboat
+63860.0,1020.3472,Cruiser,Speedboat
+75436.0,1273.7089,Cruiser,Speedboat
+9249.0,977.8893,Speedboat,Speedboat
+363404.0,1664.6356,Tanker,Cargo Ship
+4835.0,1257.0062,Speedboat,Speedboat
+363404.0,1356.3704,Tanker,Cargo Ship
+4215.0,947.82886,Speedboat,Speedboat
+4835.0,1076.766,Speedboat,Speedboat
+106662.0,1759.7338,Cargo Ship,Cargo Ship
+40364.0,1513.9396,Cruiser,Speedboat
+33953.0,1004.1903,Ferry,Speedboat
+4215.0,930.5598,Speedboat,Speedboat
+28401.0,718.0193,Fishing Vessel,Fishing Vessel
+106662.0,1866.7277,Cargo Ship,Cargo Ship
+40364.0,1447.8485,Cruiser,Speedboat
+33953.0,1218.549,Ferry,Speedboat
+28401.0,872.3325,Fishing Vessel,Fishing Vessel
+363404.0,1477.9628,Tanker,Cargo Ship
+4835.0,1071.372,Speedboat,Speedboat
+35811.0,1219.7587,Ferry,Speedboat
+1696.0,1103.8043,Speedboat,Speedboat
+171376.0,1411.0266,Cargo Ship,Cargo Ship
+63860.0,994.5218,Cruiser,Speedboat
+75436.0,1232.9952,Cruiser,Speedboat
+223586.0,904.8229,Tanker,Fishing Vessel
+60625.0,1030.1454,Cruiser,Speedboat
+24797.0,1076.1885,Fishing Vessel,Speedboat
+40364.0,1721.3573,Cruiser,Speedboat
+33953.0,1116.1199,Ferry,Speedboat
+28401.0,943.7439,Fishing Vessel,Fishing Vessel
+4215.0,1015.66907,Speedboat,Speedboat
+4835.0,927.9872,Speedboat,Speedboat
+363404.0,1656.0345,Tanker,Cargo Ship
+34091.0,987.7849,Ferry,Speedboat
+4835.0,1284.1603,Speedboat,Speedboat
+22656.0,889.06433,Fishing Vessel,Fishing Vessel
+12051.0,740.1052,Fishing Vessel,Fishing Vessel
+103221.0,1270.4557,Cargo Ship,Cargo Ship
+24797.0,894.27344,Fishing Vessel,Fishing Vessel
+40364.0,1465.677,Cruiser,Speedboat
+33953.0,1166.8109,Ferry,Speedboat
+24797.0,868.8523,Fishing Vessel,Fishing Vessel
+28401.0,724.2959,Fishing Vessel,Fishing Vessel
+171376.0,1514.0463,Cargo Ship,Ferry
+63860.0,1130.534,Cruiser,Speedboat
+75436.0,969.57275,Cruiser,Speedboat
+8431.0,971.34235,Speedboat,Speedboat
+24797.0,1023.91583,Fishing Vessel,Fishing Vessel
+5585.0,1243.4626,Speedboat,Speedboat
+8431.0,1116.6354,Speedboat,Speedboat
+103221.0,1657.8281,Cargo Ship,Cruiser
+1696.0,1294.9985,Speedboat,Speedboat
+1696.0,1029.2648,Speedboat,Speedboat
+223586.0,1087.9009,Tanker,Speedboat
+9249.0,965.7888,Speedboat,Speedboat
+106662.0,2037.3505,Cargo Ship,Cargo Ship
+40364.0,1494.8408,Cruiser,Speedboat
+33953.0,1137.6494,Ferry,Speedboat
+4215.0,1267.6207,Speedboat,Speedboat
+363404.0,1507.5558,Tanker,Cargo Ship
+4215.0,1085.3586,Speedboat,Speedboat
+4835.0,1080.9784,Speedboat,Speedboat
+22656.0,849.6803,Fishing Vessel,Fishing Vessel
+12051.0,931.24365,Fishing Vessel,Fishing Vessel
+1696.0,989.579,Speedboat,Speedboat
+106662.0,1783.6624,Cargo Ship,Cargo Ship
+40364.0,1368.3558,Cruiser,Speedboat
+33953.0,1014.15564,Ferry,Speedboat
+4215.0,984.0774,Speedboat,Speedboat
+28401.0,801.9166,Fishing Vessel,Fishing Vessel
+171376.0,1323.2018,Cargo Ship,Cargo Ship
+63860.0,1220.0331,Cruiser,Speedboat
+75436.0,1038.5057,Cruiser,Speedboat
+8431.0,1162.1898,Speedboat,Speedboat
+24797.0,903.20654,Fishing Vessel,Fishing Vessel
+223586.0,1334.0245,Tanker,Speedboat
+60625.0,1019.86646,Cruiser,Speedboat
+35811.0,1010.612,Ferry,Speedboat
+9249.0,992.0952,Speedboat,Speedboat
+60625.0,1275.9359,Cruiser,Speedboat
+63860.0,920.63135,Cruiser,Speedboat
+75436.0,1077.1804,Cruiser,Speedboat
+9249.0,1205.6255,Speedboat,Speedboat
+24797.0,1019.2296,Fishing Vessel,Speedboat
+63860.0,1303.0574,Cruiser,Speedboat
+75436.0,1142.5695,Cruiser,Speedboat
+24797.0,1042.8068,Fishing Vessel,Speedboat
+40364.0,1621.5292,Cruiser,Speedboat
+33953.0,1006.3451,Ferry,Speedboat
+5585.0,1292.0443,Speedboat,Speedboat
+28401.0,918.75824,Fishing Vessel,Fishing Vessel
+35811.0,900.4849,Ferry,Speedboat
+9249.0,1175.3354,Speedboat,Speedboat
+223586.0,1113.6097,Tanker,Speedboat
+60625.0,1086.0314,Cruiser,Speedboat
+63860.0,890.0016,Cruiser,Speedboat
+75436.0,1116.2218,Cruiser,Speedboat
+9249.0,1029.9504,Speedboat,Speedboat
+223586.0,1132.173,Tanker,Speedboat
+106662.0,1990.3094,Cargo Ship,Cargo Ship
+33953.0,1328.3927,Ferry,Speedboat
+4215.0,1098.074,Speedboat,Speedboat
+175325.0,1392.0485,Tanker,Cargo Ship
+53246.0,1186.3279,Ferry,Speedboat
+7701.0,1090.2683,Speedboat,Speedboat
+6041.0,953.15405,Fishing Vessel,Fishing Vessel
+20341.0,808.91736,Fishing Vessel,Fishing Vessel
+165776.0,1399.6742,Cargo Ship,Speedboat
+40716.0,1014.8158,Cruiser,Speedboat
+44557.0,1105.5519,Cruiser,Speedboat
+39889.0,1028.6099,Ferry,Speedboat
+173996.0,1713.4982,Cargo Ship,Cruiser
+40716.0,1060.6193,Cruiser,Speedboat
+39889.0,917.7003,Ferry,Speedboat
+6068.0,1051.0543,Speedboat,Speedboat
+19647.0,922.9664,Fishing Vessel,Fishing Vessel
+6041.0,945.0943,Fishing Vessel,Speedboat
+37676.0,884.16736,Cruiser,Speedboat
+4120.0,1105.0667,Speedboat,Speedboat
+173996.0,1541.8617,Cargo Ship,Cargo Ship
+356256.0,1582.0499,Tanker,Cargo Ship
+6041.0,1102.4143,Fishing Vessel,Speedboat
+6041.0,825.60944,Fishing Vessel,Fishing Vessel
+165776.0,1405.4655,Cargo Ship,Speedboat
+40716.0,1072.7799,Cruiser,Speedboat
+44557.0,887.94885,Cruiser,Speedboat
+39889.0,1166.6903,Ferry,Speedboat
+4120.0,1063.747,Speedboat,Speedboat
+53246.0,1294.2441,Ferry,Speedboat
+4745.0,1102.3754,Speedboat,Speedboat
+7701.0,1043.756,Speedboat,Speedboat
+44557.0,1027.5026,Cruiser,Speedboat
+39889.0,1140.8115,Ferry,Speedboat
+173996.0,1716.85,Cargo Ship,Cargo Ship
+356256.0,1263.7728,Tanker,Cruiser
+39889.0,770.1139,Ferry,Fishing Vessel
+6068.0,1100.9639,Speedboat,Speedboat
+19647.0,853.22766,Fishing Vessel,Fishing Vessel
+173996.0,1686.4061,Cargo Ship,Cargo Ship
+6041.0,863.4437,Fishing Vessel,Fishing Vessel
+20341.0,806.81177,Fishing Vessel,Fishing Vessel
+53246.0,1297.9371,Ferry,Speedboat
+4745.0,1408.7379,Speedboat,Speedboat
+7701.0,1170.7535,Speedboat,Speedboat
+91272.0,1519.7277,Cargo Ship,Cargo Ship
+37676.0,1212.9692,Cruiser,Speedboat
+51609.0,973.45526,Ferry,Speedboat
+91272.0,1362.34,Cargo Ship,Cruiser
+51609.0,1257.3522,Ferry,Speedboat
+91272.0,1480.376,Cargo Ship,Speedboat
+37676.0,1078.8673,Cruiser,Speedboat
+51609.0,1193.4543,Ferry,Speedboat
+173996.0,1697.5201,Cargo Ship,Ferry
+356256.0,1388.769,Tanker,Cargo Ship
+19647.0,808.7675,Fishing Vessel,Fishing Vessel
+27563.0,897.4174,Fishing Vessel,Fishing Vessel
+6041.0,762.7434,Fishing Vessel,Fishing Vessel
+20341.0,745.6139,Fishing Vessel,Fishing Vessel
+173996.0,1630.9485,Cargo Ship,Cargo Ship
+39889.0,825.0404,Ferry,Speedboat
+6068.0,1245.1976,Speedboat,Speedboat
+19647.0,920.4768,Fishing Vessel,Fishing Vessel
+91272.0,1399.1864,Cargo Ship,Cargo Ship
+37676.0,1136.6184,Cruiser,Speedboat
+53246.0,1315.0547,Ferry,Speedboat
+51609.0,1246.09,Ferry,Speedboat
+4745.0,1335.5494,Speedboat,Speedboat
+55763.0,1195.5472,Cruiser,Speedboat
+27563.0,889.20154,Fishing Vessel,Fishing Vessel
+53246.0,1310.9767,Ferry,Speedboat
+4745.0,1153.9337,Speedboat,Speedboat
+7701.0,1133.0432,Speedboat,Speedboat
+37676.0,1042.3003,Cruiser,Speedboat
+4120.0,1038.4113,Speedboat,Speedboat
+9606.0,1268.4679,Speedboat,Speedboat
+6806.0,1244.3734,Speedboat,Speedboat
+55763.0,1095.9254,Cruiser,Speedboat
+27563.0,1046.9899,Fishing Vessel,Speedboat
+6041.0,1119.1498,Fishing Vessel,Speedboat
+20341.0,725.92035,Fishing Vessel,Fishing Vessel
+165776.0,1490.6288,Cargo Ship,Speedboat
+40716.0,1014.8076,Cruiser,Speedboat
+44557.0,834.1994,Cruiser,Speedboat
+39889.0,1164.3392,Ferry,Speedboat
+6068.0,1174.0299,Speedboat,Speedboat
+175325.0,1286.182,Tanker,Ferry
+6806.0,1009.65234,Speedboat,Speedboat
+91272.0,1588.4525,Cargo Ship,Cargo Ship
+356256.0,1372.6605,Tanker,Cruiser
+53246.0,1286.1312,Ferry,Speedboat
+4745.0,1570.3522,Speedboat,Speedboat
+7701.0,1269.9869,Speedboat,Speedboat
+173996.0,1629.8212,Cargo Ship,Cargo Ship
+55763.0,1435.7572,Cruiser,Speedboat
+6068.0,1376.09,Speedboat,Speedboat
+37676.0,1032.3981,Cruiser,Speedboat
+51609.0,951.44946,Ferry,Speedboat
+4120.0,1176.8304,Speedboat,Speedboat
+55763.0,1093.0555,Cruiser,Speedboat
+27563.0,857.4481,Fishing Vessel,Fishing Vessel
+20341.0,713.6858,Fishing Vessel,Fishing Vessel
+5318.0,1138.9133,Speedboat,Speedboat
+21159.0,937.4208,Fishing Vessel,Fishing Vessel
+110368.0,1367.8032,Cargo Ship,Speedboat
+56493.0,1163.5504,Ferry,Speedboat
+30093.0,1105.48,Ferry,Speedboat
+69271.0,1045.5212,Cruiser,Speedboat
+22018.0,1079.9155,Ferry,Speedboat
+128151.0,1453.8876,Cargo Ship,Ferry
+159420.0,1378.1873,Tanker,Cargo Ship
+44532.0,1418.9407,Cruiser,Speedboat
+5480.0,1121.2985,Speedboat,Speedboat
+78150.0,1137.5988,Cruiser,Speedboat
+7399.0,1038.2104,Speedboat,Speedboat
+5318.0,1127.724,Speedboat,Speedboat
+7399.0,1395.056,Speedboat,Speedboat
+5318.0,954.11694,Speedboat,Speedboat
+10755.0,940.3535,Fishing Vessel,Fishing Vessel
+21159.0,946.23755,Fishing Vessel,Fishing Vessel
+69271.0,1148.9689,Cruiser,Speedboat
+2324.0,1146.0052,Speedboat,Speedboat
+2316.0,846.69794,Speedboat,Speedboat
+9514.0,835.83466,Fishing Vessel,Fishing Vessel
+9373.0,926.3176,Fishing Vessel,Fishing Vessel
+56493.0,1049.7494,Ferry,Speedboat
+7399.0,1056.1776,Speedboat,Speedboat
+10755.0,858.8021,Fishing Vessel,Fishing Vessel
+149283.0,1216.0005,Cargo Ship,Ferry
+306738.0,1190.7738,Tanker,Speedboat
+9514.0,856.2346,Fishing Vessel,Fishing Vessel
+110368.0,1656.1912,Cargo Ship,Speedboat
+306738.0,1218.6118,Tanker,Speedboat
+30093.0,1189.3042,Ferry,Speedboat
+149283.0,1312.4974,Cargo Ship,Cruiser
+306738.0,1096.5624,Tanker,Fishing Vessel
+9514.0,865.4418,Fishing Vessel,Fishing Vessel
+9373.0,892.25977,Fishing Vessel,Fishing Vessel
+44532.0,1190.9364,Cruiser,Speedboat
+5480.0,933.6177,Speedboat,Speedboat
+2316.0,989.8439,Speedboat,Speedboat
+10755.0,837.5109,Fishing Vessel,Fishing Vessel
+7399.0,1294.7673,Speedboat,Speedboat
+5318.0,981.8687,Speedboat,Speedboat
+21159.0,810.2074,Fishing Vessel,Fishing Vessel
+149283.0,1384.8483,Cargo Ship,Speedboat
+69271.0,1113.6123,Cruiser,Speedboat
+2324.0,1347.2428,Speedboat,Speedboat
+9514.0,917.30615,Fishing Vessel,Fishing Vessel
+9373.0,775.4132,Fishing Vessel,Fishing Vessel
+5318.0,1135.4161,Speedboat,Speedboat
+21159.0,876.17236,Fishing Vessel,Fishing Vessel
+69271.0,1204.4967,Cruiser,Speedboat
+44532.0,1402.7174,Cruiser,Speedboat
+5480.0,1094.421,Speedboat,Speedboat
+2316.0,891.9977,Speedboat,Speedboat
+5318.0,930.185,Speedboat,Speedboat
+21159.0,782.16833,Fishing Vessel,Fishing Vessel
+69271.0,1166.5099,Cruiser,Speedboat
+35911.0,1161.0469,Cruiser,Speedboat
+22018.0,1206.8696,Ferry,Speedboat
+7399.0,1148.2076,Speedboat,Speedboat
+5318.0,1006.9445,Speedboat,Speedboat
+21159.0,986.9552,Fishing Vessel,Fishing Vessel
+56493.0,964.0631,Ferry,Speedboat
+30093.0,1158.8201,Ferry,Speedboat
+69271.0,1193.2699,Cruiser,Speedboat
+35911.0,995.86633,Cruiser,Speedboat
+22018.0,1063.6996,Ferry,Speedboat
+110368.0,1407.1998,Cargo Ship,Speedboat
+30093.0,973.79193,Ferry,Speedboat
+149283.0,1220.5198,Cargo Ship,Ferry
+306738.0,1225.275,Tanker,Speedboat
+21159.0,1006.166,Fishing Vessel,Fishing Vessel
+110368.0,1477.5717,Cargo Ship,Speedboat
+306738.0,1158.8018,Tanker,Speedboat
+9514.0,780.6239,Fishing Vessel,Fishing Vessel
+69271.0,1168.6769,Cruiser,Speedboat
+22018.0,1110.5629,Ferry,Speedboat
+2324.0,1258.5038,Speedboat,Speedboat
+78150.0,897.7213,Cruiser,Speedboat
+56493.0,1011.35474,Ferry,Speedboat
+4336.0,934.15607,Speedboat,Speedboat
+7399.0,1382.5612,Speedboat,Speedboat
+69271.0,1311.3685,Cruiser,Speedboat
+22018.0,1124.0099,Ferry,Speedboat
+56493.0,1074.2697,Ferry,Speedboat
+7399.0,1154.7579,Speedboat,Speedboat
+2324.0,1412.0797,Speedboat,Speedboat
+9514.0,921.143,Fishing Vessel,Fishing Vessel
+9373.0,891.213,Fishing Vessel,Fishing Vessel
+22018.0,975.32446,Ferry,Speedboat
+69271.0,1248.8578,Cruiser,Speedboat
+2316.0,1061.5935,Speedboat,Speedboat
+9373.0,894.1354,Fishing Vessel,Fishing Vessel
+159420.0,1296.9989,Tanker,Cargo Ship
+44532.0,1242.7966,Cruiser,Speedboat
+5480.0,884.21405,Speedboat,Speedboat
+21159.0,775.3356,Fishing Vessel,Fishing Vessel
+102870.0,1470.6398,Cargo Ship,Cruiser
+49675.0,1199.4501,Cruiser,Speedboat
+35186.0,996.59644,Ferry,Speedboat
+1800.0,1056.565,Speedboat,Speedboat
+5088.0,999.2568,Speedboat,Speedboat
+9096.0,1012.93256,Fishing Vessel,Speedboat
+102870.0,1612.2384,Cargo Ship,Cargo Ship
+35186.0,1161.2485,Ferry,Speedboat
+1800.0,1029.4597,Speedboat,Speedboat
+41673.0,1180.3179,Cruiser,Speedboat
+1117.0,1317.183,Speedboat,Speedboat
+5943.0,1202.0309,Speedboat,Speedboat
+101194.0,1253.2914,Cargo Ship,Ferry
+9673.0,1180.4742,Speedboat,Speedboat
+8772.0,1315.8678,Speedboat,Speedboat
+168080.0,1164.9318,Tanker,Ferry
+30913.0,1111.065,Ferry,Speedboat
+10677.0,826.9376,Fishing Vessel,Fishing Vessel
+341887.0,1402.3751,Tanker,Cargo Ship
+61501.0,968.48413,Cruiser,Speedboat
+51141.0,921.07587,Ferry,Speedboat
+5943.0,1178.6569,Speedboat,Speedboat
+341887.0,1251.5594,Tanker,Ferry
+61501.0,1173.4896,Cruiser,Speedboat
+41673.0,1006.38214,Cruiser,Speedboat
+51141.0,978.88837,Ferry,Speedboat
+5943.0,1568.3019,Speedboat,Speedboat
+5088.0,1159.9596,Speedboat,Speedboat
+11167.0,979.5261,Fishing Vessel,Fishing Vessel
+9096.0,1119.2131,Fishing Vessel,Speedboat
+102870.0,1446.3693,Cargo Ship,Cruiser
+1800.0,1004.73114,Speedboat,Speedboat
+5088.0,1225.6919,Speedboat,Speedboat
+9096.0,1088.8843,Fishing Vessel,Speedboat
+341887.0,1731.6947,Tanker,Cargo Ship
+61501.0,1028.9822,Cruiser,Speedboat
+41673.0,1053.0266,Cruiser,Speedboat
+51141.0,1026.9684,Ferry,Speedboat
+5943.0,1283.8976,Speedboat,Speedboat
+11167.0,843.797,Fishing Vessel,Fishing Vessel
+9096.0,1037.3783,Fishing Vessel,Speedboat
+60784.0,877.13855,Cruiser,Fishing Vessel
+41673.0,826.0985,Cruiser,Speedboat
+1117.0,1128.0989,Speedboat,Speedboat
+20832.0,765.7383,Fishing Vessel,Fishing Vessel
+41673.0,893.11194,Cruiser,Speedboat
+1117.0,1485.2101,Speedboat,Speedboat
+5943.0,1102.9608,Speedboat,Speedboat
+5943.0,1330.0465,Speedboat,Speedboat
+341887.0,1371.823,Tanker,Ferry
+61501.0,830.05396,Cruiser,Speedboat
+41673.0,1176.8104,Cruiser,Speedboat
+51141.0,1092.6986,Ferry,Speedboat
+1117.0,1180.9064,Speedboat,Speedboat
+5943.0,1376.8845,Speedboat,Speedboat
+102870.0,1728.3138,Cargo Ship,Speedboat
+49675.0,880.1033,Cruiser,Speedboat
+35186.0,976.6908,Ferry,Speedboat
+1800.0,992.14075,Speedboat,Speedboat
+5088.0,1179.6007,Speedboat,Speedboat
+9096.0,983.8247,Fishing Vessel,Speedboat
+60784.0,1088.8489,Cruiser,Speedboat
+9673.0,952.0657,Speedboat,Speedboat
+20832.0,873.60657,Fishing Vessel,Fishing Vessel
+30913.0,1100.3124,Ferry,Speedboat
+102870.0,1694.6261,Cargo Ship,Cruiser
+35186.0,1063.9403,Ferry,Speedboat
+1800.0,1023.60815,Speedboat,Speedboat
+41673.0,1166.1924,Cruiser,Speedboat
+1117.0,1287.6693,Speedboat,Speedboat
+5943.0,1241.7657,Speedboat,Speedboat
+193419.0,1483.7843,Cargo Ship,Cargo Ship
+168080.0,1170.3759,Tanker,Cargo Ship
+30913.0,897.2276,Ferry,Speedboat
+10677.0,1115.224,Fishing Vessel,Speedboat
+101194.0,1401.3717,Cargo Ship,Ferry
+8772.0,1269.216,Speedboat,Speedboat
+102870.0,1622.9572,Cargo Ship,Cruiser
+35186.0,928.7698,Ferry,Speedboat
+168080.0,1436.089,Tanker,Cargo Ship
+30913.0,881.94696,Ferry,Speedboat
+10677.0,857.0242,Fishing Vessel,Fishing Vessel
+35186.0,908.82166,Ferry,Speedboat
+60784.0,829.00934,Cruiser,Speedboat
+9673.0,1059.3313,Speedboat,Speedboat
+20832.0,722.271,Fishing Vessel,Fishing Vessel
+49675.0,1094.773,Cruiser,Speedboat
+11167.0,762.90765,Fishing Vessel,Fishing Vessel
+9096.0,944.9779,Fishing Vessel,Speedboat
+193419.0,1320.361,Cargo Ship,Cargo Ship
+60784.0,808.45166,Cruiser,Fishing Vessel
+41673.0,1048.3461,Cruiser,Speedboat
+1117.0,1177.4572,Speedboat,Speedboat
+101194.0,1293.5336,Cargo Ship,Ferry
+9673.0,973.48865,Speedboat,Speedboat
+8772.0,1143.0107,Speedboat,Speedboat
+20832.0,841.8997,Fishing Vessel,Fishing Vessel
+341887.0,1418.6359,Tanker,Cargo Ship
+61501.0,1093.0536,Cruiser,Speedboat
+51141.0,890.2799,Ferry,Speedboat
+5943.0,1192.405,Speedboat,Speedboat
+60784.0,1083.5333,Cruiser,Speedboat
+9673.0,1154.2518,Speedboat,Speedboat
+8772.0,1360.1427,Speedboat,Speedboat
+20832.0,790.02637,Fishing Vessel,Fishing Vessel
+8772.0,1373.0198,Speedboat,Speedboat
+5088.0,1281.9325,Speedboat,Speedboat
+8642.0,944.1948,Speedboat,Speedboat
+4155.0,1131.2794,Speedboat,Speedboat
+8315.0,1249.0181,Speedboat,Speedboat
+190146.0,1255.9532,Cargo Ship,Speedboat
+171034.0,1456.4293,Tanker,Ferry
+247786.0,1498.7635,Tanker,Cargo Ship
+45270.0,1068.4651,Cruiser,Speedboat
+37668.0,969.6012,Cruiser,Speedboat
+29408.0,912.72125,Ferry,Speedboat
+7023.0,938.8672,Fishing Vessel,Fishing Vessel
+145904.0,1442.318,Cargo Ship,Ferry
+3642.0,1241.8375,Speedboat,Speedboat
+62437.0,1190.8185,Cruiser,Speedboat
+74404.0,1143.0388,Cruiser,Speedboat
+3403.0,964.11206,Speedboat,Speedboat
+23950.0,962.9651,Fishing Vessel,Fishing Vessel
+15457.0,819.68384,Fishing Vessel,Fishing Vessel
+33475.0,1031.3469,Ferry,Speedboat
+8218.0,1317.9109,Speedboat,Speedboat
+4155.0,1135.0503,Speedboat,Speedboat
+7059.0,857.85547,Fishing Vessel,Fishing Vessel
+190146.0,1231.1832,Cargo Ship,Ferry
+171034.0,1495.3651,Tanker,Cargo Ship
+247786.0,1726.121,Tanker,Cargo Ship
+45270.0,917.1105,Cruiser,Speedboat
+37668.0,1135.1158,Cruiser,Speedboat
+29408.0,1114.5095,Ferry,Speedboat
+7023.0,846.541,Fishing Vessel,Fishing Vessel
+8642.0,1117.6857,Speedboat,Speedboat
+8315.0,1300.673,Speedboat,Speedboat
+190146.0,1307.3383,Cargo Ship,Speedboat
+171034.0,1218.2076,Tanker,Ferry
+45270.0,986.28674,Cruiser,Speedboat
+37668.0,1200.9227,Cruiser,Speedboat
+33475.0,969.616,Ferry,Speedboat
+8218.0,1163.8108,Speedboat,Speedboat
+168282.0,1619.1417,Cargo Ship,Cruiser
+171034.0,1486.6903,Tanker,Cargo Ship
+247786.0,1341.827,Tanker,Cargo Ship
+45270.0,997.5593,Cruiser,Speedboat
+29408.0,1126.5298,Ferry,Speedboat
+4155.0,1016.4894,Speedboat,Speedboat
+7023.0,1141.6952,Fishing Vessel,Speedboat
+62437.0,1060.4519,Cruiser,Speedboat
+74404.0,1063.143,Cruiser,Speedboat
+3403.0,871.39856,Speedboat,Speedboat
+23950.0,809.0652,Fishing Vessel,Fishing Vessel
+15457.0,1010.52466,Fishing Vessel,Fishing Vessel
+168282.0,1590.9161,Cargo Ship,Cruiser
+145904.0,1400.0304,Cargo Ship,Cruiser
+247786.0,1607.5529,Tanker,Cargo Ship
+45270.0,1080.4342,Cruiser,Speedboat
+37668.0,1135.7118,Cruiser,Speedboat
+7023.0,932.3856,Fishing Vessel,Fishing Vessel
+190146.0,1318.3666,Cargo Ship,Ferry
+171034.0,1365.9642,Tanker,Cargo Ship
+45270.0,938.4997,Cruiser,Speedboat
+74404.0,1102.5181,Cruiser,Speedboat
+29408.0,1012.1814,Ferry,Speedboat
+3403.0,1133.8165,Speedboat,Speedboat
+8642.0,1124.18,Speedboat,Speedboat
+29408.0,1103.9547,Ferry,Speedboat
+8218.0,1130.2998,Speedboat,Speedboat
+8642.0,1054.2886,Speedboat,Speedboat
+4155.0,1130.3783,Speedboat,Speedboat
+8315.0,1439.7479,Speedboat,Speedboat
+168282.0,1468.1681,Cargo Ship,Cargo Ship
+37668.0,1013.5809,Cruiser,Speedboat
+168282.0,1678.0613,Cargo Ship,Speedboat
+145904.0,1601.4639,Cargo Ship,Cruiser
+247786.0,1286.0468,Tanker,Cargo Ship
+7023.0,882.9636,Fishing Vessel,Fishing Vessel
+56697.0,1166.3058,Ferry,Speedboat
+3642.0,1236.8019,Speedboat,Speedboat
+145904.0,1549.7228,Cargo Ship,Speedboat
+247786.0,1570.4872,Tanker,Ferry
+7023.0,1071.098,Fishing Vessel,Speedboat
+8218.0,1152.5205,Speedboat,Speedboat
+8642.0,1112.1628,Speedboat,Speedboat
+8218.0,1505.9916,Speedboat,Speedboat
+8642.0,1232.9165,Speedboat,Speedboat
+8315.0,1404.3861,Speedboat,Speedboat
+168282.0,1888.557,Cargo Ship,Cruiser
+145904.0,1490.5651,Cargo Ship,Speedboat
+8642.0,991.08936,Speedboat,Speedboat
+8315.0,1546.7208,Speedboat,Speedboat
+8218.0,1231.0411,Speedboat,Speedboat
+8642.0,942.859,Speedboat,Speedboat
+33475.0,891.75195,Ferry,Speedboat
+8218.0,1439.7452,Speedboat,Speedboat
+7059.0,983.2361,Fishing Vessel,Fishing Vessel
+3642.0,918.81726,Speedboat,Speedboat
+171034.0,1365.0392,Tanker,Cargo Ship
+29408.0,1127.5378,Ferry,Speedboat
+4155.0,1037.7089,Speedboat,Speedboat
+7023.0,766.46936,Fishing Vessel,Fishing Vessel
+33475.0,941.2658,Ferry,Speedboat
+7059.0,743.5431,Fishing Vessel,Fishing Vessel
+190146.0,1233.589,Cargo Ship,Speedboat
+171034.0,1390.7603,Tanker,Cargo Ship
+45270.0,1113.5758,Cruiser,Speedboat
+74404.0,995.7488,Cruiser,Speedboat
+37668.0,807.4082,Cruiser,Fishing Vessel
+7059.0,864.8411,Fishing Vessel,Fishing Vessel
+168282.0,1674.2216,Cargo Ship,Cruiser
+247786.0,1621.6499,Tanker,Ferry
+45270.0,1143.4369,Cruiser,Speedboat
+37668.0,1179.5875,Cruiser,Speedboat
+7023.0,1090.9066,Fishing Vessel,Speedboat
+37668.0,1176.2004,Cruiser,Speedboat
+190146.0,1483.6984,Cargo Ship,Speedboat
+171034.0,1698.2228,Tanker,Cargo Ship
+45270.0,999.1669,Cruiser,Speedboat
+37668.0,874.92053,Cruiser,Speedboat
+29408.0,913.5388,Ferry,Speedboat
+183643.0,1045.8972,Cargo Ship,Ferry
+134440.0,1119.679,Cargo Ship,Ferry
+38079.0,1280.7484,Ferry,Speedboat
+16889.0,851.1476,Fishing Vessel,Fishing Vessel
+183643.0,1282.2031,Cargo Ship,Speedboat
+134440.0,1295.704,Cargo Ship,Speedboat
+38079.0,1133.2386,Ferry,Speedboat
+16889.0,1070.6322,Fishing Vessel,Speedboat
+77260.0,1051.8507,Cruiser,Speedboat
+26540.0,1453.9952,Ferry,Speedboat
+48560.0,1079.6027,Cruiser,Speedboat
+363989.0,1527.753,Tanker,Cargo Ship
+183643.0,1400.4447,Cargo Ship,Speedboat
+134440.0,1653.5707,Cargo Ship,Speedboat
+38079.0,965.32556,Ferry,Speedboat
+16889.0,985.9874,Fishing Vessel,Fishing Vessel
+38079.0,1123.4229,Ferry,Speedboat
+1560.0,1227.0867,Speedboat,Speedboat
+363989.0,1554.8715,Tanker,Cargo Ship
+66009.0,1356.581,Cruiser,Speedboat
+66009.0,1292.8446,Cruiser,Speedboat
+15727.0,1004.1416,Fishing Vessel,Speedboat
+20200.0,818.0613,Fishing Vessel,Fishing Vessel
+20200.0,892.0072,Fishing Vessel,Fishing Vessel
+183643.0,1373.4817,Cargo Ship,Speedboat
+77260.0,1127.6425,Cruiser,Speedboat
+26540.0,1330.1898,Ferry,Speedboat
+38079.0,1122.164,Ferry,Speedboat
+1560.0,1259.0778,Speedboat,Speedboat
+16889.0,899.07996,Fishing Vessel,Fishing Vessel
+48560.0,968.6874,Cruiser,Speedboat
+50979.0,1373.8036,Ferry,Speedboat
+8371.0,1177.4442,Speedboat,Speedboat
+183643.0,1123.9247,Cargo Ship,Ferry
+77260.0,1107.4225,Cruiser,Speedboat
+26540.0,1069.3993,Ferry,Speedboat
+38079.0,1238.6862,Ferry,Speedboat
+1560.0,1076.646,Speedboat,Speedboat
+305996.0,1071.3314,Tanker,Fishing Vessel
+66009.0,1046.9674,Cruiser,Speedboat
+70040.0,1032.4655,Cruiser,Speedboat
+15727.0,864.207,Fishing Vessel,Fishing Vessel
+77260.0,1006.91907,Cruiser,Speedboat
+26540.0,1337.6649,Ferry,Speedboat
+1560.0,991.60925,Speedboat,Speedboat
+16889.0,787.12366,Fishing Vessel,Fishing Vessel
+27662.0,991.07086,Fishing Vessel,Fishing Vessel
+20200.0,1031.0571,Fishing Vessel,Speedboat
+77260.0,1099.9393,Cruiser,Speedboat
+48560.0,1140.8486,Cruiser,Speedboat
+26540.0,1423.0608,Ferry,Speedboat
+8371.0,1302.0618,Speedboat,Speedboat
+16889.0,792.6256,Fishing Vessel,Fishing Vessel
+2765.0,1020.03015,Speedboat,Speedboat
+8650.0,1139.5991,Speedboat,Speedboat
+50979.0,1338.7921,Ferry,Speedboat
+183643.0,1068.7072,Cargo Ship,Ferry
+134440.0,1286.2328,Cargo Ship,Cruiser
+8371.0,1251.6471,Speedboat,Speedboat
+16889.0,913.6823,Fishing Vessel,Fishing Vessel
+2765.0,986.5741,Speedboat,Speedboat
+8650.0,1436.3589,Speedboat,Speedboat
+48560.0,1093.496,Cruiser,Speedboat
+50979.0,1592.8878,Ferry,Speedboat
+6673.0,1026.1631,Speedboat,Speedboat
+77260.0,1142.9404,Cruiser,Speedboat
+48560.0,1141.1296,Cruiser,Speedboat
+26540.0,1192.1903,Ferry,Speedboat
+50979.0,1320.9833,Ferry,Speedboat
+77260.0,1041.9445,Cruiser,Speedboat
+26540.0,1395.8159,Ferry,Speedboat
+1560.0,938.60406,Speedboat,Speedboat
+16889.0,831.3905,Fishing Vessel,Fishing Vessel
+2765.0,1051.2354,Speedboat,Speedboat
+137000.0,1174.9718,Cargo Ship,Ferry
+48560.0,1040.1947,Cruiser,Speedboat
+50979.0,1505.083,Ferry,Speedboat
+6673.0,1242.9817,Speedboat,Speedboat
+48560.0,1018.7073,Cruiser,Speedboat
+8371.0,1262.6713,Speedboat,Speedboat
+16889.0,759.16785,Fishing Vessel,Fishing Vessel
+137000.0,1299.5756,Cargo Ship,Ferry
+50979.0,1456.9064,Ferry,Speedboat
+6673.0,1095.8441,Speedboat,Speedboat
+363989.0,1245.4879,Tanker,Cargo Ship
+66009.0,1098.6064,Cruiser,Speedboat
+15727.0,909.57465,Fishing Vessel,Fishing Vessel
+183643.0,1141.6884,Cargo Ship,Ferry
+38079.0,994.29834,Ferry,Speedboat
+1560.0,1121.6273,Speedboat,Speedboat
+363989.0,1313.0267,Tanker,Ferry
+38079.0,1208.6793,Ferry,Speedboat
+1560.0,967.56445,Speedboat,Speedboat
+305996.0,1076.8762,Tanker,Fishing Vessel
+363989.0,1220.7347,Tanker,Cargo Ship
+66009.0,1156.1346,Cruiser,Speedboat
+70040.0,960.64404,Cruiser,Speedboat
+15727.0,985.4381,Fishing Vessel,Fishing Vessel
+178106.0,1470.197,Cargo Ship,Speedboat
+2257.0,1267.6459,Speedboat,Speedboat
+4064.0,1225.574,Speedboat,Speedboat
+295427.0,1256.8109,Tanker,Ferry
+71938.0,1213.2269,Cruiser,Speedboat
+19610.0,759.078,Fishing Vessel,Fishing Vessel
+295427.0,1406.7239,Tanker,Ferry
+71938.0,871.455,Cruiser,Speedboat
+76874.0,1157.8191,Cruiser,Speedboat
+4064.0,1170.7777,Speedboat,Speedboat
+9078.0,1131.0609,Speedboat,Speedboat
+76874.0,1149.5511,Cruiser,Speedboat
+44389.0,1025.1323,Ferry,Speedboat
+4394.0,1061.3868,Speedboat,Speedboat
+183962.0,1301.8947,Cargo Ship,Speedboat
+44389.0,1041.9767,Ferry,Speedboat
+4394.0,1071.9937,Speedboat,Speedboat
+172152.0,1196.822,Cargo Ship,Ferry
+295427.0,1294.5591,Tanker,Ferry
+43789.0,1001.46924,Cruiser,Speedboat
+5300.0,1297.2393,Speedboat,Speedboat
+9354.0,855.6764,Fishing Vessel,Fishing Vessel
+17578.0,767.37836,Fishing Vessel,Fishing Vessel
+76874.0,1034.9897,Cruiser,Speedboat
+44389.0,967.6773,Ferry,Speedboat
+4394.0,978.77234,Speedboat,Speedboat
+71938.0,1109.3934,Cruiser,Speedboat
+19610.0,812.829,Fishing Vessel,Fishing Vessel
+47979.0,1249.0692,Ferry,Speedboat
+2257.0,1178.1598,Speedboat,Speedboat
+9078.0,1006.60815,Speedboat,Speedboat
+9354.0,864.7411,Fishing Vessel,Fishing Vessel
+20650.0,860.83435,Fishing Vessel,Fishing Vessel
+183962.0,1152.778,Cargo Ship,Speedboat
+44389.0,1054.3773,Ferry,Speedboat
+4394.0,1006.99133,Speedboat,Speedboat
+76874.0,1183.2426,Cruiser,Speedboat
+44389.0,1067.3055,Ferry,Speedboat
+4394.0,959.69824,Speedboat,Speedboat
+76874.0,952.33997,Cruiser,Speedboat
+44389.0,1085.733,Ferry,Speedboat
+4394.0,1137.5825,Speedboat,Speedboat
+5300.0,1281.3146,Speedboat,Speedboat
+172152.0,1278.124,Cargo Ship,Ferry
+295427.0,1662.1113,Tanker,Cargo Ship
+71938.0,907.9469,Cruiser,Speedboat
+43789.0,901.5796,Cruiser,Speedboat
+4064.0,1357.0385,Speedboat,Speedboat
+9078.0,1150.0792,Speedboat,Speedboat
+9354.0,842.28827,Fishing Vessel,Fishing Vessel
+47979.0,1304.4156,Ferry,Speedboat
+2257.0,1035.1183,Speedboat,Speedboat
+5300.0,1275.154,Speedboat,Speedboat
+9078.0,1003.24963,Speedboat,Speedboat
+9354.0,985.89746,Fishing Vessel,Fishing Vessel
+20650.0,1106.4219,Fishing Vessel,Speedboat
+183962.0,1136.2281,Cargo Ship,Speedboat
+49817.0,836.40283,Cruiser,Speedboat
+4394.0,1015.66364,Speedboat,Speedboat
+9802.0,972.44824,Speedboat,Speedboat
+2257.0,1281.8295,Speedboat,Speedboat
+4064.0,1454.1276,Speedboat,Speedboat
+76874.0,995.7009,Cruiser,Speedboat
+172152.0,1457.6141,Cargo Ship,Speedboat
+295427.0,1304.286,Tanker,Cargo Ship
+71938.0,879.4209,Cruiser,Speedboat
+43789.0,1121.1165,Cruiser,Speedboat
+19610.0,885.4177,Fishing Vessel,Fishing Vessel
+17578.0,887.4459,Fishing Vessel,Fishing Vessel
+47979.0,1258.5299,Ferry,Speedboat
+2257.0,1185.2821,Speedboat,Speedboat
+20650.0,698.4166,Fishing Vessel,Fishing Vessel
+187051.0,1276.8141,Tanker,Ferry
+19610.0,1054.4718,Fishing Vessel,Speedboat
+24995.0,1317.1539,Ferry,Speedboat
+76874.0,1012.708,Cruiser,Speedboat
+4394.0,1330.6931,Speedboat,Speedboat
+4064.0,1276.662,Speedboat,Speedboat
+47979.0,1079.7402,Ferry,Speedboat
+5300.0,1520.3129,Speedboat,Speedboat
+20650.0,1092.9528,Fishing Vessel,Speedboat
+47979.0,1084.6774,Ferry,Speedboat
+2257.0,1313.5334,Speedboat,Speedboat
+4064.0,1270.8666,Speedboat,Speedboat
+9078.0,896.11865,Speedboat,Speedboat
+20650.0,1049.349,Fishing Vessel,Speedboat
+76874.0,975.7815,Cruiser,Speedboat
+44389.0,1092.2036,Ferry,Speedboat
+4394.0,910.3131,Speedboat,Speedboat
+295427.0,1467.0634,Tanker,Speedboat
+71938.0,1009.10986,Cruiser,Speedboat
+76874.0,1092.4705,Cruiser,Speedboat
+19610.0,928.9558,Fishing Vessel,Fishing Vessel
+172152.0,1221.756,Cargo Ship,Speedboat
+295427.0,1203.1094,Tanker,Ferry
+71938.0,932.4198,Cruiser,Speedboat
+43789.0,975.2842,Cruiser,Speedboat
+19610.0,1008.408,Fishing Vessel,Fishing Vessel
+17578.0,947.9613,Fishing Vessel,Fishing Vessel
+44389.0,974.44775,Ferry,Speedboat
+4394.0,1146.8429,Speedboat,Speedboat
+76874.0,1164.222,Cruiser,Speedboat
+44389.0,1272.726,Ferry,Speedboat
+4394.0,963.9543,Speedboat,Speedboat
+178106.0,1308.9716,Cargo Ship,Ferry
+2257.0,1256.9716,Speedboat,Speedboat
+20650.0,773.3794,Fishing Vessel,Fishing Vessel
+60228.0,1216.5321,Cruiser,Speedboat
+7317.0,834.4043,Fishing Vessel,Fishing Vessel
+7317.0,865.8866,Fishing Vessel,Fishing Vessel
+5716.0,843.59326,Fishing Vessel,Fishing Vessel
+202070.0,1327.2008,Tanker,Cargo Ship
+41233.0,1194.1493,Ferry,Speedboat
+4314.0,948.812,Speedboat,Speedboat
+3867.0,1120.7516,Speedboat,Speedboat
+29240.0,949.99634,Fishing Vessel,Fishing Vessel
+44427.0,1029.8335,Ferry,Speedboat
+9328.0,1102.9753,Speedboat,Speedboat
+29309.0,759.4834,Fishing Vessel,Fishing Vessel
+158090.0,1302.2102,Cargo Ship,Ferry
+4883.0,1442.4117,Speedboat,Speedboat
+186854.0,1345.9413,Cargo Ship,Cargo Ship
+77413.0,1173.0638,Cruiser,Speedboat
+49624.0,1218.6842,Ferry,Speedboat
+3867.0,1383.033,Speedboat,Speedboat
+29240.0,946.61096,Fishing Vessel,Fishing Vessel
+86427.0,1486.6234,Cargo Ship,Cargo Ship
+44420.0,1125.3524,Cruiser,Speedboat
+49624.0,1161.6676,Ferry,Speedboat
+38824.0,975.50793,Cruiser,Speedboat
+41233.0,1027.8939,Ferry,Speedboat
+158090.0,1222.3108,Cargo Ship,Ferry
+4883.0,1373.2668,Speedboat,Speedboat
+202070.0,1385.6163,Tanker,Cruiser
+41233.0,1135.079,Ferry,Speedboat
+4314.0,856.6467,Speedboat,Speedboat
+86427.0,1989.5406,Cargo Ship,Cargo Ship
+44420.0,809.8178,Cruiser,Fishing Vessel
+49624.0,1070.3049,Ferry,Speedboat
+5716.0,771.5842,Fishing Vessel,Fishing Vessel
+60228.0,1329.5287,Cruiser,Speedboat
+77413.0,1269.5599,Cruiser,Speedboat
+49624.0,1269.826,Ferry,Speedboat
+3867.0,1009.09644,Speedboat,Speedboat
+7317.0,875.33325,Fishing Vessel,Fishing Vessel
+5716.0,941.1896,Fishing Vessel,Fishing Vessel
+186854.0,1612.6344,Cargo Ship,Cargo Ship
+44427.0,1102.9939,Ferry,Speedboat
+9328.0,1179.4374,Speedboat,Speedboat
+29309.0,980.2634,Fishing Vessel,Speedboat
+158090.0,1601.8104,Cargo Ship,Speedboat
+41233.0,1307.9017,Ferry,Speedboat
+77413.0,977.2191,Cruiser,Speedboat
+44420.0,778.5169,Cruiser,Fishing Vessel
+49624.0,1121.5321,Ferry,Speedboat
+3867.0,1100.4607,Speedboat,Speedboat
+86427.0,1574.2007,Cargo Ship,Cargo Ship
+77413.0,1394.7827,Cruiser,Speedboat
+44420.0,1064.7499,Cruiser,Speedboat
+49624.0,1109.6522,Ferry,Speedboat
+3867.0,1087.0548,Speedboat,Speedboat
+5716.0,725.6354,Fishing Vessel,Fishing Vessel
+86427.0,1909.0428,Cargo Ship,Cargo Ship
+158090.0,1517.3724,Cargo Ship,Cargo Ship
+44420.0,750.4841,Cruiser,Fishing Vessel
+41233.0,1331.0582,Ferry,Speedboat
+186854.0,1563.4059,Cargo Ship,Cargo Ship
+44427.0,1081.0719,Ferry,Speedboat
+3867.0,1151.327,Speedboat,Speedboat
+29240.0,991.58655,Fishing Vessel,Fishing Vessel
+44427.0,1076.6617,Ferry,Speedboat
+9328.0,1178.9174,Speedboat,Speedboat
+29309.0,994.27435,Fishing Vessel,Speedboat
+60228.0,1013.6123,Cruiser,Speedboat
+7317.0,1022.411,Fishing Vessel,Fishing Vessel
+38824.0,864.6229,Cruiser,Speedboat
+9328.0,1025.2474,Speedboat,Speedboat
+186854.0,1456.7477,Cargo Ship,Cargo Ship
+44427.0,1067.9767,Ferry,Speedboat
+9328.0,1035.8829,Speedboat,Speedboat
+386852.0,857.6714,Tanker,Fishing Vessel
+4062.0,1377.1437,Speedboat,Speedboat
+60228.0,1078.1942,Cruiser,Speedboat
+7317.0,926.7914,Fishing Vessel,Fishing Vessel
+186854.0,1503.4242,Cargo Ship,Cargo Ship
+77413.0,1221.334,Cruiser,Speedboat
+49624.0,982.19434,Ferry,Speedboat
+3867.0,1198.0121,Speedboat,Speedboat
+29240.0,959.4253,Fishing Vessel,Fishing Vessel
+60228.0,1289.5688,Cruiser,Speedboat
+7317.0,757.07385,Fishing Vessel,Fishing Vessel
+38824.0,1052.3779,Cruiser,Speedboat
+9328.0,950.6672,Speedboat,Speedboat
+29309.0,991.46094,Fishing Vessel,Fishing Vessel
+386852.0,1279.1056,Tanker,Speedboat
+4062.0,1163.8888,Speedboat,Speedboat
+6866.0,1399.4237,Speedboat,Speedboat
+44420.0,1083.9897,Cruiser,Speedboat
+49624.0,1015.69727,Ferry,Speedboat
+7317.0,753.4264,Fishing Vessel,Fishing Vessel
+5716.0,806.28687,Fishing Vessel,Fishing Vessel
+186854.0,1615.7828,Cargo Ship,Cruiser
+77413.0,1331.3075,Cruiser,Speedboat
+49624.0,1055.2173,Ferry,Speedboat
+3867.0,1106.3759,Speedboat,Speedboat
+29240.0,991.0349,Fishing Vessel,Fishing Vessel
+86427.0,1553.0575,Cargo Ship,Cargo Ship
+44420.0,887.18964,Cruiser,Speedboat
+5716.0,782.8146,Fishing Vessel,Fishing Vessel
+86427.0,1869.3451,Cargo Ship,Cargo Ship
+44420.0,971.6786,Cruiser,Speedboat
+5716.0,865.5841,Fishing Vessel,Fishing Vessel
+77413.0,1350.7997,Cruiser,Speedboat
+49624.0,861.13354,Ferry,Speedboat
+3867.0,1066.8414,Speedboat,Speedboat
+5716.0,798.6776,Fishing Vessel,Fishing Vessel
+54529.0,1114.6089,Cruiser,Speedboat
+75981.0,1270.5819,Cruiser,Speedboat
+35667.0,1313.9872,Ferry,Speedboat
+177620.0,1661.4565,Cargo Ship,Cargo Ship
+190276.0,1657.1196,Tanker,Cruiser
+34104.0,1192.0565,Cruiser,Speedboat
+62982.0,1210.765,Cruiser,Speedboat
+9389.0,981.92053,Speedboat,Speedboat
+10859.0,866.9575,Fishing Vessel,Fishing Vessel
+171868.0,1842.8801,Cargo Ship,Cargo Ship
+62982.0,1165.4943,Cruiser,Speedboat
+47432.0,1081.1844,Ferry,Speedboat
+8750.0,1213.3749,Speedboat,Speedboat
+10859.0,742.74097,Fishing Vessel,Fishing Vessel
+190276.0,1583.0045,Tanker,Cargo Ship
+34104.0,1480.662,Cruiser,Speedboat
+62982.0,1304.4763,Cruiser,Speedboat
+190276.0,1810.8604,Tanker,Cargo Ship
+34104.0,1190.3173,Cruiser,Speedboat
+62982.0,1255.3629,Cruiser,Speedboat
+8750.0,1155.5537,Speedboat,Speedboat
+9389.0,1134.9144,Speedboat,Speedboat
+10859.0,753.9774,Fishing Vessel,Fishing Vessel
+399528.0,1610.7479,Tanker,Speedboat
+50481.0,1117.028,Ferry,Speedboat
+6339.0,1109.531,Speedboat,Speedboat
+6847.0,1243.651,Speedboat,Speedboat
+20997.0,1046.1172,Fishing Vessel,Fishing Vessel
+168631.0,1026.2146,Cargo Ship,Ferry
+168631.0,979.85535,Cargo Ship,Fishing Vessel
+34104.0,1318.5077,Cruiser,Speedboat
+62982.0,1393.3741,Cruiser,Speedboat
+399528.0,1549.9738,Tanker,Cargo Ship
+6339.0,998.64044,Speedboat,Speedboat
+4665.0,975.0802,Speedboat,Speedboat
+3499.0,776.0099,Speedboat,Speedboat
+23562.0,839.8557,Fishing Vessel,Fishing Vessel
+171868.0,1667.2479,Cargo Ship,Cargo Ship
+54529.0,1185.4668,Cruiser,Speedboat
+75981.0,1122.2924,Cruiser,Speedboat
+35667.0,1158.4523,Ferry,Speedboat
+50481.0,1130.9017,Ferry,Speedboat
+47432.0,858.5339,Ferry,Fishing Vessel
+177620.0,1585.4388,Cargo Ship,Cargo Ship
+190276.0,1413.8782,Tanker,Cargo Ship
+9389.0,1043.9453,Speedboat,Speedboat
+10859.0,873.77454,Fishing Vessel,Fishing Vessel
+54529.0,1076.6621,Cruiser,Speedboat
+75981.0,1168.2958,Cruiser,Speedboat
+35667.0,1349.4664,Ferry,Speedboat
+8750.0,1292.0194,Speedboat,Speedboat
+10859.0,856.57275,Fishing Vessel,Fishing Vessel
+399528.0,1704.4481,Tanker,Speedboat
+6339.0,1107.7614,Speedboat,Speedboat
+4665.0,901.10156,Speedboat,Speedboat
+3499.0,973.97375,Speedboat,Speedboat
+23562.0,831.5916,Fishing Vessel,Fishing Vessel
+171868.0,1560.3737,Cargo Ship,Cargo Ship
+47432.0,987.68884,Ferry,Speedboat
+4665.0,1038.2935,Speedboat,Speedboat
+8750.0,1267.6937,Speedboat,Speedboat
+54529.0,1169.4518,Cruiser,Speedboat
+75981.0,1191.7798,Cruiser,Speedboat
+35667.0,1203.6146,Ferry,Speedboat
+5179.0,753.63324,Fishing Vessel,Fishing Vessel
+171868.0,2039.3368,Cargo Ship,Cargo Ship
+34104.0,1367.1432,Cruiser,Speedboat
+62982.0,1254.024,Cruiser,Speedboat
+47432.0,1058.8102,Ferry,Speedboat
+8750.0,1063.6794,Speedboat,Speedboat
+10859.0,990.17017,Fishing Vessel,Fishing Vessel
+54529.0,1358.4396,Cruiser,Speedboat
+75981.0,1370.6145,Cruiser,Speedboat
+35667.0,1031.8735,Ferry,Speedboat
+6339.0,1056.2161,Speedboat,Speedboat
+4665.0,996.02954,Speedboat,Speedboat
+23562.0,860.5891,Fishing Vessel,Fishing Vessel
+399528.0,1531.0011,Tanker,Cargo Ship
+3499.0,1089.7162,Speedboat,Speedboat
+23562.0,1067.4674,Fishing Vessel,Speedboat
+54529.0,1275.3849,Cruiser,Speedboat
+75981.0,1013.3296,Cruiser,Speedboat
+35667.0,1259.4863,Ferry,Speedboat
+50481.0,1310.1437,Ferry,Speedboat
+3499.0,965.6665,Speedboat,Speedboat
+54529.0,1044.419,Cruiser,Speedboat
+75981.0,1195.3116,Cruiser,Speedboat
+35667.0,1346.9302,Ferry,Speedboat
+171868.0,1823.3171,Cargo Ship,Cargo Ship
+190276.0,1737.379,Tanker,Cargo Ship
+34104.0,1199.5303,Cruiser,Speedboat
+62982.0,1216.9027,Cruiser,Speedboat
+8750.0,1064.8497,Speedboat,Speedboat
+10859.0,845.2794,Fishing Vessel,Fishing Vessel
+399528.0,1387.9965,Tanker,Ferry
+3499.0,1155.4803,Speedboat,Speedboat
+171868.0,1670.7456,Cargo Ship,Cargo Ship
+190276.0,1756.2611,Tanker,Speedboat
+34104.0,1233.9935,Cruiser,Speedboat
+62982.0,1538.2855,Cruiser,Speedboat
+8750.0,1222.9773,Speedboat,Speedboat
+10859.0,818.28625,Fishing Vessel,Fishing Vessel
+190276.0,1568.5831,Tanker,Cargo Ship
+34104.0,1129.1213,Cruiser,Speedboat
+399528.0,1356.3177,Tanker,Cargo Ship
+6339.0,1013.2731,Speedboat,Speedboat
+4665.0,955.1824,Speedboat,Speedboat
+3499.0,824.6178,Speedboat,Speedboat
+23562.0,878.1684,Fishing Vessel,Fishing Vessel
+75981.0,1063.7816,Cruiser,Speedboat
+399528.0,1538.1495,Tanker,Cargo Ship
+6339.0,1164.0549,Speedboat,Speedboat
+4665.0,1013.1416,Speedboat,Speedboat
+3499.0,1182.9591,Speedboat,Speedboat
+23562.0,878.0858,Fishing Vessel,Fishing Vessel
+54529.0,1126.7382,Cruiser,Speedboat
+75981.0,1021.2168,Cruiser,Speedboat
+35667.0,1118.9436,Ferry,Speedboat
+154791.0,1744.4603,Cargo Ship,Cargo Ship
+9331.0,1151.6659,Speedboat,Speedboat
+66510.0,1170.4896,Cruiser,Speedboat
+44532.0,1093.4622,Cruiser,Speedboat
+5943.0,1091.566,Speedboat,Speedboat
+2796.0,1137.7253,Speedboat,Speedboat
+154791.0,1483.8226,Cargo Ship,Cargo Ship
+9331.0,857.58386,Speedboat,Speedboat
+22260.0,1283.2638,Ferry,Speedboat
+5872.0,1201.3489,Speedboat,Speedboat
+5872.0,1064.9774,Speedboat,Speedboat
+238927.0,1726.0763,Tanker,Cargo Ship
+66510.0,1064.286,Cruiser,Speedboat
+8630.0,907.22534,Fishing Vessel,Fishing Vessel
+150176.0,1575.913,Cargo Ship,Cargo Ship
+19128.0,886.96747,Fishing Vessel,Fishing Vessel
+238927.0,1444.2246,Tanker,Cargo Ship
+66510.0,912.00146,Cruiser,Speedboat
+169839.0,1439.3466,Cargo Ship,Speedboat
+21068.0,939.4927,Ferry,Speedboat
+36456.0,1220.4962,Ferry,Speedboat
+9331.0,1005.06775,Speedboat,Speedboat
+2891.0,1487.7274,Speedboat,Speedboat
+8630.0,946.2167,Fishing Vessel,Fishing Vessel
+150176.0,1926.1859,Cargo Ship,Cargo Ship
+1385.0,1198.6796,Speedboat,Speedboat
+19128.0,979.19946,Fishing Vessel,Fishing Vessel
+64180.0,1310.5585,Cruiser,Speedboat
+21068.0,906.6382,Ferry,Fishing Vessel
+36456.0,1058.9492,Ferry,Speedboat
+2891.0,1258.4857,Speedboat,Speedboat
+8630.0,815.0646,Fishing Vessel,Fishing Vessel
+150176.0,1483.3546,Cargo Ship,Cargo Ship
+19128.0,861.8961,Fishing Vessel,Fishing Vessel
+22260.0,1255.2804,Ferry,Speedboat
+5872.0,1152.0604,Speedboat,Speedboat
+238927.0,1618.5294,Tanker,Cargo Ship
+66510.0,1228.5048,Cruiser,Speedboat
+44532.0,1079.2355,Cruiser,Speedboat
+5943.0,969.578,Speedboat,Speedboat
+2796.0,1013.1293,Speedboat,Speedboat
+169839.0,1329.2194,Cargo Ship,Ferry
+154791.0,1831.0062,Cargo Ship,Cruiser
+21068.0,1021.8057,Ferry,Speedboat
+36456.0,1070.62,Ferry,Speedboat
+9331.0,945.6532,Speedboat,Speedboat
+66510.0,927.38086,Cruiser,Speedboat
+44532.0,1023.9915,Cruiser,Speedboat
+5943.0,1004.53467,Speedboat,Speedboat
+150176.0,1599.7723,Cargo Ship,Cargo Ship
+19128.0,849.8884,Fishing Vessel,Fishing Vessel
+169839.0,1231.7843,Cargo Ship,Ferry
+21068.0,896.876,Ferry,Speedboat
+36456.0,1080.0212,Ferry,Speedboat
+9331.0,880.5664,Speedboat,Speedboat
+2891.0,1383.7936,Speedboat,Speedboat
+26002.0,720.53705,Fishing Vessel,Fishing Vessel
+8630.0,713.44116,Fishing Vessel,Fishing Vessel
+44532.0,1074.4257,Cruiser,Speedboat
+5943.0,1062.9344,Speedboat,Speedboat
+22260.0,1012.1973,Ferry,Speedboat
+5872.0,1310.8702,Speedboat,Speedboat
+169839.0,1523.6432,Cargo Ship,Ferry
+21068.0,1096.9254,Ferry,Speedboat
+36456.0,959.2228,Ferry,Ferry
+2891.0,1137.0321,Speedboat,Speedboat
+1385.0,1034.7488,Speedboat,Speedboat
+26002.0,690.6614,Fishing Vessel,Fishing Vessel
+19128.0,866.9951,Fishing Vessel,Fishing Vessel
+181297.0,1297.6198,Tanker,Cargo Ship
+64180.0,1298.9283,Cruiser,Speedboat
+5872.0,1076.4998,Speedboat,Speedboat
+150176.0,1330.1483,Cargo Ship,Cargo Ship
+181297.0,1387.8737,Tanker,Speedboat
+64180.0,1316.5734,Cruiser,Speedboat
+2891.0,1349.7314,Speedboat,Speedboat
+26002.0,857.16565,Fishing Vessel,Fishing Vessel
+19128.0,1016.8793,Fishing Vessel,Speedboat
+181297.0,1235.6443,Tanker,Ferry
+64180.0,1385.6273,Cruiser,Speedboat
+2891.0,1325.7865,Speedboat,Speedboat
+19128.0,769.828,Fishing Vessel,Fishing Vessel
+64180.0,1345.0973,Cruiser,Speedboat
+21068.0,1005.92,Ferry,Speedboat
+2891.0,1284.2052,Speedboat,Speedboat
+26002.0,790.8699,Fishing Vessel,Fishing Vessel
+8630.0,830.5499,Fishing Vessel,Fishing Vessel
+150176.0,1728.7056,Cargo Ship,Cargo Ship
+238927.0,1587.777,Tanker,Cargo Ship
+22260.0,1533.7579,Ferry,Speedboat
+22260.0,1026.9299,Ferry,Speedboat
+66510.0,1238.9296,Cruiser,Speedboat
+44532.0,962.18146,Cruiser,Speedboat
+5943.0,1071.828,Speedboat,Speedboat
+2796.0,1145.156,Speedboat,Speedboat
+154791.0,1918.0045,Cargo Ship,Cruiser
+181297.0,1279.2765,Tanker,Cargo Ship
+64180.0,1398.8368,Cruiser,Speedboat
+67844.0,1163.934,Cruiser,Speedboat
+64180.0,1336.2983,Cruiser,Speedboat
+2891.0,1318.2139,Speedboat,Speedboat
+8630.0,882.05225,Fishing Vessel,Fishing Vessel
+150176.0,1458.4514,Cargo Ship,Cargo Ship
+1385.0,1050.7157,Speedboat,Speedboat
+19128.0,807.1919,Fishing Vessel,Fishing Vessel
+102671.0,1276.6719,Cargo Ship,Speedboat
+95248.0,1205.8026,Cargo Ship,Ferry
+8763.0,896.1279,Speedboat,Speedboat
+8153.0,1199.8877,Speedboat,Speedboat
+6921.0,771.9242,Fishing Vessel,Fishing Vessel
+24504.0,1060.3677,Fishing Vessel,Fishing Vessel
+102671.0,1141.4596,Cargo Ship,Ferry
+6186.0,889.6196,Speedboat,Speedboat
+192800.0,1640.9374,Cargo Ship,Cargo Ship
+41590.0,852.96313,Cruiser,Fishing Vessel
+17636.0,970.11487,Fishing Vessel,Fishing Vessel
+323783.0,1326.1748,Tanker,Ferry
+60135.0,1367.6903,Cruiser,Speedboat
+8500.0,1122.0687,Speedboat,Speedboat
+29560.0,939.2789,Fishing Vessel,Fishing Vessel
+9540.0,1174.9211,Speedboat,Speedboat
+329766.0,1497.9791,Tanker,Ferry
+45455.0,1238.0985,Cruiser,Speedboat
+60135.0,1300.1285,Cruiser,Speedboat
+17636.0,920.838,Fishing Vessel,Fishing Vessel
+95248.0,1379.4281,Cargo Ship,Cargo Ship
+8763.0,881.10925,Speedboat,Speedboat
+6921.0,865.8722,Fishing Vessel,Fishing Vessel
+192800.0,1382.3684,Cargo Ship,Cargo Ship
+41590.0,1010.1664,Cruiser,Speedboat
+17636.0,862.3207,Fishing Vessel,Fishing Vessel
+329766.0,1579.525,Tanker,Speedboat
+323783.0,1507.1832,Tanker,Speedboat
+45455.0,974.59705,Cruiser,Speedboat
+60135.0,1204.9442,Cruiser,Speedboat
+17636.0,761.1007,Fishing Vessel,Fishing Vessel
+29560.0,1087.1564,Fishing Vessel,Fishing Vessel
+329766.0,1524.4813,Tanker,Ferry
+323783.0,1490.0952,Tanker,Ferry
+60135.0,1206.6962,Cruiser,Speedboat
+8500.0,1073.7845,Speedboat,Speedboat
+29560.0,1014.94104,Fishing Vessel,Fishing Vessel
+8153.0,1350.0192,Speedboat,Speedboat
+6921.0,876.47986,Fishing Vessel,Fishing Vessel
+192800.0,1608.2328,Cargo Ship,Cargo Ship
+41590.0,863.4114,Cruiser,Fishing Vessel
+192800.0,1440.5577,Cargo Ship,Cargo Ship
+41590.0,928.13794,Cruiser,Speedboat
+45455.0,1350.208,Cruiser,Speedboat
+77862.0,1196.8171,Cruiser,Speedboat
+8763.0,1177.9869,Speedboat,Speedboat
+77862.0,1247.4984,Cruiser,Speedboat
+102671.0,1123.5707,Cargo Ship,Ferry
+77862.0,1224.1105,Cruiser,Speedboat
+2761.0,1391.4315,Speedboat,Speedboat
+77862.0,1243.495,Cruiser,Speedboat
+8763.0,1160.3097,Speedboat,Speedboat
+8153.0,1275.4717,Speedboat,Speedboat
+102671.0,1204.485,Cargo Ship,Speedboat
+192800.0,1554.2091,Cargo Ship,Speedboat
+41590.0,854.4322,Cruiser,Fishing Vessel
+36720.0,1525.0829,Ferry,Speedboat
+33360.0,1139.3965,Ferry,Speedboat
+6186.0,1055.7983,Speedboat,Speedboat
+24504.0,1002.2057,Fishing Vessel,Fishing Vessel
+9540.0,847.80695,Speedboat,Speedboat
+102671.0,1461.8861,Cargo Ship,Speedboat
+95248.0,1146.975,Cargo Ship,Ferry
+17636.0,875.64307,Fishing Vessel,Fishing Vessel
+77862.0,1250.4569,Cruiser,Speedboat
+2761.0,1236.6832,Speedboat,Speedboat
+8763.0,1131.6682,Speedboat,Speedboat
+2761.0,1507.9735,Speedboat,Speedboat
+329766.0,1381.799,Tanker,Ferry
+323783.0,1572.6813,Tanker,Cruiser
+60135.0,1189.9952,Cruiser,Speedboat
+8500.0,993.39813,Speedboat,Speedboat
+29560.0,778.14575,Fishing Vessel,Fishing Vessel
+36720.0,1240.1202,Ferry,Speedboat
+33360.0,1503.1334,Ferry,Speedboat
+6186.0,1039.4152,Speedboat,Speedboat
+6921.0,831.7366,Fishing Vessel,Fishing Vessel
+24504.0,946.1745,Fishing Vessel,Fishing Vessel
+192800.0,1485.702,Cargo Ship,Cargo Ship
+41590.0,1161.9512,Cruiser,Speedboat
+45455.0,1266.9873,Cruiser,Speedboat
+323783.0,1586.357,Tanker,Cargo Ship
+8500.0,1262.9218,Speedboat,Speedboat
+36720.0,1288.5479,Ferry,Speedboat
+6921.0,935.6895,Fishing Vessel,Fishing Vessel
+24504.0,719.8977,Fishing Vessel,Fishing Vessel
+8153.0,1340.2021,Speedboat,Speedboat
+6921.0,954.67224,Fishing Vessel,Fishing Vessel
+24504.0,815.27075,Fishing Vessel,Fishing Vessel
+161242.0,1342.4362,Cargo Ship,Ferry
+44031.0,973.7428,Cruiser,Speedboat
+60935.0,914.97266,Cruiser,Speedboat
+29929.0,851.39777,Fishing Vessel,Fishing Vessel
+8945.0,1031.5222,Speedboat,Speedboat
+4159.0,1022.40564,Speedboat,Speedboat
+32732.0,1203.5344,Ferry,Speedboat
+3419.0,959.2776,Speedboat,Speedboat
+2236.0,951.122,Speedboat,Speedboat
+32732.0,1136.2433,Ferry,Speedboat
+3419.0,1115.0021,Speedboat,Speedboat
+32732.0,1173.4884,Ferry,Speedboat
+3419.0,1069.5319,Speedboat,Speedboat
+32732.0,1135.4419,Ferry,Speedboat
+3419.0,953.29553,Speedboat,Speedboat
+32732.0,1034.5563,Ferry,Speedboat
+3419.0,933.0575,Speedboat,Speedboat
+3419.0,1070.8665,Speedboat,Speedboat
+23150.0,1054.4702,Fishing Vessel,Fishing Vessel
+60935.0,846.71265,Cruiser,Speedboat
+13100.0,998.37354,Fishing Vessel,Speedboat
+60935.0,1065.5995,Cruiser,Speedboat
+13100.0,1121.579,Fishing Vessel,Speedboat
+82917.0,1260.1377,Cargo Ship,Ferry
+239661.0,1135.4875,Tanker,Speedboat
+39542.0,1135.4131,Cruiser,Speedboat
+25524.0,1220.9877,Ferry,Speedboat
+2952.0,1357.7666,Speedboat,Speedboat
+161242.0,1530.4589,Cargo Ship,Cruiser
+82917.0,1257.5231,Cargo Ship,Ferry
+53781.0,1209.0743,Ferry,Speedboat
+2952.0,1039.3431,Speedboat,Speedboat
+19670.0,825.3375,Fishing Vessel,Fishing Vessel
+239661.0,1208.5524,Tanker,Speedboat
+19670.0,750.6936,Fishing Vessel,Fishing Vessel
+239661.0,1255.5737,Tanker,Fishing Vessel
+39542.0,918.89355,Cruiser,Fishing Vessel
+25524.0,1220.8829,Ferry,Speedboat
+2952.0,1181.9369,Speedboat,Speedboat
+19670.0,987.2262,Fishing Vessel,Speedboat
+239661.0,1006.98804,Tanker,Fishing Vessel
+39542.0,1069.7914,Cruiser,Speedboat
+25524.0,1049.8774,Ferry,Speedboat
+4756.0,1104.0808,Speedboat,Speedboat
+82917.0,1405.8651,Cargo Ship,Speedboat
+239661.0,1011.8075,Tanker,Fishing Vessel
+2952.0,990.4055,Speedboat,Speedboat
+19670.0,1066.9554,Fishing Vessel,Speedboat
+176937.0,1264.0104,Cargo Ship,Cargo Ship
+39542.0,1020.16504,Cruiser,Speedboat
+25524.0,1096.7228,Ferry,Speedboat
+176937.0,1543.9512,Cargo Ship,Cruiser
+39542.0,857.8929,Cruiser,Fishing Vessel
+25524.0,1113.455,Ferry,Speedboat
+239661.0,1232.0824,Tanker,Speedboat
+25524.0,1146.7151,Ferry,Speedboat
+2952.0,981.88477,Speedboat,Speedboat
+19670.0,961.9171,Fishing Vessel,Fishing Vessel
+4159.0,1218.3672,Speedboat,Speedboat
+23150.0,831.1382,Fishing Vessel,Fishing Vessel
+82917.0,1446.1777,Cargo Ship,Speedboat
+19670.0,901.1072,Fishing Vessel,Fishing Vessel
+176937.0,1688.7662,Cargo Ship,Speedboat
+25524.0,1150.2838,Ferry,Speedboat
+82917.0,1243.9371,Cargo Ship,Ferry
+33892.0,1176.6254,Cruiser,Speedboat
+53781.0,1339.1827,Ferry,Speedboat
+32732.0,1062.6343,Ferry,Speedboat
+25524.0,1029.4791,Ferry,Speedboat
+2236.0,1002.70306,Speedboat,Speedboat
+2952.0,1228.7941,Speedboat,Speedboat
+8945.0,1277.6967,Speedboat,Speedboat
+4159.0,1209.9535,Speedboat,Speedboat
+39542.0,817.9822,Cruiser,Fishing Vessel
+4756.0,1490.3888,Speedboat,Speedboat
+3419.0,1181.788,Speedboat,Speedboat
+82917.0,1421.2975,Cargo Ship,Speedboat
+33892.0,1277.3458,Cruiser,Speedboat
+19670.0,771.1714,Fishing Vessel,Fishing Vessel
+39542.0,1181.7745,Cruiser,Speedboat
+4756.0,1336.8585,Speedboat,Speedboat
+176937.0,1646.4083,Cargo Ship,Speedboat
+60935.0,1011.60645,Cruiser,Speedboat
+13100.0,827.6794,Fishing Vessel,Fishing Vessel
+44031.0,827.01917,Cruiser,Speedboat
+60935.0,806.73755,Cruiser,Fishing Vessel
+82917.0,1366.2909,Cargo Ship,Speedboat
+33892.0,1361.6353,Cruiser,Speedboat
+53781.0,1100.1852,Ferry,Speedboat
+29929.0,757.7877,Fishing Vessel,Fishing Vessel
+44031.0,870.4957,Cruiser,Speedboat
+163976.0,1750.6394,Cargo Ship,Speedboat
+77213.0,1072.0704,Cruiser,Speedboat
+3070.0,1176.5505,Speedboat,Speedboat
+155032.0,1754.199,Cargo Ship,Cruiser
+114302.0,1665.7211,Cargo Ship,Cargo Ship
+386321.0,1691.5204,Tanker,Cargo Ship
+16627.0,936.31323,Fishing Vessel,Fishing Vessel
+18731.0,913.6203,Fishing Vessel,Fishing Vessel
+114302.0,1402.6395,Cargo Ship,Ferry
+6210.0,855.03735,Speedboat,Speedboat
+3044.0,1030.3489,Speedboat,Speedboat
+18731.0,995.1157,Fishing Vessel,Fishing Vessel
+32972.0,1281.2428,Ferry,Speedboat
+6210.0,904.14954,Speedboat,Speedboat
+3044.0,951.58844,Speedboat,Speedboat
+3070.0,951.3,Speedboat,Speedboat
+20767.0,1038.0267,Ferry,Speedboat
+21389.0,1273.5123,Ferry,Speedboat
+7688.0,894.5806,Speedboat,Speedboat
+27483.0,1006.8273,Fishing Vessel,Fishing Vessel
+77213.0,1068.778,Cruiser,Speedboat
+44326.0,1136.9324,Cruiser,Speedboat
+3044.0,1100.4794,Speedboat,Speedboat
+3107.0,1065.3516,Speedboat,Speedboat
+374504.0,1249.9725,Tanker,Speedboat
+71868.0,933.4895,Cruiser,Speedboat
+4466.0,915.4683,Speedboat,Speedboat
+77213.0,1175.3999,Cruiser,Speedboat
+27483.0,953.75476,Fishing Vessel,Fishing Vessel
+155032.0,1686.0972,Cargo Ship,Cargo Ship
+114302.0,1451.8943,Cargo Ship,Cruiser
+3044.0,1035.2756,Speedboat,Speedboat
+16627.0,1069.7109,Fishing Vessel,Speedboat
+18731.0,776.4663,Fishing Vessel,Fishing Vessel
+155032.0,2025.3832,Cargo Ship,Cargo Ship
+114302.0,1454.9606,Cargo Ship,Ferry
+3044.0,1027.9855,Speedboat,Speedboat
+16627.0,972.79395,Fishing Vessel,Fishing Vessel
+18731.0,1039.4073,Fishing Vessel,Speedboat
+77213.0,1257.7704,Cruiser,Speedboat
+3107.0,1023.03546,Speedboat,Speedboat
+27483.0,973.9798,Fishing Vessel,Fishing Vessel
+155032.0,1827.7708,Cargo Ship,Cruiser
+386321.0,1474.8123,Tanker,Cruiser
+4466.0,888.7438,Speedboat,Speedboat
+374504.0,1615.2191,Tanker,Cargo Ship
+71868.0,1155.5732,Cruiser,Speedboat
+44326.0,1255.1515,Cruiser,Speedboat
+3107.0,1304.8265,Speedboat,Speedboat
+374504.0,1274.8605,Tanker,Ferry
+71868.0,1109.0831,Cruiser,Speedboat
+44326.0,1337.746,Cruiser,Speedboat
+3044.0,1187.0334,Speedboat,Speedboat
+3107.0,1235.045,Speedboat,Speedboat
+77213.0,999.0211,Cruiser,Speedboat
+3107.0,1287.0934,Speedboat,Speedboat
+27483.0,735.5371,Fishing Vessel,Fishing Vessel
+374504.0,1380.9525,Tanker,Cargo Ship
+71868.0,1230.5438,Cruiser,Speedboat
+4466.0,981.30774,Speedboat,Speedboat
+374504.0,1336.9781,Tanker,Ferry
+71868.0,1023.36487,Cruiser,Speedboat
+44326.0,1304.2139,Cruiser,Speedboat
+4466.0,1038.7343,Speedboat,Speedboat
+155032.0,1710.5192,Cargo Ship,Cruiser
+71868.0,965.9796,Cruiser,Speedboat
+4466.0,773.8654,Speedboat,Speedboat
+163976.0,1461.9789,Cargo Ship,Cruiser
+3070.0,1206.3157,Speedboat,Speedboat
+29459.0,1021.0369,Fishing Vessel,Fishing Vessel
+77213.0,907.8591,Cruiser,Speedboat
+27483.0,854.93567,Fishing Vessel,Fishing Vessel
+6210.0,1007.7729,Speedboat,Speedboat
+3044.0,1046.8751,Speedboat,Speedboat
+3107.0,1210.1613,Speedboat,Speedboat
+155032.0,1704.5901,Cargo Ship,Cargo Ship
+3044.0,1283.0563,Speedboat,Speedboat
+3107.0,991.466,Speedboat,Speedboat
+386321.0,1513.0914,Tanker,Cargo Ship
+16627.0,815.24536,Fishing Vessel,Fishing Vessel
+77213.0,1011.97455,Cruiser,Speedboat
+44326.0,1223.2751,Cruiser,Speedboat
+21389.0,1338.8522,Ferry,Speedboat
+3107.0,1114.2181,Speedboat,Speedboat
+27483.0,902.57056,Fishing Vessel,Fishing Vessel
+41782.0,1160.6095,Cruiser,Speedboat
+32972.0,1079.4856,Ferry,Speedboat
+374504.0,1406.7838,Tanker,Speedboat
+44326.0,1251.4269,Cruiser,Speedboat
+20767.0,1236.2218,Ferry,Speedboat
+21389.0,1019.807,Ferry,Speedboat
+3107.0,972.5467,Speedboat,Speedboat
+27483.0,766.3754,Fishing Vessel,Fishing Vessel
+84770.0,1487.4055,Cargo Ship,Speedboat
+358100.0,1398.4009,Tanker,Cargo Ship
+78065.0,1148.2709,Cruiser,Speedboat
+4289.0,1133.1088,Speedboat,Speedboat
+1662.0,1149.9371,Speedboat,Speedboat
+1259.0,1106.6958,Speedboat,Speedboat
+15519.0,987.4657,Fishing Vessel,Fishing Vessel
+41548.0,996.4089,Ferry,Speedboat
+18386.0,806.7438,Fishing Vessel,Fishing Vessel
+37976.0,1253.9672,Cruiser,Speedboat
+20609.0,868.9596,Fishing Vessel,Fishing Vessel
+142940.0,1349.1576,Cargo Ship,Cruiser
+363743.0,1237.1058,Tanker,Ferry
+53713.0,1199.9495,Cruiser,Speedboat
+15519.0,780.2973,Fishing Vessel,Fishing Vessel
+78065.0,1295.8634,Cruiser,Speedboat
+57542.0,972.1544,Cruiser,Speedboat
+1730.0,1212.1809,Speedboat,Speedboat
+1662.0,1101.5449,Speedboat,Speedboat
+84770.0,1470.3002,Cargo Ship,Speedboat
+358100.0,1355.4747,Tanker,Cargo Ship
+6637.0,867.4652,Fishing Vessel,Fishing Vessel
+358100.0,1325.2067,Tanker,Ferry
+78065.0,986.3086,Cruiser,Speedboat
+4289.0,1194.7043,Speedboat,Speedboat
+1662.0,1070.1686,Speedboat,Speedboat
+59974.0,1118.497,Ferry,Speedboat
+3514.0,1175.7222,Speedboat,Speedboat
+8658.0,1155.9584,Speedboat,Speedboat
+358100.0,1163.7101,Tanker,Cargo Ship
+78065.0,1001.6825,Cruiser,Speedboat
+4289.0,851.33386,Speedboat,Speedboat
+1662.0,1159.9938,Speedboat,Speedboat
+59974.0,1035.0934,Ferry,Speedboat
+3514.0,1356.329,Speedboat,Speedboat
+8658.0,1069.0992,Speedboat,Speedboat
+84770.0,1509.6586,Cargo Ship,Speedboat
+1259.0,1345.0406,Speedboat,Speedboat
+6637.0,913.93835,Fishing Vessel,Fishing Vessel
+142940.0,1506.3427,Cargo Ship,Cruiser
+59974.0,988.93445,Ferry,Speedboat
+3514.0,1246.6903,Speedboat,Speedboat
+8658.0,1263.7686,Speedboat,Speedboat
+37976.0,1007.96075,Cruiser,Speedboat
+34330.0,942.45056,Ferry,Speedboat
+20609.0,1059.8319,Fishing Vessel,Speedboat
+142940.0,1433.202,Cargo Ship,Cruiser
+363743.0,1271.087,Tanker,Speedboat
+20609.0,1151.7388,Fishing Vessel,Speedboat
+53713.0,1275.1395,Cruiser,Speedboat
+1259.0,1301.9272,Speedboat,Speedboat
+15519.0,783.0331,Fishing Vessel,Fishing Vessel
+198283.0,1291.8483,Cargo Ship,Cargo Ship
+41548.0,1084.8647,Ferry,Speedboat
+18386.0,997.46545,Fishing Vessel,Speedboat
+198283.0,1575.0872,Cargo Ship,Ferry
+78065.0,1188.6505,Cruiser,Speedboat
+57542.0,1010.7587,Cruiser,Speedboat
+1730.0,974.83484,Speedboat,Speedboat
+4289.0,849.73535,Speedboat,Speedboat
+1662.0,1015.5002,Speedboat,Speedboat
+37976.0,1240.5298,Cruiser,Speedboat
+57542.0,1238.6254,Cruiser,Speedboat
+34330.0,1220.2723,Ferry,Speedboat
+1730.0,1085.7339,Speedboat,Speedboat
+20609.0,1076.7633,Fishing Vessel,Speedboat
+198283.0,1426.9493,Cargo Ship,Cargo Ship
+78065.0,1263.274,Cruiser,Speedboat
+57542.0,1041.9604,Cruiser,Speedboat
+1730.0,978.72815,Speedboat,Speedboat
+1662.0,1184.5145,Speedboat,Speedboat
+18386.0,1056.1874,Fishing Vessel,Speedboat
+84770.0,1463.4104,Cargo Ship,Cargo Ship
+358100.0,1587.1859,Tanker,Cargo Ship
+6637.0,837.7244,Fishing Vessel,Fishing Vessel
+84770.0,1359.7528,Cargo Ship,Ferry
+358100.0,1890.9711,Tanker,Cargo Ship
+78065.0,941.2142,Cruiser,Speedboat
+4289.0,1100.9991,Speedboat,Speedboat
+1662.0,1124.1808,Speedboat,Speedboat
+57542.0,1192.1327,Cruiser,Speedboat
+41548.0,880.661,Ferry,Fishing Vessel
+1730.0,1107.2183,Speedboat,Speedboat
+18386.0,777.4049,Fishing Vessel,Fishing Vessel
+1259.0,1081.4379,Speedboat,Speedboat
+15519.0,929.73645,Fishing Vessel,Fishing Vessel
+84770.0,1440.5901,Cargo Ship,Ferry
+1259.0,1057.8075,Speedboat,Speedboat
+6637.0,948.3616,Fishing Vessel,Fishing Vessel
+84770.0,1536.8478,Cargo Ship,Speedboat
+358100.0,1479.1927,Tanker,Cargo Ship
+4289.0,903.656,Speedboat,Speedboat
+6637.0,935.42444,Fishing Vessel,Fishing Vessel
+198283.0,1462.4513,Cargo Ship,Cargo Ship
+41548.0,1053.1602,Ferry,Speedboat
+198283.0,1503.732,Cargo Ship,Speedboat
+41548.0,817.602,Ferry,Fishing Vessel
+18386.0,934.3296,Fishing Vessel,Fishing Vessel
+142940.0,1555.8597,Cargo Ship,Cruiser
+363743.0,1337.2169,Tanker,Speedboat
+20609.0,837.755,Fishing Vessel,Fishing Vessel
+84770.0,1470.7426,Cargo Ship,Ferry
+1259.0,1188.6439,Speedboat,Speedboat
+6637.0,963.6161,Fishing Vessel,Fishing Vessel
+34330.0,1174.3033,Ferry,Speedboat
+3514.0,1099.5664,Speedboat,Speedboat
+8658.0,1065.4363,Speedboat,Speedboat
+182727.0,1224.4581,Cargo Ship,Ferry
+35805.0,935.17236,Cruiser,Speedboat
+56578.0,1197.2667,Ferry,Speedboat
+44934.0,1152.6324,Ferry,Speedboat
+24661.0,675.6916,Fishing Vessel,Fishing Vessel
+154910.0,1608.9911,Cargo Ship,Cargo Ship
+366553.0,1268.1659,Tanker,Speedboat
+31450.0,750.2795,Ferry,Fishing Vessel
+8507.0,1035.3376,Speedboat,Speedboat
+17978.0,789.6636,Fishing Vessel,Fishing Vessel
+141768.0,1221.4198,Cargo Ship,Ferry
+209841.0,1245.2067,Tanker,Speedboat
+6526.0,1125.7964,Speedboat,Speedboat
+1247.0,995.35876,Speedboat,Speedboat
+141768.0,1153.68,Cargo Ship,Speedboat
+209841.0,1251.3209,Tanker,Speedboat
+6526.0,1242.4302,Speedboat,Speedboat
+1247.0,986.147,Speedboat,Speedboat
+182727.0,1083.9995,Cargo Ship,Ferry
+2343.0,1605.6417,Speedboat,Speedboat
+48527.0,1037.0884,Cruiser,Speedboat
+50138.0,1160.2218,Cruiser,Speedboat
+8507.0,980.4172,Speedboat,Speedboat
+6487.0,1048.4186,Speedboat,Speedboat
+24661.0,841.15393,Fishing Vessel,Fishing Vessel
+182727.0,1156.3733,Cargo Ship,Ferry
+35805.0,997.21576,Cruiser,Speedboat
+56578.0,1056.0807,Ferry,Speedboat
+44934.0,1084.4172,Ferry,Speedboat
+6810.0,962.66833,Fishing Vessel,Fishing Vessel
+24661.0,989.2581,Fishing Vessel,Fishing Vessel
+182727.0,1153.8265,Cargo Ship,Speedboat
+56578.0,1078.6318,Ferry,Speedboat
+44934.0,1052.2743,Ferry,Speedboat
+24661.0,739.1664,Fishing Vessel,Fishing Vessel
+41573.0,1081.6852,Cruiser,Speedboat
+35805.0,1018.6917,Cruiser,Speedboat
+6526.0,1049.3138,Speedboat,Speedboat
+1247.0,1126.6636,Speedboat,Speedboat
+50138.0,954.9075,Cruiser,Speedboat
+41573.0,808.1086,Cruiser,Fishing Vessel
+35805.0,886.7833,Cruiser,Speedboat
+56578.0,1116.6295,Ferry,Speedboat
+44934.0,1138.972,Ferry,Speedboat
+6487.0,948.17676,Speedboat,Speedboat
+24661.0,683.51,Fishing Vessel,Fishing Vessel
+48527.0,1173.7711,Cruiser,Speedboat
+8507.0,1136.6713,Speedboat,Speedboat
+24661.0,800.8684,Fishing Vessel,Fishing Vessel
+17978.0,851.5435,Fishing Vessel,Fishing Vessel
+31450.0,926.0756,Ferry,Fishing Vessel
+182727.0,1308.6339,Cargo Ship,Ferry
+366553.0,1014.2167,Tanker,Fishing Vessel
+35805.0,1169.1516,Cruiser,Speedboat
+56578.0,1123.2639,Ferry,Speedboat
+44934.0,1214.716,Ferry,Speedboat
+6810.0,866.676,Fishing Vessel,Fishing Vessel
+154910.0,1630.6438,Cargo Ship,Cargo Ship
+366553.0,961.4927,Tanker,Fishing Vessel
+154910.0,1595.059,Cargo Ship,Cargo Ship
+48527.0,969.0587,Cruiser,Speedboat
+8507.0,936.41736,Speedboat,Speedboat
+17978.0,753.80316,Fishing Vessel,Fishing Vessel
+182727.0,1306.613,Cargo Ship,Speedboat
+2343.0,1263.6908,Speedboat,Speedboat
+209841.0,1177.1633,Tanker,Speedboat
+31450.0,964.0695,Ferry,Speedboat
+141768.0,1163.2341,Cargo Ship,Speedboat
+6526.0,938.71985,Speedboat,Speedboat
+1247.0,1121.0516,Speedboat,Speedboat
+1816.0,1222.9005,Speedboat,Speedboat
+25580.0,976.6051,Fishing Vessel,Fishing Vessel
+48527.0,1041.5228,Cruiser,Speedboat
+50138.0,1229.6355,Cruiser,Speedboat
+35805.0,929.0714,Cruiser,Speedboat
+6487.0,938.58026,Speedboat,Speedboat
+24661.0,1027.1785,Fishing Vessel,Fishing Vessel
+182727.0,1253.2379,Cargo Ship,Speedboat
+35805.0,1111.3627,Cruiser,Speedboat
+56578.0,1274.8104,Ferry,Speedboat
+44934.0,1140.2786,Ferry,Speedboat
+24661.0,950.96625,Fishing Vessel,Fishing Vessel
+48527.0,1113.3584,Cruiser,Speedboat
+8507.0,911.20825,Speedboat,Speedboat
+6487.0,1029.817,Speedboat,Speedboat
+31450.0,868.29456,Ferry,Fishing Vessel
+41573.0,1107.1262,Cruiser,Speedboat
+35805.0,792.7797,Cruiser,Speedboat
+6526.0,1119.7218,Speedboat,Speedboat
+1247.0,1184.572,Speedboat,Speedboat
+41573.0,1074.4069,Cruiser,Speedboat
+35805.0,1104.7631,Cruiser,Speedboat
+56578.0,1186.2155,Ferry,Speedboat
+44934.0,1249.3075,Ferry,Speedboat
+6810.0,897.8087,Fishing Vessel,Fishing Vessel
+175265.0,1629.7455,Cargo Ship,Cargo Ship
+32778.0,1127.629,Ferry,Speedboat
+7349.0,962.00903,Speedboat,Speedboat
+152424.0,1360.3395,Cargo Ship,Speedboat
+283669.0,1262.8966,Tanker,Ferry
+55868.0,1267.8458,Cruiser,Speedboat
+54340.0,1050.503,Ferry,Speedboat
+25242.0,829.5072,Fishing Vessel,Fishing Vessel
+55868.0,1445.8392,Cruiser,Speedboat
+7290.0,1160.5902,Speedboat,Speedboat
+9491.0,1006.93933,Fishing Vessel,Fishing Vessel
+36997.0,1097.1014,Cruiser,Speedboat
+7349.0,969.74084,Speedboat,Speedboat
+8365.0,1102.511,Speedboat,Speedboat
+36997.0,1102.6339,Cruiser,Speedboat
+7349.0,995.19226,Speedboat,Speedboat
+9018.0,939.0724,Speedboat,Speedboat
+8365.0,1196.8197,Speedboat,Speedboat
+7665.0,1403.7773,Speedboat,Speedboat
+16402.0,981.02075,Fishing Vessel,Fishing Vessel
+152424.0,1230.9962,Cargo Ship,Ferry
+283669.0,1399.889,Tanker,Ferry
+54340.0,846.41705,Ferry,Speedboat
+25242.0,862.26404,Fishing Vessel,Fishing Vessel
+10333.0,1021.8088,Fishing Vessel,Fishing Vessel
+36997.0,985.0668,Cruiser,Speedboat
+7349.0,920.72534,Speedboat,Speedboat
+8365.0,1272.9331,Speedboat,Speedboat
+32778.0,933.5332,Ferry,Speedboat
+7349.0,1111.8584,Speedboat,Speedboat
+23310.0,1348.8807,Ferry,Speedboat
+2081.0,1311.7228,Speedboat,Speedboat
+16402.0,878.5623,Fishing Vessel,Fishing Vessel
+23310.0,1131.3463,Ferry,Speedboat
+2081.0,1004.499,Speedboat,Speedboat
+16402.0,982.725,Fishing Vessel,Fishing Vessel
+55068.0,938.91095,Cruiser,Speedboat
+7665.0,1337.6637,Speedboat,Speedboat
+16402.0,851.81165,Fishing Vessel,Fishing Vessel
+36997.0,1036.0529,Cruiser,Speedboat
+8365.0,1140.3202,Speedboat,Speedboat
+7665.0,1308.1237,Speedboat,Speedboat
+55068.0,1145.9506,Cruiser,Speedboat
+9018.0,1060.9685,Speedboat,Speedboat
+7665.0,1199.3597,Speedboat,Speedboat
+16402.0,964.01385,Fishing Vessel,Fishing Vessel
+114122.0,1312.9391,Cargo Ship,Cargo Ship
+382218.0,1450.3226,Tanker,Ferry
+32778.0,1095.2902,Ferry,Speedboat
+7349.0,822.38293,Speedboat,Speedboat
+10333.0,781.6987,Fishing Vessel,Fishing Vessel
+175265.0,1592.5883,Cargo Ship,Cargo Ship
+7349.0,1085.535,Speedboat,Speedboat
+114122.0,1309.59,Cargo Ship,Cargo Ship
+175265.0,1433.7755,Cargo Ship,Cargo Ship
+382218.0,1528.3224,Tanker,Cargo Ship
+32778.0,1112.1134,Ferry,Speedboat
+7349.0,927.9132,Speedboat,Speedboat
+23310.0,1142.2317,Ferry,Speedboat
+9018.0,1161.042,Speedboat,Speedboat
+8365.0,1444.8185,Speedboat,Speedboat
+7665.0,1451.5985,Speedboat,Speedboat
+16402.0,747.4907,Fishing Vessel,Fishing Vessel
+55868.0,1324.3866,Cruiser,Speedboat
+7290.0,1348.4045,Speedboat,Speedboat
+10333.0,823.7838,Fishing Vessel,Fishing Vessel
+9491.0,820.7135,Fishing Vessel,Fishing Vessel
+152424.0,1177.9822,Cargo Ship,Ferry
+283669.0,1255.2345,Tanker,Speedboat
+55868.0,1167.4235,Cruiser,Speedboat
+54340.0,1002.85333,Ferry,Speedboat
+9491.0,773.48145,Fishing Vessel,Fishing Vessel
+175265.0,1779.3644,Cargo Ship,Cruiser
+32778.0,1076.3656,Ferry,Speedboat
+7349.0,773.67926,Speedboat,Speedboat
+152424.0,1363.7266,Cargo Ship,Ferry
+283669.0,1456.0546,Tanker,Ferry
+54340.0,820.0355,Ferry,Fishing Vessel
+25242.0,847.6898,Fishing Vessel,Fishing Vessel
+55068.0,1106.1432,Cruiser,Speedboat
+8365.0,1344.894,Speedboat,Speedboat
+7665.0,1338.0834,Speedboat,Speedboat
+16402.0,974.9413,Fishing Vessel,Fishing Vessel
+67763.0,1101.4277,Cruiser,Speedboat
+55868.0,1330.0294,Cruiser,Speedboat
+54340.0,1069.5253,Ferry,Speedboat
+7290.0,1421.255,Speedboat,Speedboat
+9491.0,840.3768,Fishing Vessel,Fishing Vessel
+23310.0,1188.2476,Ferry,Speedboat
+2081.0,1034.0747,Speedboat,Speedboat
+25242.0,698.31616,Fishing Vessel,Fishing Vessel
+152424.0,1028.7567,Cargo Ship,Ferry
+283669.0,1284.7032,Tanker,Ferry
+55868.0,1273.5361,Cruiser,Speedboat
+54340.0,1136.4923,Ferry,Speedboat
+67763.0,1490.1547,Cruiser,Speedboat
+7290.0,1128.9208,Speedboat,Speedboat
+36997.0,1053.3063,Cruiser,Speedboat
+7349.0,1132.215,Speedboat,Speedboat
+8365.0,1393.3016,Speedboat,Speedboat
+7665.0,1274.5885,Speedboat,Speedboat
+23310.0,1124.2247,Ferry,Speedboat
+2081.0,1036.248,Speedboat,Speedboat
+16402.0,873.36084,Fishing Vessel,Fishing Vessel
+36997.0,1231.8866,Cruiser,Speedboat
+32778.0,785.2558,Ferry,Fishing Vessel
+7349.0,945.6331,Speedboat,Speedboat
+7349.0,980.5073,Speedboat,Speedboat
+144003.0,1589.5499,Cargo Ship,Speedboat
+20042.0,1025.4432,Ferry,Speedboat
+37395.0,978.71045,Ferry,Speedboat
+137996.0,1652.1099,Cargo Ship,Ferry
+318225.0,1480.9957,Tanker,Cargo Ship
+3805.0,1267.0217,Speedboat,Speedboat
+14140.0,959.6848,Fishing Vessel,Fishing Vessel
+318225.0,1405.4688,Tanker,Cargo Ship
+76292.0,1098.3477,Cruiser,Speedboat
+70003.0,1282.5294,Cruiser,Speedboat
+5913.0,865.1109,Speedboat,Speedboat
+5455.0,1046.2472,Speedboat,Speedboat
+14140.0,995.23816,Fishing Vessel,Fishing Vessel
+318225.0,1510.5914,Tanker,Cargo Ship
+14140.0,791.70605,Fishing Vessel,Fishing Vessel
+71756.0,938.1969,Cruiser,Speedboat
+28400.0,729.5914,Fishing Vessel,Fishing Vessel
+25608.0,789.4171,Fishing Vessel,Fishing Vessel
+323102.0,1207.493,Tanker,Speedboat
+20042.0,935.6311,Ferry,Speedboat
+80143.0,1676.9105,Cargo Ship,Cruiser
+323102.0,964.0176,Tanker,Fishing Vessel
+20042.0,1197.2772,Ferry,Speedboat
+37395.0,1022.6253,Ferry,Speedboat
+2378.0,1561.1683,Speedboat,Speedboat
+80143.0,1475.409,Cargo Ship,Cargo Ship
+2378.0,1165.3148,Speedboat,Speedboat
+56194.0,1197.4358,Ferry,Speedboat
+144003.0,1133.8993,Cargo Ship,Ferry
+80143.0,1704.0092,Cargo Ship,Speedboat
+2378.0,1497.9907,Speedboat,Speedboat
+56194.0,1086.357,Ferry,Speedboat
+20042.0,1085.0328,Ferry,Speedboat
+80143.0,1956.1189,Cargo Ship,Cruiser
+323102.0,1162.2025,Tanker,Speedboat
+37395.0,888.79614,Ferry,Speedboat
+2378.0,1216.8417,Speedboat,Speedboat
+318225.0,1625.4437,Tanker,Cargo Ship
+37395.0,1216.351,Ferry,Speedboat
+14140.0,1033.2963,Fishing Vessel,Fishing Vessel
+137996.0,1496.3186,Cargo Ship,Speedboat
+318225.0,1361.1852,Tanker,Cargo Ship
+14140.0,877.48157,Fishing Vessel,Fishing Vessel
+137996.0,1635.8203,Cargo Ship,Speedboat
+24070.0,1101.1517,Fishing Vessel,Speedboat
+80143.0,1788.0614,Cargo Ship,Cargo Ship
+323102.0,1138.4043,Tanker,Ferry
+20042.0,1361.3248,Ferry,Speedboat
+37395.0,1036.7062,Ferry,Speedboat
+2378.0,1556.9359,Speedboat,Speedboat
+144003.0,1304.879,Cargo Ship,Ferry
+64682.0,1117.6666,Cruiser,Speedboat
+5347.0,1287.3085,Speedboat,Speedboat
+28400.0,938.5865,Fishing Vessel,Fishing Vessel
+25608.0,1119.912,Fishing Vessel,Speedboat
+318225.0,1510.0658,Tanker,Ferry
+64682.0,1098.2502,Cruiser,Speedboat
+76292.0,1043.8345,Cruiser,Speedboat
+70003.0,1177.7382,Cruiser,Speedboat
+5913.0,880.95105,Speedboat,Speedboat
+14140.0,1008.9598,Fishing Vessel,Speedboat
+71756.0,1172.3003,Cruiser,Speedboat
+28400.0,914.999,Fishing Vessel,Fishing Vessel
+25608.0,824.4357,Fishing Vessel,Fishing Vessel
+137996.0,1328.5593,Cargo Ship,Cruiser
+318225.0,1488.9174,Tanker,Cargo Ship
+14140.0,869.55994,Fishing Vessel,Fishing Vessel
+144003.0,1295.9613,Cargo Ship,Cargo Ship
+64682.0,1211.5746,Cruiser,Speedboat
+71756.0,1199.7855,Cruiser,Speedboat
+76292.0,1025.0077,Cruiser,Speedboat
+70003.0,1257.3898,Cruiser,Speedboat
+5347.0,1254.236,Speedboat,Speedboat
+25608.0,993.8832,Fishing Vessel,Fishing Vessel
+144003.0,1223.8604,Cargo Ship,Speedboat
+76292.0,1041.1987,Cruiser,Speedboat
+5913.0,953.2136,Speedboat,Speedboat
+5455.0,986.9746,Speedboat,Speedboat
+80143.0,1723.411,Cargo Ship,Cargo Ship
+323102.0,1141.5134,Tanker,Speedboat
+37395.0,948.8805,Ferry,Speedboat
+2378.0,1352.775,Speedboat,Speedboat
+318225.0,1455.9003,Tanker,Ferry
+76292.0,956.3301,Cruiser,Speedboat
+70003.0,1333.5919,Cruiser,Speedboat
+5913.0,1024.0894,Speedboat,Speedboat
+5455.0,875.7506,Speedboat,Speedboat
+14140.0,828.0342,Fishing Vessel,Fishing Vessel
+71756.0,995.1157,Cruiser,Speedboat
+28400.0,901.82416,Fishing Vessel,Fishing Vessel
+25608.0,770.3754,Fishing Vessel,Fishing Vessel
+80143.0,1647.8544,Cargo Ship,Cruiser
+80143.0,1683.5573,Cargo Ship,Cargo Ship
+323102.0,1079.439,Tanker,Fishing Vessel
+20042.0,1118.7158,Ferry,Speedboat
+37395.0,950.9585,Ferry,Speedboat
+2378.0,1513.993,Speedboat,Speedboat
+137996.0,1708.0463,Cargo Ship,Cruiser
+64682.0,1227.32,Cruiser,Speedboat
+71756.0,1119.0135,Cruiser,Speedboat
+70003.0,1112.8547,Cruiser,Speedboat
+5347.0,1375.536,Speedboat,Speedboat
+28400.0,885.42303,Fishing Vessel,Fishing Vessel
+25608.0,868.7848,Fishing Vessel,Fishing Vessel
+64682.0,1133.5045,Cruiser,Speedboat
+71756.0,1048.1853,Cruiser,Speedboat
+76292.0,1115.8002,Cruiser,Speedboat
+70003.0,1199.5563,Cruiser,Speedboat
+5347.0,1276.414,Speedboat,Speedboat
+25608.0,1007.12695,Fishing Vessel,Speedboat
+295206.0,1356.9214,Tanker,Cargo Ship
+25501.0,1242.5806,Ferry,Speedboat
+9967.0,1055.8372,Speedboat,Speedboat
+39258.0,1062.8987,Ferry,Speedboat
+8729.0,787.95886,Speedboat,Speedboat
+6827.0,935.35767,Speedboat,Speedboat
+12883.0,956.7103,Fishing Vessel,Fishing Vessel
+9653.0,719.78986,Fishing Vessel,Fishing Vessel
+75218.0,1280.2545,Cruiser,Speedboat
+2585.0,978.095,Speedboat,Speedboat
+7174.0,1477.6193,Speedboat,Speedboat
+295206.0,1376.2078,Tanker,Ferry
+25501.0,1117.6714,Ferry,Speedboat
+9967.0,972.2417,Speedboat,Speedboat
+134928.0,1374.6888,Cargo Ship,Ferry
+46430.0,1133.6888,Cruiser,Speedboat
+75218.0,1074.9056,Cruiser,Speedboat
+6827.0,1042.64,Speedboat,Speedboat
+115449.0,1055.0002,Cargo Ship,Fishing Vessel
+37424.0,1165.7882,Ferry,Speedboat
+37424.0,1060.8048,Ferry,Speedboat
+6827.0,958.58997,Speedboat,Speedboat
+295206.0,1376.2123,Tanker,Cargo Ship
+25501.0,1316.1783,Ferry,Speedboat
+9967.0,945.38574,Speedboat,Speedboat
+116685.0,1247.1655,Cargo Ship,Speedboat
+317674.0,1161.8097,Tanker,Speedboat
+55342.0,1066.2526,Cruiser,Speedboat
+39258.0,1092.5258,Ferry,Speedboat
+8729.0,963.5487,Speedboat,Speedboat
+116685.0,1101.297,Cargo Ship,Ferry
+317674.0,977.2976,Tanker,Ferry
+55342.0,1207.931,Cruiser,Speedboat
+39258.0,1130.1917,Ferry,Speedboat
+25501.0,1180.1578,Ferry,Speedboat
+12883.0,1074.6459,Fishing Vessel,Fishing Vessel
+116685.0,1234.5309,Cargo Ship,Ferry
+317674.0,1196.2496,Tanker,Speedboat
+55342.0,1305.2174,Cruiser,Speedboat
+39258.0,946.9297,Ferry,Speedboat
+75218.0,1017.4464,Cruiser,Speedboat
+37424.0,937.2578,Ferry,Speedboat
+6827.0,995.6275,Speedboat,Speedboat
+116685.0,1311.5714,Cargo Ship,Ferry
+317674.0,959.4927,Tanker,Fishing Vessel
+55342.0,1074.4766,Cruiser,Speedboat
+39258.0,1137.1865,Ferry,Speedboat
+4700.0,914.8374,Speedboat,Speedboat
+115449.0,1254.8038,Cargo Ship,Speedboat
+36125.0,1114.1812,Cruiser,Speedboat
+37424.0,955.1648,Ferry,Speedboat
+28153.0,1130.8116,Fishing Vessel,Speedboat
+116685.0,1195.0231,Cargo Ship,Ferry
+317674.0,1085.6976,Tanker,Ferry
+39258.0,1069.7589,Ferry,Speedboat
+4700.0,1290.3619,Speedboat,Speedboat
+37424.0,1069.6733,Ferry,Speedboat
+6827.0,841.1545,Speedboat,Speedboat
+36125.0,1003.7212,Cruiser,Speedboat
+37424.0,1157.4724,Ferry,Speedboat
+28153.0,992.12854,Fishing Vessel,Speedboat
+75218.0,1206.249,Cruiser,Speedboat
+2585.0,1048.5846,Speedboat,Speedboat
+6827.0,1017.1224,Speedboat,Speedboat
+4700.0,1243.473,Speedboat,Speedboat
+116685.0,1180.3566,Cargo Ship,Ferry
+317674.0,1240.3094,Tanker,Speedboat
+55342.0,1475.1002,Cruiser,Speedboat
+39258.0,1215.0553,Ferry,Speedboat
+55342.0,1347.3542,Cruiser,Speedboat
+17729.0,793.52356,Fishing Vessel,Fishing Vessel
+37424.0,1199.6927,Ferry,Speedboat
+116685.0,1280.0549,Cargo Ship,Speedboat
+55342.0,1559.9174,Cruiser,Speedboat
+39258.0,1011.1412,Ferry,Speedboat
+8729.0,883.1289,Speedboat,Speedboat
+134928.0,1548.9828,Cargo Ship,Cruiser
+295206.0,1419.7765,Tanker,Ferry
+46430.0,1427.4757,Cruiser,Speedboat
+116685.0,1134.4198,Cargo Ship,Ferry
+317674.0,1197.6692,Tanker,Speedboat
+39258.0,1239.9452,Ferry,Speedboat
+4700.0,944.2208,Speedboat,Speedboat
+134928.0,1576.2133,Cargo Ship,Cargo Ship
+295206.0,1518.9943,Tanker,Ferry
+46430.0,1234.8722,Cruiser,Speedboat
+25501.0,1025.4144,Ferry,Speedboat
+2585.0,1108.3632,Speedboat,Speedboat
+4700.0,1022.43604,Speedboat,Speedboat
+9653.0,805.5149,Fishing Vessel,Fishing Vessel
+75218.0,1261.912,Cruiser,Speedboat
+6827.0,1131.4078,Speedboat,Speedboat
+4700.0,1105.6279,Speedboat,Speedboat
+116685.0,1159.1265,Cargo Ship,Ferry
+317674.0,1170.0061,Tanker,Ferry
+55342.0,1406.1472,Cruiser,Speedboat
+39258.0,1230.5054,Ferry,Speedboat
+17729.0,736.54565,Fishing Vessel,Fishing Vessel
+134928.0,1463.0721,Cargo Ship,Cargo Ship
+46430.0,1028.6952,Cruiser,Speedboat
+12883.0,768.0349,Fishing Vessel,Fishing Vessel
+75218.0,1514.9205,Cruiser,Speedboat
+2585.0,881.58936,Speedboat,Speedboat
+6827.0,1105.2762,Speedboat,Speedboat
+4700.0,950.10455,Speedboat,Speedboat
+37424.0,896.5242,Ferry,Speedboat
+6827.0,1257.4149,Speedboat,Speedboat
+28301.0,935.0481,Ferry,Speedboat
+4873.0,1162.5359,Speedboat,Speedboat
+28301.0,1086.8074,Ferry,Speedboat
+126324.0,1570.9719,Cargo Ship,Cargo Ship
+173941.0,1196.6962,Cargo Ship,Ferry
+44292.0,1005.0007,Cruiser,Speedboat
+9480.0,913.9553,Speedboat,Speedboat
+10729.0,763.88464,Fishing Vessel,Fishing Vessel
+41842.0,954.35626,Cruiser,Speedboat
+51582.0,1240.6139,Cruiser,Speedboat
+58381.0,1242.5924,Ferry,Speedboat
+6940.0,1289.1993,Speedboat,Speedboat
+1682.0,1075.2777,Speedboat,Speedboat
+1707.0,1163.2272,Speedboat,Speedboat
+267913.0,1346.8021,Tanker,Ferry
+8877.0,1169.1772,Speedboat,Speedboat
+126324.0,1567.4532,Cargo Ship,Speedboat
+4873.0,849.1482,Speedboat,Speedboat
+126324.0,1322.8474,Cargo Ship,Ferry
+173941.0,1245.195,Cargo Ship,Ferry
+44292.0,1094.1528,Cruiser,Speedboat
+9480.0,1063.8329,Speedboat,Speedboat
+10729.0,766.25037,Fishing Vessel,Fishing Vessel
+51582.0,1180.353,Cruiser,Speedboat
+58381.0,1353.3365,Ferry,Speedboat
+6940.0,1338.8813,Speedboat,Speedboat
+1707.0,895.50507,Speedboat,Speedboat
+267913.0,1526.2794,Tanker,Cargo Ship
+8877.0,1141.8746,Speedboat,Speedboat
+1682.0,1069.2303,Speedboat,Speedboat
+41842.0,919.90466,Cruiser,Speedboat
+51582.0,1108.7568,Cruiser,Speedboat
+58381.0,1610.744,Ferry,Speedboat
+6940.0,1093.5151,Speedboat,Speedboat
+1682.0,1149.9526,Speedboat,Speedboat
+1707.0,1082.0021,Speedboat,Speedboat
+28301.0,995.8667,Ferry,Speedboat
+41842.0,1110.2767,Cruiser,Speedboat
+51582.0,1021.86865,Cruiser,Speedboat
+58381.0,1328.6384,Ferry,Speedboat
+6940.0,1242.6256,Speedboat,Speedboat
+1707.0,868.3168,Speedboat,Speedboat
+1682.0,1183.5436,Speedboat,Speedboat
+1707.0,989.9341,Speedboat,Speedboat
+150388.0,1513.9608,Cargo Ship,Cruiser
+44292.0,1103.2123,Cruiser,Speedboat
+9480.0,1046.3862,Speedboat,Speedboat
+27183.0,775.0427,Fishing Vessel,Fishing Vessel
+10729.0,780.99255,Fishing Vessel,Fishing Vessel
+126324.0,1347.5933,Cargo Ship,Cruiser
+4873.0,919.7693,Speedboat,Speedboat
+126324.0,1398.8788,Cargo Ship,Cargo Ship
+173941.0,1443.9657,Cargo Ship,Speedboat
+41842.0,1084.6678,Cruiser,Speedboat
+28301.0,892.61597,Ferry,Speedboat
+4873.0,996.0491,Speedboat,Speedboat
+267913.0,1367.6019,Tanker,Ferry
+8877.0,1228.5876,Speedboat,Speedboat
+267913.0,1312.7661,Tanker,Ferry
+8877.0,1104.5741,Speedboat,Speedboat
+51582.0,1257.0526,Cruiser,Speedboat
+6940.0,1604.6046,Speedboat,Speedboat
+1707.0,1012.4804,Speedboat,Speedboat
+267913.0,1374.3795,Tanker,Speedboat
+8877.0,1135.2705,Speedboat,Speedboat
+1682.0,1329.674,Speedboat,Speedboat
+4873.0,1124.753,Speedboat,Speedboat
+126324.0,1437.2323,Cargo Ship,Cargo Ship
+28301.0,1077.13,Ferry,Speedboat
+173941.0,1410.6024,Cargo Ship,Speedboat
+41842.0,924.53125,Cruiser,Speedboat
+58381.0,1343.4059,Ferry,Speedboat
+9480.0,1069.78,Speedboat,Speedboat
+1682.0,1183.1237,Speedboat,Speedboat
+1707.0,939.09576,Speedboat,Speedboat
+58381.0,1046.8416,Ferry,Speedboat
+1682.0,1029.8236,Speedboat,Speedboat
+1707.0,946.22253,Speedboat,Speedboat
+58381.0,1141.7495,Ferry,Speedboat
+1682.0,991.6588,Speedboat,Speedboat
+1707.0,1227.5625,Speedboat,Speedboat
+51582.0,955.2551,Cruiser,Speedboat
+6940.0,1419.5763,Speedboat,Speedboat
+126324.0,1441.1564,Cargo Ship,Cargo Ship
+4873.0,1020.97485,Speedboat,Speedboat
+28301.0,1169.9644,Ferry,Speedboat
+126324.0,1501.0035,Cargo Ship,Cruiser
+150388.0,1425.5394,Cargo Ship,Cargo Ship
+44292.0,1224.9977,Cruiser,Speedboat
+9480.0,884.67126,Speedboat,Speedboat
+27183.0,889.866,Fishing Vessel,Fishing Vessel
+10729.0,770.04755,Fishing Vessel,Fishing Vessel
+219057.0,1458.6031,Tanker,Cargo Ship
+63335.0,1033.2633,Cruiser,Speedboat
+23620.0,1072.8601,Ferry,Speedboat
+4480.0,1173.7975,Speedboat,Speedboat
+5956.0,1053.3453,Speedboat,Speedboat
+7203.0,898.983,Fishing Vessel,Fishing Vessel
+63635.0,1128.6719,Cruiser,Speedboat
+5149.0,1172.7299,Speedboat,Speedboat
+8739.0,1481.6471,Speedboat,Speedboat
+4480.0,1188.0126,Speedboat,Speedboat
+8641.0,1098.0238,Speedboat,Speedboat
+82960.0,1695.6864,Cargo Ship,Cargo Ship
+8641.0,1237.4542,Speedboat,Speedboat
+55514.0,1143.5116,Ferry,Speedboat
+23495.0,722.9423,Fishing Vessel,Fishing Vessel
+10338.0,933.7063,Fishing Vessel,Speedboat
+82960.0,1774.2325,Cargo Ship,Cargo Ship
+8641.0,1285.0135,Speedboat,Speedboat
+368357.0,1200.6517,Tanker,Ferry
+55514.0,927.72144,Ferry,Speedboat
+11531.0,933.9773,Fishing Vessel,Fishing Vessel
+219057.0,1414.9985,Tanker,Cargo Ship
+63335.0,888.57153,Cruiser,Speedboat
+23620.0,1302.3524,Ferry,Speedboat
+7203.0,1102.3898,Fishing Vessel,Speedboat
+82960.0,1836.9823,Cargo Ship,Cargo Ship
+40512.0,1035.0382,Cruiser,Speedboat
+4480.0,1113.2827,Speedboat,Speedboat
+5956.0,1262.4952,Speedboat,Speedboat
+8641.0,1066.753,Speedboat,Speedboat
+368357.0,1016.8087,Tanker,Cargo Ship
+11531.0,733.96265,Fishing Vessel,Fishing Vessel
+82960.0,1924.2238,Cargo Ship,Cargo Ship
+8641.0,1205.6757,Speedboat,Speedboat
+368357.0,1203.9728,Tanker,Ferry
+55514.0,1046.8997,Ferry,Speedboat
+5658.0,1248.408,Speedboat,Speedboat
+10338.0,827.3437,Fishing Vessel,Fishing Vessel
+111852.0,1553.9591,Cargo Ship,Cargo Ship
+56862.0,1258.7816,Cruiser,Speedboat
+137941.0,1743.184,Cargo Ship,Speedboat
+43487.0,1034.7035,Ferry,Speedboat
+137941.0,1431.8881,Cargo Ship,Cargo Ship
+43487.0,960.9281,Ferry,Speedboat
+111852.0,1586.003,Cargo Ship,Cargo Ship
+56862.0,1378.7386,Cruiser,Speedboat
+219057.0,1570.6167,Tanker,Speedboat
+63335.0,1024.1377,Cruiser,Speedboat
+23620.0,1031.7626,Ferry,Speedboat
+7203.0,955.2938,Fishing Vessel,Fishing Vessel
+82960.0,1838.4237,Cargo Ship,Cargo Ship
+8641.0,1253.9303,Speedboat,Speedboat
+111852.0,1609.1017,Cargo Ship,Cruiser
+56862.0,1408.5433,Cruiser,Speedboat
+55514.0,1006.21924,Ferry,Speedboat
+23495.0,869.0563,Fishing Vessel,Fishing Vessel
+219057.0,1486.7521,Tanker,Cargo Ship
+63335.0,1133.8888,Cruiser,Speedboat
+23620.0,1172.7212,Ferry,Speedboat
+4480.0,1306.9264,Speedboat,Speedboat
+5956.0,1086.4872,Speedboat,Speedboat
+7203.0,909.49713,Fishing Vessel,Fishing Vessel
+368357.0,1102.7015,Tanker,Speedboat
+11531.0,1053.0049,Fishing Vessel,Speedboat
+55514.0,1054.2822,Ferry,Speedboat
+23495.0,799.3628,Fishing Vessel,Fishing Vessel
+40512.0,1197.96,Cruiser,Speedboat
+4480.0,1214.4586,Speedboat,Speedboat
+5956.0,1215.8048,Speedboat,Speedboat
+137941.0,1452.9283,Cargo Ship,Cargo Ship
+23495.0,790.9474,Fishing Vessel,Fishing Vessel
+82960.0,1787.0804,Cargo Ship,Cargo Ship
+4480.0,1207.1199,Speedboat,Speedboat
+8641.0,1171.5726,Speedboat,Speedboat
+40512.0,892.78,Cruiser,Speedboat
+4480.0,1133.4916,Speedboat,Speedboat
+5956.0,1161.0625,Speedboat,Speedboat
+8641.0,1173.6168,Speedboat,Speedboat
+5149.0,1276.0602,Speedboat,Speedboat
+8739.0,1322.6398,Speedboat,Speedboat
+11531.0,793.72955,Fishing Vessel,Fishing Vessel
+63635.0,1250.8745,Cruiser,Speedboat
+5149.0,1010.985,Speedboat,Speedboat
+8739.0,1151.4264,Speedboat,Speedboat
+55514.0,944.98267,Ferry,Speedboat
+5658.0,1007.07117,Speedboat,Speedboat
+23495.0,773.30664,Fishing Vessel,Fishing Vessel
+10338.0,923.31104,Fishing Vessel,Speedboat
+368357.0,1111.0143,Tanker,Fishing Vessel
+55514.0,872.6111,Ferry,Speedboat
+5658.0,1283.1737,Speedboat,Speedboat
+23495.0,812.11224,Fishing Vessel,Fishing Vessel
+10338.0,1007.95276,Fishing Vessel,Speedboat
+170481.0,1452.7357,Tanker,Cargo Ship
+26205.0,982.5718,Fishing Vessel,Fishing Vessel
+48161.0,1362.0177,Cruiser,Speedboat
+6290.0,1279.7538,Speedboat,Speedboat
+3681.0,1237.7394,Speedboat,Speedboat
+2445.0,951.2466,Speedboat,Speedboat
+26205.0,872.4563,Fishing Vessel,Fishing Vessel
+170481.0,1484.8687,Tanker,Cargo Ship
+31322.0,1036.7467,Ferry,Speedboat
+7185.0,1147.531,Speedboat,Speedboat
+6290.0,1275.2799,Speedboat,Speedboat
+6078.0,1139.5397,Speedboat,Speedboat
+11457.0,832.3231,Fishing Vessel,Fishing Vessel
+27471.0,869.6509,Fishing Vessel,Fishing Vessel
+194500.0,1449.937,Cargo Ship,Cruiser
+52986.0,1138.2982,Cruiser,Speedboat
+3712.0,1131.8352,Speedboat,Speedboat
+130194.0,1719.5345,Cargo Ship,Cruiser
+316014.0,1334.3048,Tanker,Speedboat
+3681.0,1038.169,Speedboat,Speedboat
+10769.0,856.1443,Fishing Vessel,Fishing Vessel
+66033.0,1154.8759,Cruiser,Speedboat
+6290.0,1402.5309,Speedboat,Speedboat
+6078.0,888.9209,Speedboat,Speedboat
+3681.0,1244.7216,Speedboat,Speedboat
+27471.0,725.9053,Fishing Vessel,Fishing Vessel
+26205.0,928.6137,Fishing Vessel,Fishing Vessel
+316014.0,1272.556,Tanker,Ferry
+40418.0,1097.3174,Ferry,Speedboat
+10769.0,849.87897,Fishing Vessel,Fishing Vessel
+170481.0,1607.5797,Tanker,Cruiser
+31322.0,1151.9967,Ferry,Speedboat
+7185.0,1391.1735,Speedboat,Speedboat
+6078.0,924.4481,Speedboat,Speedboat
+11457.0,977.36145,Fishing Vessel,Fishing Vessel
+27471.0,824.84045,Fishing Vessel,Fishing Vessel
+130194.0,1716.6554,Cargo Ship,Cruiser
+316014.0,1372.768,Tanker,Speedboat
+170481.0,1482.4967,Tanker,Cargo Ship
+31322.0,1090.0823,Ferry,Speedboat
+7185.0,1078.38,Speedboat,Speedboat
+11457.0,791.54254,Fishing Vessel,Fishing Vessel
+27471.0,830.6185,Fishing Vessel,Fishing Vessel
+40418.0,1249.7623,Ferry,Speedboat
+48161.0,1331.9042,Cruiser,Speedboat
+52986.0,920.80945,Cruiser,Speedboat
+40418.0,1098.211,Ferry,Speedboat
+194500.0,1634.5333,Cargo Ship,Speedboat
+6290.0,1183.7867,Speedboat,Speedboat
+6078.0,1160.5844,Speedboat,Speedboat
+2445.0,1122.6144,Speedboat,Speedboat
+27471.0,779.71875,Fishing Vessel,Fishing Vessel
+26205.0,766.4761,Fishing Vessel,Fishing Vessel
+6290.0,1330.512,Speedboat,Speedboat
+3681.0,1169.9924,Speedboat,Speedboat
+26205.0,904.7911,Fishing Vessel,Fishing Vessel
+31322.0,1280.0446,Ferry,Speedboat
+6078.0,1157.174,Speedboat,Speedboat
+11457.0,1007.69183,Fishing Vessel,Fishing Vessel
+27471.0,992.146,Fishing Vessel,Fishing Vessel
+66033.0,1071.1747,Cruiser,Speedboat
+48430.0,1014.81635,Ferry,Speedboat
+31322.0,1164.6471,Ferry,Speedboat
+6078.0,930.5688,Speedboat,Speedboat
+11457.0,794.9753,Fishing Vessel,Fishing Vessel
+27471.0,877.5802,Fishing Vessel,Fishing Vessel
+94368.0,1790.0468,Cargo Ship,Cruiser
+48430.0,1232.2552,Ferry,Speedboat
+6290.0,999.64154,Speedboat,Speedboat
+2445.0,1087.5492,Speedboat,Speedboat
+94368.0,1732.7319,Cargo Ship,Cargo Ship
+48430.0,1203.705,Ferry,Speedboat
+2445.0,978.3745,Speedboat,Speedboat
+48161.0,1289.6476,Cruiser,Speedboat
+40418.0,1185.1011,Ferry,Speedboat
+3681.0,945.93536,Speedboat,Speedboat
+10769.0,985.99585,Fishing Vessel,Fishing Vessel
+48161.0,1147.1882,Cruiser,Speedboat
+6290.0,1447.3707,Speedboat,Speedboat
+3681.0,1408.3541,Speedboat,Speedboat
+10769.0,1038.798,Fishing Vessel,Fishing Vessel
+26205.0,972.5823,Fishing Vessel,Fishing Vessel
+130194.0,1604.4929,Cargo Ship,Cargo Ship
+3681.0,991.27783,Speedboat,Speedboat
+10769.0,681.5652,Fishing Vessel,Fishing Vessel
+26205.0,987.79285,Fishing Vessel,Fishing Vessel
+170481.0,1584.092,Tanker,Cruiser
+31322.0,1159.6925,Ferry,Speedboat
+7185.0,1300.1263,Speedboat,Speedboat
+6078.0,1284.587,Speedboat,Speedboat
+11457.0,647.3324,Fishing Vessel,Fishing Vessel
+27471.0,662.3798,Fishing Vessel,Fishing Vessel
+66033.0,1498.6833,Cruiser,Speedboat
+48430.0,1044.4849,Ferry,Speedboat
+170481.0,1559.1522,Tanker,Speedboat
+7185.0,1359.8651,Speedboat,Speedboat
+48161.0,973.3357,Cruiser,Speedboat
+3712.0,961.2508,Speedboat,Speedboat
+31322.0,1059.4595,Ferry,Speedboat
+6078.0,1067.4858,Speedboat,Speedboat
+11457.0,802.95776,Fishing Vessel,Fishing Vessel
+27471.0,859.1218,Fishing Vessel,Fishing Vessel
+6290.0,1355.4086,Speedboat,Speedboat
+3681.0,1198.6549,Speedboat,Speedboat
+2445.0,1085.7961,Speedboat,Speedboat
+26205.0,1037.5299,Fishing Vessel,Speedboat
+170481.0,1405.4232,Tanker,Cargo Ship
+7185.0,1064.9667,Speedboat,Speedboat
+94368.0,1557.998,Cargo Ship,Cruiser
+67758.0,1063.6469,Cruiser,Speedboat
+66033.0,1117.6064,Cruiser,Speedboat
+48430.0,983.33545,Ferry,Speedboat
+48430.0,1142.493,Ferry,Speedboat
+6290.0,1253.1747,Speedboat,Speedboat
+6078.0,1053.6034,Speedboat,Speedboat
+2445.0,1038.6898,Speedboat,Speedboat
+11457.0,861.16785,Fishing Vessel,Fishing Vessel
+27471.0,836.5851,Fishing Vessel,Fishing Vessel

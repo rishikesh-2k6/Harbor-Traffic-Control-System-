@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harbor Traffic Control System — Project Final Results Dashboard</title>
+  <style>
+    :root {
+      --bg-primary: #0a0f1d;
+      --bg-surface: #111827;
+      --bg-card: #1e293b;
+      --bg-card-hover: #24344d;
+      --border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-teal: #2dd4bf;
+      --accent-amber: #f59e0b;
+      --accent-red: #f87171;
+      --accent-green: #4ade80;
+      --accent-purple: #c084fc;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 24px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 40px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-blue { background: rgba(56, 189, 248, 0.2); color: var(--accent-blue); border: 1px solid rgba(56, 189, 248, 0.4); }
+    .badge-green { background: rgba(74, 222, 128, 0.2); color: var(--accent-green); border: 1px solid rgba(74, 222, 128, 0.4); }
+    .badge-amber { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-purple { background: rgba(192, 132, 252, 0.2); color: var(--accent-purple); border: 1px solid rgba(192, 132, 252, 0.4); }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(to right, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 900px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .meta-item {
+      font-size: 0.85rem;
+    }
+
+    .meta-item span {
+      display: block;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .meta-item strong {
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    /* Tabs Navigation */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--accent-blue);
+      border-color: var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Section Contents */
+    .section-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-main);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-top: 12px;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-card .value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .stat-card .desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Callout Card */
+    .callout {
+      background: rgba(30, 41, 59, 0.6);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+    }
+
+    .callout-red { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.08); }
+    .callout-green { border-left-color: var(--accent-green); background: rgba(74, 222, 128, 0.08); }
+    .callout-amber { border-left-color: var(--accent-amber); background: rgba(245, 158, 11, 0.08); }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--accent-teal);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="badge-bar">
+      <span class="badge badge-blue">Harbor Traffic Control</span>
+      <span class="badge badge-green">80 / 80 Tests Pass</span>
+      <span class="badge badge-purple">PyTorch + CUDA Acceleration</span>
+      <span class="badge badge-amber">Acoustic Telemetry</span>
+    </div>
+    <h1>Harbor Traffic Control System — Project Final Results</h1>
+    <p class="subtitle">
+      Empirical findings, acoustic physics modeling, multi-task deep neural network evaluation, underwater wireless sensor networking, and autonomous robotics traffic governance.
+    </p>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <span>Course</span>
+        <strong>AI Robotics (22AIE214)</strong>
+      </div>
+      <div class="meta-item">
+        <span>Institution</span>
+        <strong>Amrita Vishwa Vidyapeetham</strong>
+      </div>
+      <div class="meta-item">
+        <span>Project Guide</span>
+        <strong>Dr. Ravishankar Prakash Desai</strong>
+      </div>
+      <div class="meta-item">
+        <span>Project Team</span>
+        <strong>J Kiran · M Ganesh · P Rahul</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('sec-ml')">📊 A. Machine Learning</button>
+    <button class="tab-btn" onclick="switchTab('sec-physics')">🌊 B. Acoustic Physics</button>
+    <button class="tab-btn" onclick="switchTab('sec-network')">📡 C. Underwater Networking</button>
+    <button class="tab-btn" onclick="switchTab('sec-robotics')">🤖 D. Robotics & Traffic</button>
+    <button class="tab-btn" onclick="switchTab('sec-tests')">✅ E. Software Verification</button>
+  </div>
+
+  <!-- SECTION A: MACHINE LEARNING -->
+  <div id="sec-ml" class="section-content active">
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="label">Vessel Classification</div>
+        <div class="value" style="color: var(--accent-green);">100.0%</div>
+        <div class="desc">23/23 Validated in Normal & Monsoon</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Displacement Error (MAE)</div>
+        <div class="value" style="color: var(--accent-red);">22,713 kg</div>
+        <div class="desc">RMSE 36,121 kg · MAPE 97.7%</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Weight Head Gradient Share</div>
+        <div class="value" style="color: var(--accent-amber);">0.60%</div>
+        <div class="desc">0.817 vs 135.0 (Classification Dominates)</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">VesselMLP Architecture</div>
+        <div class="value" style="color: var(--accent-blue);">21 Feats</div>
+        <div class="desc">128-64-32 Trunk · Dual Head</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span>Vessel Classification Confusion Matrix</span>
+          <span class="badge badge-green">100% Accuracy</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          Verified exact match across 6 maritime classes: Cargo Ship, Cruiser, Ferry, Fishing Vessel, Speedboat, and Tanker.
+        </p>
+        <img src="assets/fig_ml_confusion_matrix.png" alt="Confusion Matrix">
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Displacement Regression Error & Defect</span>
+          <span class="badge badge-amber">Diagnosed Defect</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          Predicted mass produces a flat output (~400–1,700 kg) across ships ranging from 1,000 kg to 385,000 kg.
+        </p>
+        <img src="assets/fig_ml_displacement_scatter.png" alt="Displacement Scatter">
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span>Displacement Gradient & Loss-Scale Diagnosis</span>
+          <span class="badge badge-blue">Code Analysis</span>
+        </div>
+        <div class="callout callout-amber">
+          <strong>Diagnosed Cause in <code>mlmodel._retrain()</code>:</strong>
+          Loss is calculated as <code>loss = loss_type + (loss_weight * 1e-8)</code>. Raw MSE on kilograms measures ~6.26 × 10⁹ vs CrossEntropy ~5.56. The weight head supplies only 0.6% of the gradient signal to the shared trunk.
+        </div>
+        <img src="assets/fig_ml_gradient_defect.png" alt="Gradient Defect">
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>VesselMLP Trunk & Dual-Head Architecture</span>
+          <span class="badge badge-purple">PyTorch Design</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          21 input features feed into 3 shared dense layers (128 → 64 → 32) before branching into discrete classification and continuous mass regression heads.
+        </p>
+        <img src="assets/fig_ml_model_architecture.png" alt="Model Architecture">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION B: ACOUSTIC PHYSICS -->
+  <div id="sec-physics" class="section-content">
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="label">Normal Ambient Noise</div>
+        <div class="value" style="color: var(--accent-blue);">66.1 dB</div>
+        <div class="desc">Douglas Sea State 2–3, Calm Waters</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Monsoon Ambient Noise</div>
+        <div class="value" style="color: var(--accent-red);">91.9 dB</div>
+        <div class="desc">+25.8 dB Surge (Rain + Gale Noise)</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Acoustic Telemetry Features</div>
+        <div class="value" style="color: var(--accent-teal);">21 Inputs</div>
+        <div class="desc">7 Acoustic, 3 Prop, 5 Env, 6 Eng</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Physical Plausibility Audit</div>
+        <div class="value" style="color: var(--accent-green);">100.0%</div>
+        <div class="desc">104 / 104 Parameters (Groq LPU)</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span>Ocean Ambient Noise Comparison</span>
+          <span class="badge badge-amber">+25.8 dB Surge</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          Monsoon gale winds (36–52 kn) and torrential sea surface droplet impacts (+15 dB) surge acoustic noise from 66.1 dB to 91.9 dB.
+        </p>
+        <img src="assets/fig_physics_ambient_noise.png" alt="Ambient Noise">
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Physical Plausibility "Sanity Check" Card</span>
+          <span class="badge badge-green">104 Parameters Verified</span>
+        </div>
+        <div class="callout callout-green">
+          <strong>Physics Sanity Audit (Not Academic Validation):</strong>
+          Evaluated via Groq Cloud LPU running <code>openai/gpt-oss-120b</code>. Zero physical or thermodynamic violations across tidal currents, Mackenzie sound speed, Thorp transmission loss, and buoyancy limits.
+        </div>
+        <table>
+          <thead>
+            <tr><th>Audit Category</th><th>Plausibility</th><th>Evaluated Bounds</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Hydrodynamics & Currents</td><td>100.0 %</td><td>0.1 – 1.5 m/s tidal (squalls to 4.2 m/s)</td></tr>
+            <tr><td>Acoustic Propagation</td><td>100.0 %</td><td>Passive sonar equation, SNR, Doppler shift</td></tr>
+            <tr><td>Naval Architecture</td><td>100.0 %</td><td>Buoyancy and displacement limits</td></tr>
+            <tr><td>Marine Environment</td><td>100.0 %</td><td>10–30°C temperature, 30–36 ppt salinity</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-title">
+        <span>Implemented Acoustic & Hydrodynamic Physics Models</span>
+        <span class="badge badge-blue">Mathematical Formulations</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Phenomenon</th><th>Model</th><th>Governing Equation</th><th>Role in System</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sound Speed ($c$)</td><td>Mackenzie (1981)</td><td>$c = 1448.96 + 4.591T - 5.304\times 10^{-2}T^2 + 1.340(S-35) + \dots$</td><td>Computes water column sound speed profile</td></tr>
+          <tr><td>Source Noise ($SL$)</td><td>Ross (1976)</td><td>$SL = SL_{\text{base}} + 60\log_{10}(v/v_{\text{ref}}) + 20\log_{10}(W/W_{\text{ref}}) + 10\log_{10}(D_{\text{prop}}/D_{\text{ref}})$</td><td>Propeller cavitation and engine radiated sound</td></tr>
+          <tr><td>Attenuation ($\alpha$)</td><td>Thorp (1967)</td><td>$\alpha(f) = \frac{0.11 f^2}{1+f^2} + \frac{44 f^2}{4100+f^2} + 2.75\times 10^{-4}f^2 + 0.003$</td><td>Seawater chemical relaxation absorption</td></tr>
+          <tr><td>Transmission Loss</td><td>Spherical Spreading</td><td>$TL = 20\log_{10}(R) + \alpha(f)\cdot (R/1000)$</td><td>Geometric and distance-dependent attenuation</td></tr>
+          <tr><td>Ambient Noise ($NL$)</td><td>Wenz (1962)</td><td>$NL = 10\log_{10}(\sum 10^{NL_i/10}) + NL_{\text{rain}}$</td><td>Background noise across sea, wind, rain</td></tr>
+          <tr><td>Doppler Shift ($\Delta f$)</td><td>Kinematics</td><td>$\Delta f \approx f_0 \frac{v \cos \theta}{c}$</td><td>Estimates vessel line-of-sight velocity</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION C: UNDERWATER NETWORKING -->
+  <div id="sec-network" class="section-content">
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="label">Sensor Availability</div>
+        <div class="value" style="color: var(--accent-green);">91.4% vs 71.4%</div>
+        <div class="desc">32/35 Normal vs 25/35 Monsoon</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Compression Gains</div>
+        <div class="value" style="color: var(--accent-teal);">93.75%</div>
+        <div class="desc">256 B → 16 B (0.128s Delay, 1.28J Energy)</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Active Links (Edges)</div>
+        <div class="value" style="color: var(--accent-blue);">91.2 vs 69.5</div>
+        <div class="desc">Measured Live across 150 Frames</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Packet Delivery Ratio</div>
+        <div class="value" style="color: var(--accent-purple);">99.8% vs 92.4%</div>
+        <div class="desc">AUVs Maintain >92% Under Monsoon</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span>Duty Cycling Sensor Availability</span>
+          <span class="badge badge-blue">Low-Power Listening</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          In Monsoon, ambient noise masks weak wake-up preambles, reducing availability to 71.4% (25/35 sensors).
+        </p>
+        <img src="assets/fig_network_duty_cycling.png" alt="Duty Cycling">
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Packet Compression Latency & Energy</span>
+          <span class="badge badge-green">93.75% Savings</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          Binary frame compression cuts delay from 2.048s to 0.128s per hop, extending subsea battery lifespan.
+        </p>
+        <img src="assets/fig_network_packet_compression.png" alt="Compression">
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span>Network Topology (10 km × 10 km Domain)</span>
+          <span class="badge badge-purple">35 Sensors · 8 AUVs · 3 Buoys</span>
+        </div>
+        <img src="assets/fig_network_topology.png" alt="Topology">
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Network Health States Progression</span>
+          <span class="badge badge-amber">Multi-Factor Scoring</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">
+          Scores connectivity (35%), delivery (35%), mooring (20%), and latency (10%) across STABLE, DEGRADED, CRITICAL, COLLAPSED.
+        </p>
+        <img src="assets/fig_network_health_timeline.png" alt="Health Timeline">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Live Measured Link Count & Packet Delivery Benchmarks</span>
+        <span class="badge badge-blue">Live Simulation</span>
+      </div>
+      <img src="assets/fig_network_links_pdr.png" alt="Links and PDR">
+    </div>
+  </div>
+
+  <!-- SECTION D: ROBOTICS & TRAFFIC GOVERNANCE -->
+  <div id="sec-robotics" class="section-content">
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="label">AUV Swarm Fleet</div>
+        <div class="value" style="color: var(--accent-blue);">8 Robots</div>
+        <div class="desc">Kinematics: 500kg, 900N, 10 m/s</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Battery Thresholds</div>
+        <div class="value" style="color: var(--accent-amber);">15% / 95%</div>
+        <div class="desc">&lt;15% Charge at Buoy · &ge;95% Resume</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Speed Limits</div>
+        <div class="value" style="color: var(--accent-teal);">10 kn / 6 kn</div>
+        <div class="desc">Outer Yard (10 kn) · Inner Zone (6 kn)</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Berth Allocation Bug</div>
+        <div class="value" style="color: var(--accent-green);">FIXED</div>
+        <div class="desc">Queuing at HOLDING_FOR_BERTH</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span>AUV State Machine & Battery Discharge/Recharge</span>
+          <span class="badge badge-blue">State Machine</span>
+        </div>
+        <img src="assets/fig_robotics_auv_state_battery.png" alt="AUV State Machine">
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Mooring Failure Progression Model</span>
+          <span class="badge badge-amber">Hydrodynamic Strain</span>
+        </div>
+        <img src="assets/fig_robotics_mooring_progression.png" alt="Mooring Progression">
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <span>Harbor Traffic Governance & LOC Screening</span>
+          <span class="badge badge-purple">Safety Rules</span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Predicted Vessel Class</th><th>Outer Yard Action (X &gt; 5000m)</th><th>Inner Zone Action</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Cargo Ship</strong></td><td><code>HALT</code> at Line of Control (LOC)</td><td>Route to Dock-A</td></tr>
+            <tr><td><strong>Tanker</strong></td><td><code>HALT</code> at Line of Control (LOC)</td><td>Route to Dock-T1 / T2</td></tr>
+            <tr><td><strong>Cruiser</strong></td><td><code>SLOW DOWN</code> (50% speed)</td><td>Route to Dock-B1–B4</td></tr>
+            <tr><td><strong>Ferry</strong></td><td><code>SLOW DOWN</code> (50% speed)</td><td>Route to Dock-F</td></tr>
+            <tr><td><strong>Speedboat</strong></td><td><code>CONTINUE</code> (Pass freely)</td><td>Route to Dock-C / Queue</td></tr>
+            <tr><td><strong>Fishing Vessel</strong></td><td><code>CONTINUE</code> (Pass freely)</td><td>Route to Dock-V1–V4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Berth Allocation Bug Fix: Before vs After</span>
+          <span class="badge badge-green">Collision Fix</span>
+        </div>
+        <img src="assets/fig_robotics_berth_fix.png" alt="Berth Bug Fix">
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION E: SOFTWARE VERIFICATION -->
+  <div id="sec-tests" class="section-content">
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="label">Total Test Suites</div>
+        <div class="value" style="color: var(--accent-green);">80 / 80</div>
+        <div class="desc">100% Passing across 3 Test Runners</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Environment Check</div>
+        <div class="value" style="color: var(--accent-blue);">4 / 4</div>
+        <div class="desc">Python 3.13, CUDA GPU, Network, Core</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Prediction Telemetry Log</div>
+        <div class="value" style="color: var(--accent-purple);">69+ Recs</div>
+        <div class="desc">Persisted vs Simulated Ground Truth</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Web Dashboard Contrast</div>
+        <div class="value" style="color: var(--accent-teal);">WCAG AA</div>
+        <div class="desc">0 Unresolved CSS Vars, Contrast &ge; 4.5:1</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-title">
+        <span>Software Engineering Quality & Verification Audit</span>
+        <span class="badge badge-green">All Passing</span>
+      </div>
+      <img src="assets/fig_verification_summary.png" alt="Verification Summary">
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <span>Detailed Automated Test Suite Breakdown</span>
+        <span class="badge badge-blue">Unit & Integration Tests</span>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Test Suite Module</th><th>Test Count</th><th>Duration</th><th>Scope Covered</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>test_prediction_validation.py</code></td>
+            <td><strong>23 Tests</strong></td>
+            <td>0.2s</td>
+            <td>Exact-match accuracy, circular error (359° vs 1° = 2°), MAE/RMSE/MAPE metrics, empty log handling</td>
+            <td><span class="badge badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td><code>test_ai_data_validator.py</code></td>
+            <td><strong>5 Tests</strong></td>
+            <td>4.5s</td>
+            <td>Telemetry parsing, 104 physical parameter boundary checks, Groq cloud integration, fallback physics validator</td>
+            <td><span class="badge badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td><code>test_integration.py</code></td>
+            <td><strong>52 Tests</strong></td>
+            <td>11.8s</td>
+            <td>22-fleet dynamics, acoustic SNR, DBR routing, duty cycling, berth double-booking regression, CSS variable audit</td>
+            <td><span class="badge badge-green">PASS</span></td>
+          </tr>
+          <tr>
+            <td><strong>Total Combined</strong></td>
+            <td><strong>80 Tests</strong></td>
+            <td><strong>16.5s</strong></td>
+            <td><strong>End-to-End Cyber-Physical System Coverage</strong></td>
+            <td><span class="badge badge-green">ALL PASS</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>Harbor Traffic Control System — Course: Introduction to AI Robotics (22AIE214)</p>
+    <p style="margin-top: 4px; font-size: 0.8rem;">Amrita Vishwa Vidyapeetham, Amaravati Campus • Dr. Ravishankar Prakash Desai</p>
+  </footer>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+      
+      event.currentTarget.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+</html>

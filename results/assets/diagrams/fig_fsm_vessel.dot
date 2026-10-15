@@ -1,0 +1,16 @@
+digraph G {
+rankdir=TB; nodesep=0.5; ranksep=0.55;
+node [shape=box, style="rounded,filled", penwidth=1.4, fontsize=11, fontname="DejaVu Sans"];
+edge [fontname="DejaVu Sans", fontsize=9.5, color="#334155"];
+IN [label="INBOUND\n(spawn x > 7.5 km)", fillcolor="#e2e8f0"];
+H [label="HALTED_AT_LOC\nCargo / Tanker", fillcolor="#fee2e2", color="#dc2626"];
+S [label="SLOWING (50 %)\nCruiser / Ferry", fillcolor="#fef3c7", color="#d97706"];
+C [label="CROSSING\nSpeedboat / Fishing", fillcolor="#dcfce7", color="#16a34a"];
+Q [label="HOLDING_FOR_BERTH\nspeed 0", fillcolor="#ede9fe", color="#7c3aed"];
+R [label="ROUTING to berth\n<= 6 kn", fillcolor="#dbeafe", color="#2563eb"];
+K [label="DOCKING\n(< 100 m from berth)", fillcolor="#cffafe"];
+DK [label="DOCKED\n(x < 700 m)", fillcolor="#bbf7d0"];
+IN -> H [label="pred. heavy"]; IN -> S [label="pred. passenger"]; IN -> C [label="pred. light"];
+S -> Q [label="x <= 5 km,\nno free berth"]; C -> Q; S -> R [label="berth free"]; C -> R;
+Q -> R [label="berth released\n(not yet implemented)", style=dashed]; R -> K -> DK;
+}

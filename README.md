@@ -441,6 +441,58 @@ The auditor reported **100.0% physical plausibility (zero physical violations)**
 
 ---
 
+### 7. Measured 1,500-Frame Scenario Timeline & Mooring Breakdown
+Replaying a 1,500-frame full lifecycle execution (Normal season 0–599, Monsoon storm 600–1199 with a violent squall at frame 850, and Re-anchoring 1200–1499) recorded the full degradation and recovery curve:
+
+![Figure 14: Measured Scenario Timeline](results/assets/fig_scenario_timeline.png)
+*Figure 14: Measured scenario timeline (1,500 frames, seed 42): ocean forcing current, mooring integrity breakdown (Moored, Strained, Snapped), and network health score.*
+
+---
+
+### 8. Phase-by-Phase Network KPIs & Spatial Topology Snapshots
+Evaluating network resilience across operational phases demonstrates how Depth-Based Routing (DBR) and mobile AUV relays prevent total blackout:
+
+![Figure 15: Network Phase KPIs](results/assets/fig_network_phase_kpis.png)
+*Figure 15: Network KPIs across phases: Mean graph edges, Packet Delivery Ratio (%), and sensor availability.*
+
+![Figure 16: Spatial Topology Snapshots](results/assets/fig_topology_snapshots.png)
+*Figure 16: Real spatial topology snapshots at Frame 300 (Normal Season, 113 links, 0 snapped) and Frame 1100 (Monsoon Season, 96 links, 32 snapped sensors advecting with current).*
+
+---
+
+### 9. 12 kHz Acoustic Modem Link Budget & Attenuation Range
+Modeling signal-to-noise ratio $\text{SNR}(d) = \text{SL} - \text{TL}(d) - L_{\text{bubble}} - \text{NL}$ reveals that severe wind and breaking waves reduce effective transmission range from $2,800\text{ m}$ down to $\approx 1,380\text{ m}$:
+
+![Figure 17: 12 kHz Acoustic Modem Link Budget](results/assets/fig_link_budget.png)
+*Figure 17: Acoustic modem link budget curve with 10 dB demodulation threshold and Monsoon bubble attenuation.*
+
+---
+
+### 10. Robotic AUV Kinematics, Step Response & 900N Thrust Saturation
+Controller experiments on `auv.RobotNode` demonstrate waypoint pursuit, velocity saturation at $10\text{ m/s}$, hold-phase chattering, storm current drift, and automatic battery homing to charging buoys:
+
+![Figure 18: AUV Step Response in Normal Current](results/assets/fig_auv_step_normal.png)
+*Figure 18: AUV step response in calm current: trajectory, position error with hold-phase chattering, and speed response reaching 10 m/s saturation.*
+
+![Figure 19: AUV Swept Off Course in Monsoon Current](results/assets/fig_auv_disturbance_monsoon.png)
+*Figure 19: AUV swept off course in monsoon current; hydrodynamic disturbance force $|F_d| = 0.6 \cdot m \cdot |u|$ exceeds the $F_{\max} = 900\text{ N}$ thruster limit for 89% of the run.*
+
+![Figure 20: AUV Energy Cycle & Buoy Recharge](results/assets/fig_auv_battery_cycle.png)
+*Figure 20: Measured AUV battery discharge and buoy recharging cycle (15% low threshold trigger, 95% resume threshold).*
+
+---
+
+### 11. Independent Held-Out VesselMLP Classification & Regression Evaluation
+Evaluating the shipped `VesselMLP` model on 40 fresh randomized harbor layouts per scenario (3,883 Normal detections and 4,054 Monsoon detections):
+
+![Figure 21: Held-out Confusion Matrix](results/assets/fig_confusion_heldout.png)
+*Figure 21: Held-out confusion matrix across 6 vessel classes on fresh detections (Normal: 71.5% accuracy, Monsoon: 46.6% accuracy due to elevated noise).*
+
+![Figure 22: Held-out Displacement Log-Log Scatter](results/assets/fig_displacement_heldout.png)
+*Figure 22: Held-out displacement mass scatter on log-log scale, confirming flatline predictions (MAE 22.7 t, MAPE 97.7%).*
+
+---
+
 ## 8. Complete Technology Stack & Libraries
 
 Every technology and library used in HTCS is listed below with its specific architectural role:
@@ -472,50 +524,65 @@ Every technology and library used in HTCS is listed below with its specific arch
 ```
 Harbor-Traffic-Control-System/
 │
-├── README.md                      # Complete project documentation (this file)
-├── REVISED_PROJECT_REPORT.pdf     # 30-page academic final report (PDF)
-├── REVISED_PROJECT_REPORT.docx    # Fully formatted academic final report (Word)
-├── REVISED_PROJECT_REPORT.md      # Full academic report in Markdown
+├── README.md                          # Complete project documentation (this file)
+├── REVISED_PROJECT_REPORT.pdf         # 30-page academic final report (PDF)
+├── REVISED_PROJECT_REPORT.docx        # Fully formatted academic final report (Word)
+├── REVISED_PROJECT_REPORT.md          # Full academic report in Markdown
+├── Harbor_Traffic_Control_Presentation.pptx # 12-slide academic defense presentation deck
+├── Lab-Based Project PPT Template.pptx # Base course presentation template
+├── PRESENTATION_CONTENT.md            # Slide-by-slide copy-paste script & speaker notes
+├── build_presentation.py              # Script to build presentation deck with embedded figures
 │
-├── main.py                        # Central desktop 3D control station & event loop
-├── simulator.py                   # Ocean acoustics physics engine & vessel kinematics
-├── network.py                     # Dynamic acoustic graph, DBR routing, and telemetry engine
-├── mlmodel.py                     # VesselMLP PyTorch architecture & live inference hook
-├── auv.py                         # AUV swarm kinematics, waypoint patrol, and battery FSM
-├── traffic_algo.py                # Harbor speed limits, LOC screening, and berth queuing
-├── prediction_logger.py           # Persistent ground-truth vs. prediction CSV logger
-├── evaluate_predictions.py        # Independent evaluation report generator
-├── ai_data_validator.py           # Groq LPU physical plausibility auditor (104 parameters)
-├── diagnose_weight_head.py        # Gradient norm diagnostic tool for displacement defect
+├── main.py                            # Central desktop 3D control station & event loop
+├── simulator.py                       # Ocean acoustics physics engine & vessel kinematics
+├── network.py                         # Dynamic acoustic graph, DBR routing, and telemetry engine
+├── mlmodel.py                         # VesselMLP PyTorch architecture & live inference hook
+├── auv.py                             # AUV swarm kinematics, waypoint patrol, and battery FSM
+├── traffic_algo.py                    # Harbor speed limits, LOC screening, and berth queuing
+├── prediction_logger.py               # Persistent ground-truth vs. prediction CSV logger
+├── evaluate_predictions.py            # Independent evaluation report generator
+├── ai_data_validator.py               # Groq LPU physical plausibility auditor (104 parameters)
+├── diagnose_weight_head.py            # Gradient norm diagnostic tool for displacement defect
 │
-├── run_all_tests.py               # Master automated test suite runner (80/80 tests)
-├── verify_environment.py          # Environment diagnostics & dependency checker
-├── test_integration.py            # 52 integration, regression, and physics tests
-├── test_prediction_validation.py  # 23 prediction logging and metric verification tests
-├── test_ai_data_validator.py      # 5 AI data validator unit and mock tests
+├── run_all_tests.py                   # Master automated test suite runner (80/80 tests)
+├── verify_environment.py              # Environment diagnostics & dependency checker
+├── test_integration.py                # 52 integration, regression, and physics tests
+├── test_prediction_validation.py      # 23 prediction logging and metric verification tests
+├── test_ai_data_validator.py          # 5 AI data validator unit and mock tests
 │
-├── dashboard.html                 # Real-time maritime traffic web dashboard (Port 8000)
-├── networking_dashboard.html      # Real-time UWSN acoustic mesh web dashboard (Port 8000)
-├── dashboard_data.js              # Telemetry payload wrapper for local web inspection
-├── dashboard_data.json            # Live exported JSON telemetry snapshot
+├── dashboard.html                     # Real-time maritime traffic web dashboard (Port 8000)
+├── networking_dashboard.html          # Real-time UWSN acoustic mesh web dashboard (Port 8000)
+├── dashboard_data.js                  # Telemetry payload wrapper for local web inspection
+├── dashboard_data.json                # Live exported JSON telemetry snapshot
 │
-├── models/                        # Pre-trained neural network weights & scalers
-│   ├── best_model.pt              # PyTorch model state dict
-│   ├── scaler.joblib              # Fitted StandardScaler (21 features)
-│   └── label_encoder.joblib       # Fitted LabelEncoder (6 vessel classes)
+├── models/                            # Pre-trained neural network weights & scalers
+│   ├── model_state.pt                 # PyTorch model state dict
+│   ├── scaler.pkl                     # Fitted StandardScaler (21 features)
+│   ├── label_encoder.pkl              # Fitted LabelEncoder (6 vessel classes)
+│   ├── model_type.pkl                 # Classification head weights
+│   └── model_weight.pkl               # Regression displacement head weights
 │
-├── logs/                          # Persistent runtime validation records
-│   └── prediction_log.csv         # Append-only ground truth vs. predicted telemetry log
+├── logs/                              # Persistent runtime validation records
+│   ├── prediction_log.csv             # Append-only ground truth vs. predicted telemetry log
+│   ├── prediction_summary.csv         # Summary prediction validation performance metrics
+│   ├── ai_validation_report.json      # Groq LPU 104-parameter physical plausibility audit
+│   └── PREDICTION_VALIDATION_FINDINGS.md # Detailed findings from prediction validation
 │
-├── results/                       # Comprehensive evaluation assets and generators
-│   ├── results_dashboard.html     # Interactive responsive visual evaluation dashboard
-│   ├── generate_final_report.py   # Master generator for PDF, DOCX, and MD reports
-│   ├── generate_results_visuals.py# Generator for all 15 high-res publication figures
-│   ├── assets/                    # 14 publication-grade PNG charts and plots
-│   └── data/                      # Raw benchmark JSON summaries (ML, network, testing)
+├── results/                           # Comprehensive evaluation assets and generators
+│   ├── generate_results_visuals.py    # Master pipeline for simulation experiments, figures & diagrams
+│   ├── generate_results.py            # Convenience CLI entry-point alias
+│   ├── generate_final_report.py       # Master generator for PDF, DOCX, and MD reports
+│   ├── build_revised_report.py        # Report compilation wrapper
+│   ├── results_dashboard.html         # Interactive responsive visual evaluation dashboard
+│   ├── assets/                        # 30 publication-grade PNG charts, plots, and diagrams
+│   │   └── diagrams/                  # 7 Graphviz .dot architecture and FSM source files
+│   └── data/                          # 16 telemetry datasets, time-series, and benchmark JSONs
 │
-└── presentation_assets/           # Slide decks, flowcharts, and presentation graphics
-    └── flowchart.png              # System execution architecture flowchart
+└── presentation_assets/               # Slide decks, flowcharts, and presentation graphics
+    ├── flowchart.png                  # System execution architecture flowchart
+    ├── harbor_architecture.png        # Harbor coordinate system layout diagram
+    ├── ml_results.png                 # VesselMLP confusion matrix & gradient chart
+    └── networking_results.png         # Network health and duty cycling plots
 ```
 
 ---
@@ -530,11 +597,11 @@ Harbor-Traffic-Control-System/
 ### 1. Clone the Repository & Install Dependencies
 ```bash
 # Clone the repository
-git clone https://github.com/rishikesh-2k6/Harbor-Traffic-Control-System.git
-cd Harbor-Traffic-Control-System
+git clone https://github.com/rishikesh-2k6/Harbor-Traffic-Control-System-.git
+cd Harbor-Traffic-Control-System-
 
 # Install required Python libraries
-pip install numpy scipy pandas torch scikit-learn joblib networkx matplotlib groq python-dotenv python-docx pywin32 pypdf
+pip install numpy scipy pandas torch scikit-learn joblib networkx matplotlib groq python-dotenv python-docx pywin32 pypdf python-pptx
 ```
 
 ### 2. Verify Your Environment
@@ -579,10 +646,18 @@ Execute all 80 unit, integration, physics, and regression tests:
 python run_all_tests.py
 ```
 
-### 6. Generate the Independent Model Evaluation Report
-Analyze the persistent prediction log (`logs/prediction_log.csv`) and output split metrics:
+### 6. Generate the Complete Visual Results & Empirical Figures
+Run the master visualization and simulation pipeline:
 ```bash
-python evaluate_predictions.py
+python results/generate_results_visuals.py
+# or using the convenience alias:
+python results/generate_results.py
+
+# Optional flags:
+#   --force-sim      Force re-running the 1,500-frame simulation driver
+#   --force-ml       Force re-running the held-out ML evaluation
+#   --figures-only   Only re-render publication figures
+#   --diagrams-only  Only re-render architectural & FSM diagrams
 ```
 
 ### 7. Run the Weight Head Gradient Diagnostic
@@ -591,10 +666,16 @@ Reproduce the 0.6% gradient norm starvation diagnosis:
 python diagnose_weight_head.py
 ```
 
-### 8. Regenerate All Reports (PDF, Word, Markdown)
-Rebuild the 30-page academic report from scratch:
+### 8. Regenerate All Academic Reports (PDF, Word, Markdown)
+Rebuild the 30-page academic report from scratch with all embedded figures:
 ```bash
 python results/generate_final_report.py
+```
+
+### 9. Build or Update the Presentation Deck
+Recompile the 12-slide defense presentation with embedded high-resolution figures:
+```bash
+python build_presentation.py
 ```
 
 ---

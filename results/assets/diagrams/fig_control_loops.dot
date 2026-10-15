@@ -1,0 +1,14 @@
+digraph G {
+rankdir=TB; nodesep=0.6; ranksep=0.4; newrank=true;
+node [shape=box, style="rounded,filled", color="#334155", penwidth=1.2, fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9.5, color="#334155"];
+subgraph cluster_a { label="Loop A: vessel traffic (supervisory, once per frame)"; style="rounded,dashed"; color="#d97706";
+  s1 [label="hydrophones\n+ AUV sensing", fillcolor="#bae6fd"]; c1 [label="VesselMLP\nclass estimate", fillcolor="#ede9fe"];
+  k1 [label="governance rules\nHALT / SLOW / CONTINUE\nROUTE / HOLD", fillcolor="#fef3c7"]; p1 [label="vessel kinematics\np += 8 v [cos a, sin a]", fillcolor="#fde68a"];
+  s1 -> c1 -> k1 -> p1; p1 -> s1 [label="radiated noise", style=dashed, constraint=false]; }
+subgraph cluster_b { label="Loop B: AUV motion (continuous, dt = 1/60 s)"; style="rounded,dashed"; color="#16a34a";
+  r2 [label="waypoint p_g\n(patrol / target / buoy)", fillcolor="#dcfce7"]; k2 [label="F_c = F_max e / |e|", fillcolor="#dcfce7"];
+  p2 [label="m dv/dt = F_c + F_d - c|v|v\n|v| <= 10 m/s", fillcolor="#bbf7d0"]; d2 [label="ocean current\nF_d = 0.6 m u", fillcolor="#e0e7ff"];
+  r2 -> k2 -> p2; d2 -> p2; p2 -> k2 [label="position p", style=dashed, constraint=false]; }
+k1 -> r2 [label=" overspeed violations", color="#dc2626", fontcolor="#dc2626"];
+}

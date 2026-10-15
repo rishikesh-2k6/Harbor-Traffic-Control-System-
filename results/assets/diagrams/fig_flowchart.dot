@@ -1,0 +1,34 @@
+digraph G {
+rankdir=TB; nodesep=0.3; ranksep=0.32;
+node [shape=box, style="rounded,filled", fillcolor="#e0f2fe", color="#334155", fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9.5, color="#334155"];
+start [label="START", shape=oval, fillcolor="#0f172a", fontcolor="white"];
+init [label="Initialise: 35 sensors, 22 vessels, 8 AUVs, 3 buoys\nload VesselMLP + scaler + label encoder\nscenario = NORMAL, frame k = 0"];
+user [label="Operator input?\n(Season / Squall / Re-anchor / Reset)", shape=diamond, fillcolor="#fef3c7"];
+apply [label="Apply command: switch scenario,\ninject squall, re-anchor moorings or reset", fillcolor="#fef9c3"];
+ocean [label="Step ocean: OU current intensity, squalls,\nsurge, waves, vortices"];
+moor [label="Step moorings: MOORED -> STRAINED -> SNAPPED\n(strain accumulation, drift)"];
+det [label="Detect vessels within 2 km of each sensor / AUV\nbuild 21 noisy acoustic features, append to dataset"];
+inf [label="VesselMLP inference on latest row per ship\n-> predicted class + displacement; log vs ground truth"];
+zone [label="Vessel zone?", shape=diamond, fillcolor="#fef3c7"];
+oy [label="Outer Yard (x > 5 km): command by predicted class\nCargo/Tanker HALT, Cruiser/Ferry SLOW (50 %),\nSpeedboat/Fishing CONTINUE"];
+iz [label="Inner Zone (0.7-5 km): allocate free berth\nnone free -> HOLD; else ROUTE at <= 6 kn -> DOCKING"];
+hb [label="Harbor (x < 0.7 km): DOCKED"];
+viol [label="Speed check vs zone limit (10 kn / 6 kn)\n-> violation list"];
+auv [label="AUV automaton + dynamics:\nbattery < 15 % -> CHARGING; violation in zone -> DISPATCHED;\nF = F_max*e/|e| + 0.6*m*u - c|v|v ; |v| <= 10 m/s"];
+gbuild [label="Build link graph: d <= 1.8 km and SNR >= 10 dB\n(duty-cycled sensors may sleep)"];
+route [label="For each detecting node: path to nearest reachable buoy\n(<= 12 nodes); nearest detector sends 1 packet / 8 frames"];
+health [label="Health H = 35% connectivity + 35% delivery\n+ 20% mooring + 10% latency -> STABLE ... COLLAPSED"];
+move [label="Move vessels: p <- p + SPEED_MULT * v * [cos a, sin a]"];
+out [label="Render 3D view, update HUD + notifications,\nwrite dashboard_data.json (every 500 ms)"];
+stop [label="Window closed?", shape=diamond, fillcolor="#fef3c7"];
+end [label="END", shape=oval, fillcolor="#0f172a", fontcolor="white"];
+start -> init -> user;
+user -> apply [label=" yes"]; apply -> ocean; user -> ocean [label=" no"];
+ocean -> moor -> det -> inf -> zone;
+zone -> oy [label=" x > 5000"]; zone -> iz [label=" 700 < x <= 5000"]; zone -> hb [label=" x <= 700"];
+oy -> viol; iz -> viol; hb -> viol;
+viol -> auv -> gbuild -> route -> health -> move -> out -> stop;
+stop -> end [label=" yes"];
+stop -> user [label=" no: k = k + 1", constraint=false];
+}

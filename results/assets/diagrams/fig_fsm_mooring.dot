@@ -1,0 +1,14 @@
+digraph G {
+rankdir=TB; nodesep=1.8; ranksep=1.0;
+node [shape=box, style="rounded,filled", penwidth=1.6, fontsize=12, fontname="DejaVu Sans"];
+edge [fontname="DejaVu Sans", fontsize=9.5, color="#334155"];
+{rank=same; M; St}
+M [label="MOORED\nsway about anchor\nS <- max(0, S - 0.6 dt)", fillcolor="#dcfce7", color="#16a34a"];
+St [label="STRAINED\nS <- S + dt |u| / 1.2\nsway = min(40|u|, 220) m", fillcolor="#fef3c7", color="#d97706"];
+Sn [label="SNAPPED (drifting)\nv <- v + (14 u xi - v) min(4 dt, 1)\nremoved from mooring integrity", fillcolor="#fee2e2", color="#dc2626"];
+M -> St [label="|u| > 1.3 m/s\n(monsoon)"];
+St -> M [label="|u| <= 1.3 m/s"];
+St -> Sn [label="|u| >= u_break (2.2-3.4 m/s)\nOR S > 12"];
+M -> Sn [label="|u| >= u_break", style=dashed];
+Sn -> M [label="operator Re-Anchor", style=dotted, color="#2563eb", fontcolor="#2563eb"];
+}

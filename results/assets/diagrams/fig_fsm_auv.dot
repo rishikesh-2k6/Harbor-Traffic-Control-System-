@@ -1,0 +1,14 @@
+digraph G {
+rankdir=TB; nodesep=1.6; ranksep=1.1;
+node [shape=box, style="rounded,filled", penwidth=1.6, fontsize=12, fontname="DejaVu Sans"];
+edge [fontname="DejaVu Sans", fontsize=9.5, color="#334155"];
+{rank=same; P; D}
+P [label="PATROLLING\nrandom waypoints in own zone\n(new waypoint within 200 m)", fillcolor="#dcfce7", color="#16a34a"];
+D [label="DISPATCHED\nwaypoint = target vessel\n(hold 180 frames when within 200 m)", fillcolor="#fef3c7", color="#d97706"];
+C [label="CHARGING\nhome to buoy (150, 5000, 0)\n+0.2 %/frame within 250 m", fillcolor="#dbeafe", color="#2563eb"];
+P -> D [label="overspeed violation\nin own patrol zone\n(nearest vessel)"];
+D -> P [label="target docked OR\nhold timer > 180 frames"];
+P -> C [label="battery < 15 %"];
+D -> C [label="battery < 15 %\n(target dropped)"];
+C -> P [label="battery >= 95 %\n(new zone waypoint)"];
+}

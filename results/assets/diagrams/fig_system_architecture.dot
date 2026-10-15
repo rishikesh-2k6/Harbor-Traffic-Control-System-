@@ -1,0 +1,28 @@
+digraph G {
+rankdir=TB; nodesep=0.3; ranksep=0.5; newrank=true;
+node [shape=box, style="rounded,filled", color="#334155", penwidth=1.2, fontname="DejaVu Sans", fontsize=11];
+edge [fontname="DejaVu Sans", fontsize=9.5, color="#334155"];
+env [label="Ocean environment (simulator.py)\nNormal / Monsoon scenario, OU current + squalls, waves,\nMackenzie / Ross / Thorp / Wenz acoustic models", fillcolor="#e0e7ff"];
+subgraph cluster_phys { label="Physical layer (10 km x 10 km harbor)"; fontsize=12; style="rounded,dashed"; color="#94a3b8";
+  ves [label="22 surface vessels\n6 classes", fillcolor="#fde68a"];
+  sen [label="35 moored hydrophones\nsurface / mid / seabed", fillcolor="#bae6fd"];
+  auvn [label="8 AUVs\n500 kg, F_max 900 N", fillcolor="#bbf7d0"];
+  buoy [label="3 gateway buoys\nx = 150 m", fillcolor="#fed7aa"];
+}
+feat [label="Sensing: detection within 2 km\n+ 21-feature acoustic vector", fillcolor="#e0f2fe"];
+net [label="Acoustic network (network.py)\nper-frame graph: d <= 1.8 km, SNR >= 10 dB\nDBR routing, duty cycling, health score", fillcolor="#cffafe"];
+ml [label="VesselMLP (mlmodel.py)\nclass head + displacement head", fillcolor="#ede9fe"];
+val [label="Prediction validation\n(prediction_logger.py)", fillcolor="#f1f5f9"];
+tms [label="Traffic governance (traffic_algo.py)\nspeed limits, LOC screening, berths", fillcolor="#fef3c7"];
+auvc [label="AUV controller (auv.py)\nhybrid automaton + force control + battery", fillcolor="#dcfce7"];
+ui [label="Interfaces: Tkinter + Matplotlib 3D station | dashboard.html | networking_dashboard.html\n(dashboard_data.json written every 500 ms, served on HTTP :8000)", fillcolor="#e2e8f0"];
+env -> ves [style=invis]; env -> sen [label=" current, noise"]; env -> auvn [label=" current force"]; env -> buoy [style=invis];
+ves -> feat [label=" radiated noise"]; sen -> feat; auvn -> feat [label=" mobile sensing"];
+sen -> net; auvn -> net [label=" relay"]; buoy -> net [label=" sink"];
+feat -> ml; ml -> tms [label=" predicted class"]; ml -> val;
+tms -> auvc [label=" violations"];
+tms -> ui; auvc -> ui; val -> ui; net -> ui;
+{rank=same; feat; net}
+{rank=same; ml; val}
+{rank=same; tms; auvc}
+}
