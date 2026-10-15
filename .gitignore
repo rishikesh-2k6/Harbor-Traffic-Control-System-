@@ -21,3 +21,5 @@ dashboard_data.json
 dashboard_data.js
 collected_data.csv
 .env
+*.mp4
+*.raw.mp4
